@@ -26,8 +26,7 @@ export default {
 
 <style scoped>
 .banner {
-  height: 700px;
-  width: 100%; 
+  height: 530px;
   width: 100vw;
   background-image: url("../assets/SearchBanner.jpg");
   background-repeat: no-repeat;
