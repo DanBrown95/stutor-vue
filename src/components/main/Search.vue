@@ -1,6 +1,7 @@
 <template>
     <div class="search">
         <v-autocomplete class="vtext"
+            v-model="selectedTopic"
             :items="getTopics"
             item-text="Name"
             item-value="Id"
@@ -9,6 +10,12 @@
             :solo="true"
             :single-line="true"
             append-icon='fa fa-search'
+            @change="topicSelected()"
+            :hide-no-data="true"
+            :allow-overflow="false"
+            no-data-text="No topic found"
+            return-object
+            :search-input.sync="searchInput"
         >
         </v-autocomplete>
     </div>
@@ -19,15 +26,23 @@ export default {
     name: "Search",
     data: function () {
         return {
-            val: ''
+            searchInput: null,
+            selectedTopic: null,
+        }
+    },
+    methods: {
+        topicSelected() {
+            if (this.selectedTopic != null) {
+                this.$router.push({name: 'Topic', params: {id: this.selectedTopic.Id} });
+            }
         }
     },
     computed: {
-        getSearchResults: function() {
-            return this.$store.getters.allCategories.filter(item => item.Name.toLowerCase().includes(this.val.toLowerCase())).map(n => n.Name)
-        },
-        getTopics: function() {
-            return this.$store.getters.allTopics
+        getTopics: function() { // Ensure atleast 2 characters are typed before showing any topics.
+            if(this.searchInput && this.searchInput.length > 1){
+                return this.$store.getters.allTopics
+            }
+            return []
         }
     }
 }
@@ -35,10 +50,7 @@ export default {
 
 <style scoped>
     .search {
-        margin: auto;
-        width: 40%;
         position: relative;
-        top: 50%;
     }
 
     .vtext {

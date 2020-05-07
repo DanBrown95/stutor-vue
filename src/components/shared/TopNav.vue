@@ -3,7 +3,7 @@
         <nav class="navbar navbar-dark bg-dark">
             <div class="inline-block">
                 <a href="/">
-                    <img src="https://a.storyblok.com/f/39898/1024x1024/dea4e1b62d/vue-js_logo-svg.png" height="40" width="40">
+                    <img class="logo" src="@/assets/logos/logo_text_red_transparent.png" height="40" width="90">
                 </a>
             </div>
 
@@ -64,6 +64,10 @@ export default {
 
     #txtUser {
       color: white;
+    }
+
+    .logo{
+      margin: 1em 0px 1em 1em;
     }
 
 </style>

@@ -314,7 +314,8 @@ VALUES
 	(7, 'Science'),
 	(8, 'Housing'),
 	(9, 'Finance'),
-	(10, 'Animals')
+	(10, 'Animals'),
+	(11, 'Programming')
 GO
 SET IDENTITY_INSERT [dbo].[Category] OFF
 
@@ -325,7 +326,6 @@ GO
 INSERT INTO [dbo].[Topic]
 	([CategoryId],[Name])
 VALUES
-	(1, 'Programming'),
 	(1, "TV's"),
 	(1, 'Audio'),
 	(1, 'Computers'),
@@ -334,5 +334,9 @@ VALUES
 	(2, 'Fitness'),
 	(9, 'Home Loans'),
 	(9, '401K'),
-	(10, 'Pets')
+	(10, 'Pets'),
+	(11, 'C#'),
+	(11, 'Ruby'),
+	(11, 'HTML/CSS'),
+	(11, 'Java')
 GO

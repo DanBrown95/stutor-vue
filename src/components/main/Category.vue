@@ -1,9 +1,9 @@
 <template>
     <div class="category">
-        <router-link :to="'/'+this.Name" >
-            <img class="image" :src="this.ImageUrl" :alt="this.Name">
+        <router-link :to="{name: 'Category', params: { id: this.id } }" >
+            <img class="image" :src="this.imageUrl" :alt="this.name">
             <div class="overlay">
-                <div class="text">{{ this.Name }}</div>
+                <div class="text">{{ this.name }}</div>
             </div>
         </router-link>
     </div>
@@ -12,7 +12,7 @@
 <script>
 export default {
     name: 'Category',
-    props: ['Id', 'Name', 'ImageUrl'],
+    props: ['id', 'name', 'imageUrl'],
     data: function () {
         return {
             // styleObject: {
@@ -28,8 +28,8 @@ export default {
     .category {
         position: relative;
         float: left;
-        width: 15%;
-        height: 15vw;
+        width: 10%;
+        height: 10vw;
         margin: 2em;
     }
 
@@ -58,7 +58,7 @@ export default {
 
     .text {
         color: white;
-        font-size: 20px;
+        font-size: 1.5em;
         position: absolute;
         top: 50%;
         left: 50%;
@@ -66,6 +66,14 @@ export default {
         -ms-transform: translate(-50%, -50%);
         transform: translate(-50%, -50%);
         text-align: center;
+    }
+
+    @media only screen and (max-width: 1265px) {
+
+        .text { 
+            font-size: 10px; 
+        }
+
     }
 
 </style>

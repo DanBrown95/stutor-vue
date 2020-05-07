@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="banner">
-      <h2>Stutor</h2>
+      <h2>Get help for any project</h2>
       <Search class="search"/>
     </div>
 
@@ -33,13 +33,26 @@ export default {
   background-size: cover;
 }
 
+.search {
+  top: 50%;
+  margin: auto;
+  width: 40%;
+}
+
 h2 {
   margin: auto;
   width: 40%;
   position: relative;
-  top: 40%;
+  top: 47%;
   text-align: center;
-  font-size: 4em;
-  color: grey;
+  font-family: 'Lawyer Gothic';
+  font-size: 3em;
+  color: #D0021B;
+}
+
+@media only screen and (max-width: 1265px) {
+  h2 { 
+      font-size: 1.8em; 
+  }
 }
 </style>

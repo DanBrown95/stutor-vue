@@ -17,7 +17,7 @@ export default new Vuex.Store({
       },{
           "Id": 7,
           "Name": "Teaching",
-          "ImageUrl": "https://www.kindpng.com/picc/m/73-730024_advanced-technology-icon-png-transparent-png.png"
+          "ImageUrl": "https://encrypted-tbn0.gstatic.com/images?q=tbn%3AANd9GcRonucS-TKL32c2SI12lNkoBKYinxp3kmQdOW7V2ZY7iK5adfGh&usqp=CAU"
       },{
           "Id": 3,
           "Name": "Health",
@@ -34,6 +34,10 @@ export default new Vuex.Store({
           "Id": 6,
           "Name": "Sports",
           "ImageUrl": "data:image/png;base64,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"
+      },{
+        "Id": 8,
+        "Name": "Programming",
+        "ImageUrl": "https://www.kindpng.com/picc/m/73-730024_advanced-technology-icon-png-transparent-png.png"
       }],
     topics: [
       {
@@ -64,6 +68,31 @@ export default new Vuex.Store({
           "Id": 6,
           "CategoryId": 4,
           "Name": "Boats",
+      },{
+          "Id": 8,
+          "CategoryId": 8,
+          "Name": "C#",
+      },{
+          "Id": 9,
+          "CategoryId": 8,
+          "Name": "HTML/CSS",
+      },{
+          "Id": 10,
+          "CategoryId": 8,
+          "Name": "Java",
+      }],
+      experts: [{
+        "Id": 1026,
+        "Rating": 2,
+        "Price": "$6.50",
+      },{
+        "Id": 2015,
+        "Rating": 5,
+        "Price": "$11.20",
+      },{
+        "Id": 1422,
+        "Rating": 2,
+        "Price": "$6.50",
       }]
   },
   getters: {
@@ -72,6 +101,15 @@ export default new Vuex.Store({
     },
     allTopics: state => {
       return state.topics
+    },
+    topics: (state) => (_categoryId) => {
+      return state.topics.filter(topic => topic.CategoryId == _categoryId)
+    },
+    topic: (state) => (id) => {
+        return state.topics.find(topic => topic.Id == id)
+    },
+    allExperts: state => {
+      return state.experts
     }
   },
   mutations: {
