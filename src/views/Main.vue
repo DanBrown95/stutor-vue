@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="banner">
-      <h2>Get help for any project</h2>
+      <h2>Get help with any project</h2>
       <Search class="search"/>
     </div>
 
@@ -26,7 +26,7 @@ export default {
 
 <style scoped>
 .banner {
-  height: 530px;
+  height: 700px;
   width: 100vw;
   background-image: url("../assets/SearchBanner.jpg");
   background-repeat: no-repeat;

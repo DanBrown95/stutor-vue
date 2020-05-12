@@ -1,6 +1,8 @@
 <template>
-    <div class="main">
-        <ListWithSearch :fullArray="topics" @listSelectedItem="setTopic" />
+    <div class="banner">
+        <div class="main">
+            <ListWithSearch :fullArray="topics" @listSelectedItem="setTopic" />
+        </div>
     </div>
 </template>
 
@@ -37,8 +39,14 @@ export default {
 </script>
 
 <style scoped>
+    .banner {
+        background: url('../assets/topics-banner.jpg');
+        background-size:cover;
+        height: 940px;
+    }
+
     .main {
-        margin-top: 7em;
+        padding-top: 7em;
     }
 
     .items-visible {

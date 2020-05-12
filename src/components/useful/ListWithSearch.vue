@@ -10,11 +10,14 @@
 
         <v-container grid-list-sm>
             <div>
-                <v-layout row>
+                <v-layout row justify-center>
                     <v-col sm="4" v-for="(item, index) in this.restrictedArray" :key="index" @click="selectItem(item)">
-                        <v-chip style="width: 100%;" text-color="red" class="ma-2" large> {{ item.Name }} </v-chip>
+                        <v-chip style="width: 100%; justify-content: center; background-color: white;" text-color="red" class="ma-2" large> {{ item.Name }} </v-chip>
                     </v-col>
                 </v-layout>
+                <div v-if="restrictedArray.length == 0" style="text-align: center;">
+                    <v-card-text> No matches </v-card-text>
+                </div>
                 <h5 class="items-visible"> ({{restrictedArray.length}} of {{this.fullArray.length}})</h5>
             </div>
         </v-container>
@@ -24,10 +27,10 @@
 <script>
 export default {
     name: "listWithSearch",
-    props: ["fullArray"],
+    props: ["fullArray", "searchReset"],
     data() {
         return {
-            searchText: null,
+            searchText: "",
             restrictedArray: [],
             selectedItem: null
         }
@@ -38,20 +41,21 @@ export default {
     methods: {
         selectItem(item) {
             this.selectedItem = item;
+            this.$emit('listSelectedItem', this.selectedItem);
         }
     },
     watch: {
         searchText: function(val) {
-            if(val != null){
-                this.restrictedArray = this.fullArray.filter(item => item.Name.toLowerCase().includes(val.toLowerCase()));
-            }
+            this.restrictedArray = this.fullArray.filter(item => item.Name.toLowerCase().includes(val.toLowerCase()));
         },
         fullArray: function () {
             this.selectedItem = null;
             this.restrictedArray = this.fullArray.slice(0, 9);
         },
-        selectedItem: function() {
-            this.$emit('listSelectedItem', this.selectedItem);
+        searchReset: function (val) {
+            if(val){
+                this.searchText = "";
+            }
         }
     }
 }

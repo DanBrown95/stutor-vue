@@ -1,11 +1,13 @@
 <template>
 <div>
-    <h2 class="header">Browse by Categories</h2>
-    <div class="categories">
-        <div v-for="c in Categories" :key="c.Id">
-            <Category :id="c.Id" :name="c.Name" :imageUrl="c.ImageUrl" ></Category>
-        </div>
-    </div>
+    <h2 class="header">Browse by Category</h2>
+    <v-row>
+        <v-layout row justify-center class="categories">
+            <v-col md="2" v-for="c in Categories" :key="c.Id">
+                <Category :id="c.Id" :name="c.Name" :imageUrl="c.ImageUrl" class="category"></Category>
+            </v-col>
+        </v-layout>
+    </v-row>
     <div class="wrapper"><v-btn class="inst-btn" :to="{name: 'BrowseCategory'}" rounded outlined>More Categories</v-btn></div>
 </div>
 </template>
@@ -37,35 +39,38 @@ export default {
         font-size: 2em;
     }
     .categories {
-        display: inline-block;
         width: 100%;
-        margin-left: 4%;
+    }
+
+    .category {
+        width: 10em;
+        height: 10em;
     }
 
     /* Styling for the browse categories button */
     .wrapper {
-    margin: 1em auto;
-    text-align: center;
+        margin: 1em auto 5em;
+        text-align: center;
     }
     .inst-btn { 
-    text-transform: uppercase; 
-    background-color:#D0021B;
+        text-transform: uppercase; 
+        background-color:#D0021B;
     }
     .inst-btn{ 
-    color: white; 
-    padding: 5px; 
-    margin: 0; 
-    font-family: "arial"; 
+        color: white; 
+        padding: 5px; 
+        margin: 0; 
+        font-family: "arial"; 
     }
     .inst-btn:hover {
-    background-color: rgba(206, 27, 48, 0.89);
+        background-color: rgba(206, 27, 48, 0.89);
     }
     .wrapper:before,.wrapper:after{
-    content:" ";
-    width: 10%;
-    height: 2px;
-    margin: 0 10px;
-    background-color:grey;
-    display:inline-block;
+        content:" ";
+        width: 10%;
+        height: 2px;
+        margin: 0 10px;
+        background-color:grey;
+        display:inline-block;
     }
 </style>

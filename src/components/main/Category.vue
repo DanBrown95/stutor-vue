@@ -27,9 +27,6 @@ export default {
     
     .category {
         position: relative;
-        float: left;
-        width: 10%;
-        height: 10vw;
         margin: 2em;
     }
 
