@@ -8,21 +8,21 @@
             </div>
 
             <!-- Login/Logout buttons -->
-            <div id="auth" class="inline-block" v-if="!$auth.loading">
+            <div id="auth" class="inline-block" >
                 <!-- show login when not authenticated -->
-                <v-btn class="ma-2 btn-login" rounded color="white" v-if="!$auth.isAuthenticated" @click="login">Log in</v-btn>
+                <v-btn class="ma-2 btn-login" v-if="!$parent.$parent.authenticated" rounded color="white" @click="login">Log in</v-btn>
                 <!-- show logout when authenticated -->
-                <div v-if="$auth.isAuthenticated">
+                <div v-if="$parent.$parent.authenticated">
                     <!-- <v-img :src="$auth.user.picture" width="30" height="30"> -->
                     <div class="user-dropdown">
-                      <span id="txtUser" class="text-muted font-weight-medium px-2">{{$auth.user.name}}</span>
+                      <span id="txtUser" class="text-muted font-weight-medium px-2">{{$parent.$parent.user.name}}</span>
                       <div class="user-dropdown-content">
                         <div class="top-row">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                              <img v-on="on" v-bind:src="$auth.user.picture">
+                              <img v-on="on" v-bind:src="$parent.$parent.user.picture">
                             </template>
-                            <span>{{$auth.user.email}}</span>
+                            <span>{{$parent.$parent.user.email}}</span>
                           </v-tooltip>
                           <a href="#">Account</a>
                         </div>
@@ -45,17 +45,16 @@ export default {
     }
   },
   methods: {
-    // Log the user in
-    login() {
-      this.$auth.loginWithRedirect();
+    login () {
+      this.$auth.loginRedirect()
     },
-    // Log the user out
-    logout() {
-      this.$auth.logout({
-        returnTo: window.location.origin
-      });
+    async logout () {
+      await this.$auth.logout()
+
+      // Navigate back to home
+      this.$router.push({ path: '/' })
     }
-  }
+  },
 };
 </script>
 
@@ -106,6 +105,8 @@ export default {
   .top-row img{
     margin-right: 10px;
     float: left;
+    height: 52px;
+    width: 52px;
   }
 
   .top-row a {

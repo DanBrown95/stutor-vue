@@ -1,21 +1,26 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import { authGuard } from "../auth/authGuard";
+import Auth from '@okta/okta-vue'
 
 Vue.use(VueRouter)
 
   const routes = [
   {
+    path: '/implicit/callback', 
+    component: Auth.handleCallback()
+  },
+  {
     path: '/',
     name: 'Main',
     component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue')
-    //,beforeEnter: authGuard //add this line to require the user to e authenticated in order to access
   },
   {
     path: '/topic/:id',
     name: 'Topic',
     component: () => import('../views/SelectedTopic.vue'),
-    beforeEnter: authGuard
+    meta: {
+      requiresAuth: true
+    },
   },
   {
     path: '/browse/',
@@ -29,11 +34,22 @@ Vue.use(VueRouter)
   }
 ]
 
+Vue.use(Auth, {
+  issuer: 'https://dev-870310.okta.com/oauth2/default',
+  clientId: '0oadanvcnLEDKn50V4x6',
+  redirectUri: 'http://localhost:8080/implicit/callback',
+  scopes: ['openid', 'profile', 'email', 'phone'],
+  pkce: true
+})
+
 const router = new VueRouter({
   routes,
+  mode: 'history',
   scrollBehavior () {
     return { x: 0, y: 0 }
   }
 })
+
+router.beforeEach(Vue.prototype.$auth.authRedirectGuard())
 
 export default router

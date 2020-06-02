@@ -18,10 +18,26 @@ export default {
     TopNav,
     Footer
   },
-  data(){
-    return {
+  data: function () {
+    return { 
+      authenticated: false, 
+      user: {} 
     }
   },
+  created () { this.isAuthenticated() },
+  watch: {
+    // Everytime the route changes, check for auth status
+    '$route': 'isAuthenticated'
+  },
+  methods: {
+    async isAuthenticated () {
+      this.authenticated = await this.$auth.isAuthenticated();
+      this.getUser();
+    },
+    async getUser() {
+      this.user = await this.$auth.getUser()
+    }
+  }
 };
 </script>
 
