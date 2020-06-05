@@ -12,6 +12,7 @@
     "@okta/okta-vue": "^2.0.0",
     "axios": "^0.19.2",
     "core-js": "^3.6.4",
+    "stripe": "^8.56.0",
     "vue": "^2.6.11",
     "vue-router": "^3.1.6",
     "vuetify": "^2.2.11",

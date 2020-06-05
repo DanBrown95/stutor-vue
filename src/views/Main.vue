@@ -20,6 +20,23 @@ export default {
   components: {
     Search,
     Categories
+  },
+  created() {
+    this.createPost();
+  },
+  methods: {
+    async createPost() {
+      console.log("hit");
+      const request = new Request(
+        "https://localhost:44343/api/values",
+        {
+          method: "GET",
+        }
+      );
+      const res = await fetch(request);
+      const data = await res.json();
+      console.log("result", data);
+    }
   }
 }
 </script>

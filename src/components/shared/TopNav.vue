@@ -26,7 +26,7 @@
                           </v-tooltip>
                           <a href="#">Account</a>
                         </div>
-                        <a href="#">Payment</a>
+                        <a href="#">Order History</a>
                         <a href="#">Preferences</a>
                       </div>
                     </div>

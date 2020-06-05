@@ -2,7 +2,7 @@
     <div>
         <div class="experts">
             <div v-for="x in Experts" :key="x.Id" class="inline-block">
-                <ExpertIcon :id="x.Id" :price="x.Price" :rating="x.Rating" ></ExpertIcon>
+                <ExpertIcon :id="x.Id" :price="x.Price" :rating="x.Rating" @clicked="expertSelected"></ExpertIcon>
             </div>
         </div>
     </div>
@@ -21,6 +21,11 @@ export default {
             Experts: this.$store.getters.allExperts
         }
     },
+    methods: {
+        expertSelected: function(e) {
+            this.$emit("expertSelected", e);
+        }
+    }
         
 }
 </script>

@@ -84,15 +84,15 @@ export default new Vuex.Store({
       experts: [{
         "Id": 1026,
         "Rating": 2,
-        "Price": "$6.50",
+        "Price": "6.50",
       },{
         "Id": 2015,
         "Rating": 5,
-        "Price": "$11.20",
+        "Price": "11.20",
       },{
         "Id": 1422,
         "Rating": 2,
-        "Price": "$6.50",
+        "Price": "6.50",
       }]
   },
   getters: {
@@ -110,7 +110,10 @@ export default new Vuex.Store({
     },
     allExperts: state => {
       return state.experts
-    }
+    },
+    expertById: (state) => (id) => {
+      return state.experts.find(expert => expert.Id == id)
+    } 
   },
   mutations: {
   },

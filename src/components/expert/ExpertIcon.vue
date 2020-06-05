@@ -1,10 +1,10 @@
 <template>
     <div class="main">
-        <router-link :to="'/'" >
+        <a @click.stop="iconPressed">
             <img class="image">
-        </router-link>
+        </a>
         <div class="overlay">
-            <div class="text">{{ this.price }}</div>
+            <div class="text">${{ this.price }}</div>
             <div class="text">{{ this.rating }}/5 Rating</div>
         </div>
     </div>
@@ -16,6 +16,11 @@ export default {
     props: ['id', 'rating', 'price'],
     data: function () {
         return {
+        }
+    },
+    methods: {
+        iconPressed: function(){
+            this.$emit("clicked", this.id);
         }
     }
 }
