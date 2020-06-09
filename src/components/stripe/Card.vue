@@ -18,9 +18,7 @@
 
 <script>
 export default {
-    name: 'Card',
-    mounted() {
-    }
+    name: 'Card'
 };
 </script>
 

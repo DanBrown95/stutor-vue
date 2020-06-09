@@ -40,7 +40,26 @@
                 </v-row>
             </v-container>
 
-            <v-container id="success" class="hidden">
+            <v-container id="payment-card" v-if="!showSuccess">
+                <v-row dense>
+                    <v-col cols="12">
+                        <card></card>
+                    </v-col>
+                </v-row>
+            </v-container>
+
+            
+            <v-container>
+                <v-row class="justify-center">
+                    <v-col cols="10">
+                        <v-card color="#ECEBEB" dark flat>
+                            <v-card-subtitle style="color: #F53535" class="text-center">DO NOT click outside this pane after or when processing card! <br> Clicking outside will result in a loss of information.</v-card-subtitle>
+                        </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+
+            <v-container id="success" v-if="showSuccess">
                 <v-row dense>
                     <v-col cols="12">
                         <v-card color="white" class="text-center" dark flat>
@@ -57,20 +76,28 @@
                             <br />
                             <div>
                                 <h3>Verification Code:</h3>
-                                <h4>{{stripe.verification}}</h4>
+                                <h4 id="payment-verification"></h4>
+                                <h3>{{paymentVerification}}</h3>
                             </div>
                         </v-card>
                     </v-col>
                 </v-row>
             </v-container>
 
-            <v-container id="payment-card">
+            <v-container id="call-wrapper" v-if="paymentVerification">
                 <v-row dense>
                     <v-col cols="12">
-                        <card></card>
+                        <v-card color="white" class="text-center" dark flat>
+                            <br />
+                            <br />
+                            <div>
+                                <v-btn :to="callLink" rounded outlined color="green darken-3">Start Call</v-btn>
+                            </div>
+                        </v-card>
                     </v-col>
                 </v-row>
             </v-container>
+
       </v-navigation-drawer>
     </div>
 </template>
@@ -92,8 +119,14 @@ export default {
             selectedExpertId: null,
             selectedExpert: {},
             drawer: null,
-            stripe: {},
-            showSuccess: false
+
+            stripe: null,
+            elements: null,
+            card: null,
+
+            showSuccess: false,
+            paymentVerification: "",
+            callLink: "/#"
         }
     },
     created() {
@@ -105,33 +138,37 @@ export default {
         },
         expertSelected: function(expertId) {
             this.selectedExpertId = expertId;
-            document.getElementById("success").classList.add("hidden");
+            this.showSuccess = false;
             this.openDrawer();
         },
         openDrawer: function() {
-            document.getElementById("payment-card").classList.remove("hidden");
             this.drawer = !this.drawer;
+            
             // A reference to Stripe.js initialized with your real test publishable API key.
-            // eslint-disable-next-line no-undef
-            var stripe = Stripe("pk_test_iYxcqWBu8lkKSEgZFG9V3nYg00JiUcoXYQ");
+            if(this.stripe === null){
+                // eslint-disable-next-line no-undef
+                this.stripe = Stripe("pk_test_iYxcqWBu8lkKSEgZFG9V3nYg00JiUcoXYQ");
+            }
+            
             // The items the customer wants to buy
             var purchase = {
-            items: [{ id: self.selectedExpertId }]
+                items: [{ id: self.selectedExpertId }]
             };
+
             // Disable the button until we have Stripe set up on the page
             document.querySelector("button").disabled = true;
             fetch("https://localhost:44343/create-payment-intent", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify(purchase)
-            })
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(purchase)
+                })
             .then(function(result) {
                 return result.json();
             })
-            .then(function(data) {
-                var elements = stripe.elements();
+            .then((data) => {
+                this.elements = this.stripe.elements();
                 var style = {
                 base: {
                     color: "#32325d",
@@ -148,88 +185,96 @@ export default {
                     iconColor: "#fa755a"
                 }
                 };
-                var card = elements.create("card", { style: style });
+
+                this.card = this.elements.create("card", { style: style });
+
                 // Stripe injects an iframe into the DOM
-                card.mount("#card-element");
-                card.on("change", function (event) {
-                // Disable the Pay button if there are no card details in the Element
-                document.querySelector("button").disabled = event.empty;
-                document.querySelector("#card-errors").textContent = event.error ? event.error.message : "";
+                this.card.mount("#card-element");
+                this.card.on("change", function (event) {
+                    // Disable the Pay button if there are no card details in the Element
+                    document.querySelector("button").disabled = event.empty;
+                    document.querySelector("#card-errors").textContent = event.error ? event.error.message : "";
                 });
                 var form = document.getElementById("payment-form");
-                form.addEventListener("submit", function(event) {
-                event.preventDefault();
-                // Complete payment when the submit button is clicked
-                payWithCard(stripe, card, data.clientSecret);
+                form.addEventListener("submit", (event) => {
+                    event.preventDefault();
+                    // Complete payment when the submit button is clicked
+                    this.payWithCard(data.clientSecret);
                 });
             });
+        },
+        /* ------- Stripe Required Methods ------- */
+        payWithCard: function(clientSecret){
             // Calls stripe.confirmCardPayment
             // If the card requires authentication Stripe shows a pop-up modal to
             // prompt the user to enter authentication details without leaving your page.
-            var payWithCard = function(stripe, card, clientSecret) {
-            loading(true);
-            stripe
+            this.loading(true);
+            this.stripe
                 .confirmCardPayment(clientSecret, {
                 receipt_email: document.getElementById('email').value,
                 payment_method: {
-                    card: card
+                    card: this.card
                 }
                 })
                 .then(result => {
                     if (result.error) {
                         // Show error to your customer
-                        showError(result.error.message);
+                        this.showError(result.error.message);
                     } else {
                         // The payment succeeded!
-                        orderComplete(result.paymentIntent.id);
+                        this.orderComplete(result.paymentIntent.id);
                     }
                 });
-            };
-            /* ------- UI helpers ------- */
+        },
+        /* ------- UI helper methods ------- */
+        orderComplete: function(paymentIntentId){
             // Shows a success message when the payment is complete
-            var orderComplete = function(paymentIntentId) {
-                loading(false);
-                document
-                    .querySelector(".result-message a")
-                    .setAttribute(
-                    "href",
-                    "https://dashboard.stripe.com/test/payments/" + paymentIntentId
-                    );
-                document.querySelector(".result-message").classList.remove("hidden");
-                document.querySelector("button").disabled = true;
-                //show the success div and hide the card element
-                document.getElementById("success").classList.remove("hidden");
-                document.getElementById("payment-card").classList.add("hidden");
-            };
-
+            this.loading(false);
+            document
+                .querySelector(".result-message a")
+                .setAttribute(
+                "href",
+                "https://dashboard.stripe.com/test/payments/" + paymentIntentId
+                );
+            document.querySelector(".result-message").classList.remove("hidden");
+            document.querySelector("button").disabled = true;
+            // Show the success div, hide the card element, and display verificationId
+            this.showSuccess = true;
+            this.paymentVerification = paymentIntentId;
+            // Set the link on the start call button. Setting here as another safe guard from hacks.
+            //this.callLink = "/#";
+        },
+        showError: function(errorMsgText){
             // Show the customer the error from Stripe if their card fails to charge
-            var showError = function(errorMsgText) {
-                loading(false);
-                var errorMsg = document.querySelector("#card-errors");
-                errorMsg.textContent = errorMsgText;
-                setTimeout(function() {
-                    errorMsg.textContent = "";
-                }, 4000);
-            };
-
+            this.loading(false);
+            var errorMsg = document.querySelector("#card-errors");
+            errorMsg.textContent = errorMsgText;
+            setTimeout(function() {
+                errorMsg.textContent = "";
+            }, 4000);
+        },
+        loading: function(isLoading){
             // Show a spinner on payment submission
-            var loading = function(isLoading) {
-                if (isLoading) {
-                    // Disable the button and show a spinner
-                    document.querySelector("button").disabled = true;
-                    document.querySelector("#spinner").classList.remove("hidden");
-                    document.querySelector("#button-text").classList.add("hidden");
-                } else {
-                    document.querySelector("button").disabled = false;
-                    document.querySelector("#spinner").classList.add("hidden");
-                    document.querySelector("#button-text").classList.remove("hidden");
-                }
-            };
+            if (isLoading) {
+                // Disable the button and show a spinner
+                document.querySelector("button").disabled = true;
+                document.querySelector("#spinner").classList.remove("hidden");
+                document.querySelector("#button-text").classList.add("hidden");
+            } else {
+                document.querySelector("button").disabled = false;
+                document.querySelector("#spinner").classList.add("hidden");
+                document.querySelector("#button-text").classList.remove("hidden");
+            }
         }
     },
     watch: {
         selectedExpertId: function(id){
             this.selectedExpert = this.$store.getters.expertById(id);
+        },
+        drawer: function(e){
+            if(e == false){
+                this.card.unmount("#card-element");
+            }
         }
     },
 }
