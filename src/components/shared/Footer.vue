@@ -41,7 +41,7 @@
                 <h1>Support</h1>
                 <ul>
                     <router-link tag="li" :to="{ name: 'ContactUs' }">Contact Us</router-link>
-                    <li>Web chat</li>
+                    <li class="purechat-button-expand">Web Chat</li>
                     <li>Open ticket</li>
                 </ul>
             </div>
