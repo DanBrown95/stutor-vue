@@ -31,6 +31,19 @@ Vue.use(VueRouter)
     path: '/category/:id',
     name: 'Category',
     component: () => import('../views/SelectedCategory.vue'),
+  },
+  {
+    path: '/expert/register',
+    name: 'ExpertRegistration',
+    component: () => import('../views/expert/Register.vue'),
+    meta: {
+      requiresAuth: true
+    },
+  },
+  {
+    path: '/contactUs',
+    name: 'ContactUs',
+    component: () => import('../views/shared/ContactUs.vue'),
   }
 ]
 

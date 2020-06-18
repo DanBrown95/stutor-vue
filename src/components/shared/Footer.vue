@@ -13,7 +13,7 @@
                 <h1>Experts</h1>
                 <ul>
                     <li>Learn More</li>
-                    <li>Join Up</li>
+                    <router-link tag="li" :to="{ name: 'ExpertRegistration' }">Join Up</router-link>
                 </ul>
             </div>
             <div class="col">
@@ -40,7 +40,7 @@
             <div class="col">
                 <h1>Support</h1>
                 <ul>
-                    <li>Contact us</li>
+                    <router-link tag="li" :to="{ name: 'ContactUs' }">Contact Us</router-link>
                     <li>Web chat</li>
                     <li>Open ticket</li>
                 </ul>
@@ -68,7 +68,7 @@ export default {
 
     .footer {
   width: 100%;
-  position: relative;
+  /* position: relative; */
   height: auto;
   background-color: #DEA800;
 }
