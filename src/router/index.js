@@ -23,7 +23,7 @@ Vue.use(VueRouter)
     },
   },
   {
-    path: '/browse/',
+    path: '/browse',
     name: 'BrowseCategory',
     component: () => import('../views/BrowseCategories.vue'),
   },
@@ -44,6 +44,15 @@ Vue.use(VueRouter)
     path: '/contactUs',
     name: 'ContactUs',
     component: () => import('../views/shared/ContactUs.vue'),
+  },
+  {
+    path: '/legal/privacy-policy',
+    name: 'PrivacyPolicy',
+    component: () => import('../views/legal/PrivacyPolicy.vue'), 
+  },{
+    path: '/legal/terms-of-use',
+    name: 'TermsOfUse',
+    component: () => import('../views/legal/TermsOfUse.vue'),
   }
 ]
 

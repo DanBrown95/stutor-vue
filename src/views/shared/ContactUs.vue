@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="top" dense>
-            <div style="height: 40%; padding-top: 12%; padding-bottom: 4em;">
+        <div class="top">
+            <div style="padding-top: 12%; padding-bottom: 4em;">
                 <h1>Need Assistance?</h1>
                 <p>We're sorry you are having issues with our site. Feel free to drop us a line.</p>
             </div>
@@ -72,7 +72,7 @@ export default {
         padding-bottom: 5em;
     }
     .middle {
-        height: 600px;
+        /* height: 600px; */
     }
     .bottom {
         height: 500px;

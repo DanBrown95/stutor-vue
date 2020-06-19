@@ -1,60 +1,72 @@
 <template>
     <div class="main">
-        <h1 class="heading">Contact Us</h1>
-        <v-form @submit.prevent="onSubmit">
-            <v-container>
-                <v-row justify="center">
-                    <v-col cols="4">
-                        <v-text-field v-model="firstName" label="First Name" required 
-                                        @input="$v.firstName.$touch()" @blur="$v.firstName.$touch()"
-                                        :error-messages="firstNameErrors">
-                        </v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-text-field v-model="lastName" label="Last Name" required 
-                                        @input="$v.lastName.$touch()" @blur="$v.lastName.$touch()"
-                                        :error-messages="lastNameErrors">
-                        </v-text-field>
+        <div v-if="!messageSent">
+            <h1 class="heading">Contact Us</h1>
+            <v-form @submit.prevent="onSubmit">
+                <v-container>
+                    <v-row justify="center">
+                        <v-col cols="4">
+                            <v-text-field v-model="firstName" label="First Name" required 
+                                            @input="$v.firstName.$touch()" @blur="$v.firstName.$touch()"
+                                            :error-messages="firstNameErrors">
+                            </v-text-field>
+                        </v-col>
+                        <v-col cols="4">
+                            <v-text-field v-model="lastName" label="Last Name" required 
+                                            @input="$v.lastName.$touch()" @blur="$v.lastName.$touch()"
+                                            :error-messages="lastNameErrors">
+                            </v-text-field>
+                        </v-col>
+                    </v-row>
+                    <v-row justify="center">
+                        <v-col cols="4">
+                            <v-text-field v-model="email" label="Email" required 
+                                            @input="$v.email.$touch()" @blur="$v.email.$touch()"
+                                            :error-messages="emailErrors">
+                            </v-text-field>
+                        </v-col>
+                        <v-col cols="4">
+                            <v-select v-model="subject" :items="availableSubjects" label="Subject" required 
+                                        @input="$v.subject.$touch()" @blur="$v.subject.$touch()"
+                                        :error-messages="subjectErrors"
+                            ></v-select>
+                        </v-col>
+                    </v-row>
+                    <v-row justify="center">
+                        <v-col cols="4">
+                            <v-textarea v-model="message" label="Message" required 
+                                            @input="$v.message.$touch()" @blur="$v.message.$touch()"
+                                            :error-messages="messageErrors">
+                            </v-textarea>
+                        </v-col>
+                    </v-row>
+                </v-container>
+                <v-row justify="center" align="center">
+                    <v-col cols="1">
+                        <!-- <div id="recaptcha" class="g-recaptcha" data-sitekey="6LdVY6YZAAAAAKzj2aDl_Rbw1ctMc7MKdeBwLZL8" data-callback="submit" data-size="invisible"></div>
+                        <v-btn color="primary" @click="verify">Submit</v-btn> -->
+                        <vue-recaptcha
+                            ref="invisibleRecaptcha"
+                            @verify="onVerify"
+                            @expired="onExpired"
+                            size="invisible"
+                            :sitekey="sitekey">
+                        </vue-recaptcha>
+                        <v-btn color="primary" @click="verify">Submit</v-btn>
                     </v-col>
                 </v-row>
-                <v-row justify="center">
-                    <v-col cols="4">
-                        <v-text-field v-model="email" label="Email" required 
-                                        @input="$v.email.$touch()" @blur="$v.email.$touch()"
-                                        :error-messages="emailErrors">
-                        </v-text-field>
-                    </v-col>
-                    <v-col cols="4">
-                        <v-select v-model="subject" :items="availableSubjects" label="Subject" required 
-                                    @input="$v.subject.$touch()" @blur="$v.subject.$touch()"
-                                    :error-messages="subjectErrors"
-                        ></v-select>
-                    </v-col>
-                </v-row>
-                <v-row justify="center">
-                    <v-col cols="4">
-                        <v-textarea v-model="message" label="Message" required 
-                                        @input="$v.message.$touch()" @blur="$v.message.$touch()"
-                                        :error-messages="messageErrors">
-                        </v-textarea>
+            </v-form>
+        </div>
+        <div v-else style="height: 100%;">
+            <v-container style="position: relative; top: 45%;">
+                <v-row class="text-center">
+                    <v-col>
+                        <h2>Message Sent!</h2>
+                        <p>We will get back to as soon as possible.</p>
                     </v-col>
                 </v-row>
             </v-container>
-            <v-row justify="center" align="center">
-                <v-col cols="1">
-                    <!-- <div id="recaptcha" class="g-recaptcha" data-sitekey="6LdVY6YZAAAAAKzj2aDl_Rbw1ctMc7MKdeBwLZL8" data-callback="submit" data-size="invisible"></div>
-                    <v-btn color="primary" @click="verify">Submit</v-btn> -->
-                    <vue-recaptcha
-                        ref="invisibleRecaptcha"
-                        @verify="onVerify"
-                        @expired="onExpired"
-                        size="invisible"
-                        :sitekey="sitekey">
-                    </vue-recaptcha>
-                    <v-btn color="primary" @click="verify">Submit</v-btn>
-                </v-col>
-            </v-row>
-        </v-form>
+        </div>
     </div>    
 </template>
 
@@ -91,7 +103,8 @@ export default {
                 "Billing",
                 "Report a problem",
                 "Other"
-            ]
+            ],
+            messageSent: false
         }
     },
     computed: {
@@ -142,6 +155,27 @@ export default {
         onVerify: function (response) {
             console.log('Verified: ' + response);
             //send data to backend
+            var payload = {
+                firstName: this.firstName,
+                lastName: this.lastName,
+                subject: this.subject,
+                email: this.email,
+                message: this.message
+            }
+
+            fetch("https://localhost:44343/api/contact/SendEmailAsync", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(payload)
+                })
+            .then((response) => {
+                if(response.ok){
+                    this.messageSent = true;
+                }
+            });
+
         },
         onExpired: function () {
             this.$refs.invisibleRecaptcha.reset()
@@ -152,10 +186,15 @@ export default {
 
 <style scoped>
     .main {
-        margin-top: 2em;
+        height: 600px;
     }
 
     .heading {
+        margin-top: 2em;
         text-align: center;
+    }
+
+    h2 {
+        color: #DEA800;
     }
 </style>

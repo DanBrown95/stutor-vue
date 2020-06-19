@@ -5,8 +5,8 @@
                 <h1>Company</h1>
                 <ul>
                     <li>About</li>
-                    <li>Privacy Policy</li>
-                    <li>Terms Of Service</li>
+                    <router-link tag="li" :to="{name: 'PrivacyPolicy'}">Privacy Policy</router-link>
+                    <router-link tag="li" :to="{name: 'TermsOfUse'}">Terms of Service</router-link>
                 </ul>
             </div>
             <div class="col">
@@ -19,7 +19,6 @@
             <div class="col">
                 <h1>Accounts</h1>
                 <ul>
-                    <li>About</li>
                     <li>Mission</li>
                     <li>Services</li>
                     <li>Social</li>
@@ -42,13 +41,12 @@
                 <ul>
                     <router-link tag="li" :to="{ name: 'ContactUs' }">Contact Us</router-link>
                     <li class="purechat-button-expand">Web Chat</li>
-                    <li>Open ticket</li>
                 </ul>
             </div>
             <div class="col social">
                 <h1>Social</h1>
                 <ul>
-                    <li><a href="https://twitter.com"><img src="../../assets/social-media/twitter.png" width="32" style="width: 32px;"></a></li>
+                    <li><a href="https://twitter.com/Stutor9"><img src="../../assets/social-media/twitter.png" width="32" style="width: 32px;"></a></li>
                     <li><a href="https://www.facebook.com/Stutor-107227027650859"><img src="../../assets/social-media/facebook.png" width="32" style="width: 32px;"></a></li>
                     <li><a href="https://instagram.com"><img src="../../assets/social-media/instagram.png"  width="32" style="width: 32px;"></a></li>
                 </ul>

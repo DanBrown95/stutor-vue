@@ -387,9 +387,6 @@ export default {
                 if(response.ok){
                     fetch('https://localhost:44343/api/expert/Register', {
                         method: "POST",
-                        headers: {
-                            'content-type': 'application/json;',
-                        },
                         body: JSON.stringify(formData)
                     })
                     .then ((response) => {
