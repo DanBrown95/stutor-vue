@@ -3,7 +3,7 @@
         <div class="banner">
             <h1>{{topic.Name}}</h1>
         </div>
-        <experts id="experts" @expertSelected="expertSelected"/>
+        <experts id="experts" :TopicId="topic.Id" @expertSelected="expertSelected"/>
 
         <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">
             <v-list-item style="background-color: #385F73;">  
@@ -283,6 +283,7 @@ export default {
 <style scoped>
     .main {
         height: 940px;
+        background-color: #F7F8FC;
     }
 
     h1 {
@@ -310,5 +311,15 @@ export default {
 
     .hidden {
         display: none;
+    }
+</style>
+
+<style>
+    #txtUser {
+        color: #3F3B3B !important;
+    }
+
+    #btnLogout {
+        color: #3F3B3B !important;
     }
 </style>

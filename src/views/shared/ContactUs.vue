@@ -3,7 +3,7 @@
         <div class="top">
             <div style="padding-top: 12%; padding-bottom: 4em;">
                 <h1>Need Assistance?</h1>
-                <p>We're sorry you are having issues with our site. Feel free to drop us a line.</p>
+                <p>We're sorry you are having issues. Feel free to drop us a line.</p>
             </div>
             <div>
                 <div class="col-md-3 inline-block">
@@ -23,7 +23,7 @@
                     <div class="contact-info">
                         <p>Support</p><br>
                         <p>Ph: 319-540-5044</p>
-                        <p>Fax: 319-540-5044</p>
+                        <br/>
                         <br/>
                     </div>
                 </div>

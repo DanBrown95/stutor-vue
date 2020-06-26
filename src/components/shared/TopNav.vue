@@ -20,17 +20,18 @@
                         <div class="top-row">
                           <v-tooltip bottom>
                             <template v-slot:activator="{ on }">
-                              <img v-on="on" v-bind:src="$parent.$parent.user.picture">
+                              <!-- <img v-on="on" v-bind:src="$parent.$parent.user.picture"> -->
+                              <img v-on="on" src="../../assets/user-icon.png">
                             </template>
                             <span>{{$parent.$parent.user.email}}</span>
                           </v-tooltip>
                           <a href="#">Account</a>
                         </div>
-                        <a href="#">Order History</a>
+                        <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.Id }}">Order History</router-link>
                         <a href="#">Preferences</a>
                       </div>
                     </div>
-                    <v-btn class="ma-2" tile outlined small color="white" @click="logout">Log out</v-btn>
+                    <v-btn id="btnLogout" class="ma-2" tile outlined small color="white" @click="logout">Log out</v-btn>
                 </div>
             </div>
         </nav>

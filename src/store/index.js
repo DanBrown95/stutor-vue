@@ -93,6 +93,140 @@ export default new Vuex.Store({
         "Id": 1422,
         "Rating": 2,
         "Price": "6.50",
+      }],
+      topicExperts: [{
+        "topicId": 10,
+        "expertId": 2015
+      },{
+        "topicId": 10,
+        "expertId": 1422
+      }],
+      orders: [{
+        "id": 15348978452,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 458349568212,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 158676848452,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 459999765512,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 1534374845472,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 45837567576542,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 156886878452,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 458765678212,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 15345978452,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 4583495454612,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 15348978852,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 458349668212,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
+      },{
+        "id": 155675678452,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "6.50",
+        "status": "Unanswered",
+        "submitted": new Date,
+        "callLength": ""
+      },{
+        "id": 6464637674574,
+        "topicId": 10,
+        "expertId": 2015,
+        "clientId": "0oadanvcnLEDKn50V4x6",
+        "charge": "14.00",
+        "status": "Completed",
+        "submitted": new Date,
+        "callLength": "12m10s"
       }]
   },
   getters: {
@@ -113,11 +247,21 @@ export default new Vuex.Store({
     },
     expertById: (state) => (id) => {
       return state.experts.find(expert => expert.Id == id)
-    } 
-  },
-  mutations: {
-  },
-  actions: {
+    },
+    expertsByTopicId: (state) => (topicId) => {
+      const topicExperts = state.topicExperts.filter(topicExpert => topicExpert.topicId == topicId);
+      let experts = [];
+      topicExperts.forEach(element => {
+        experts.push(state.experts.find(expert => expert.Id == element.expertId));
+      });
+      return experts;
+    },
+    getUserOrdersTotal: (state) => (userId) => {
+      return state.orders.filter(order => order.clientId == userId).length;
+    },
+    getUserOrders: (state) => (userId, startIndex, count) => {
+      return state.orders.filter(order => order.clientId == userId).sort((a, b) => b.date - a.date).slice(startIndex, startIndex + count);
+    }
   },
   modules: {
   }

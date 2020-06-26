@@ -53,6 +53,13 @@ Vue.use(VueRouter)
     path: '/legal/terms-of-use',
     name: 'TermsOfUse',
     component: () => import('../views/legal/TermsOfUse.vue'),
+  },{
+    path: '/user/order-history',
+    name: 'OrderHistory',
+    component: () => import('../views/user/OrderHistory.vue'),
+    meta: {
+      requiresAuth: true
+    },
   }
 ]
 

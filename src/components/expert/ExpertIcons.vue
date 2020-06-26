@@ -13,12 +13,13 @@ import ExpertIcon from '@/components/expert/ExpertIcon.vue'
 
 export default {
     name: 'ExpertIcons',
+    props: ['TopicId'],
     components: {
         ExpertIcon
     },
     data() {
         return {
-            Experts: this.$store.getters.allExperts
+            Experts: this.$store.getters.expertsByTopicId(this.TopicId)
         }
     },
     methods: {
