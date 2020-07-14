@@ -28,10 +28,8 @@
             <div class="col">
                 <h1>Resources</h1>
                 <ul>
-                    <li>Webmail</li>
+                    <router-link tag="li" :to="{ name: 'TopicRequest' }">Request a topic</router-link>
                     <li>Redeem code</li>
-                    <li>WHOIS lookup</li>
-                    <li>Site map</li>
                     <li>Web templates</li>
                     <li>Email templates</li>
                 </ul>

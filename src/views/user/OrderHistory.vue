@@ -69,19 +69,20 @@ export default {
             this.currentPage = page;
         },
         async getUser(){ // Bad form but having issues accessing the global user property for its Id
-            this.user = await this.$auth.getUser();
+            const accessToken = await this.$auth.getAccessToken();
+            this.user = await this.$auth.getUser(accessToken);
         }
     },
     watch: {
         currentPage() {
             this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.Id, this.startIndex, this.ordersPerPage);
+            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage);
             this.loading = false;
         },
         user(){
             this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.Id, this.startIndex, this.ordersPerPage);
-            this.totalOrders = this.$store.getters.getUserOrdersTotal(this.user.Id);
+            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage);
+            this.totalOrders = this.$store.getters.getUserOrdersTotal(this.user.sub);
             this.loading = false;
         }
     }

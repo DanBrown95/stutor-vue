@@ -27,7 +27,7 @@
                           </v-tooltip>
                           <a href="#">Account</a>
                         </div>
-                        <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.Id }}">Order History</router-link>
+                        <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.sub }}">Order History</router-link>
                         <a href="#">Preferences</a>
                       </div>
                     </div>

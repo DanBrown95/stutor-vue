@@ -60,6 +60,13 @@ Vue.use(VueRouter)
     meta: {
       requiresAuth: true
     },
+  },{
+    path: '/resources/topic-request',
+    name: 'TopicRequest',
+    component: () => import('../views/topic/Request.vue'),
+    meta: {
+      requiresAuth: true
+    },
   }
 ]
 

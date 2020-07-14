@@ -1,8 +1,11 @@
 <template>
     <div>
         <div class="experts">
-            <div v-for="x in Experts" :key="x.Id" class="inline-block">
+            <div v-for="x in experts" :key="x.Id" class="inline-block">
                 <ExpertIcon :id="x.Id" :price="x.Price" :rating="x.Rating" @clicked="expertSelected"></ExpertIcon>
+            </div>
+            <div v-if="experts.length < 1">
+                <h2>There are no experts available for this topic at this time &#9785;</h2>
             </div>
         </div>
     </div>
@@ -19,7 +22,7 @@ export default {
     },
     data() {
         return {
-            Experts: this.$store.getters.expertsByTopicId(this.TopicId)
+            experts: this.$store.getters.expertsByTopicId(this.TopicId)
         }
     },
     methods: {

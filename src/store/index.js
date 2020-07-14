@@ -105,7 +105,7 @@ export default new Vuex.Store({
         "id": 15348978452,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -114,7 +114,7 @@ export default new Vuex.Store({
         "id": 458349568212,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -123,7 +123,7 @@ export default new Vuex.Store({
         "id": 158676848452,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -132,7 +132,7 @@ export default new Vuex.Store({
         "id": 459999765512,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -141,7 +141,7 @@ export default new Vuex.Store({
         "id": 1534374845472,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -150,7 +150,7 @@ export default new Vuex.Store({
         "id": 45837567576542,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -159,7 +159,7 @@ export default new Vuex.Store({
         "id": 156886878452,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -168,7 +168,7 @@ export default new Vuex.Store({
         "id": 458765678212,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -177,7 +177,7 @@ export default new Vuex.Store({
         "id": 15345978452,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -186,7 +186,7 @@ export default new Vuex.Store({
         "id": 4583495454612,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -195,7 +195,7 @@ export default new Vuex.Store({
         "id": 15348978852,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -204,7 +204,7 @@ export default new Vuex.Store({
         "id": 458349668212,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -213,7 +213,7 @@ export default new Vuex.Store({
         "id": 155675678452,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
         "submitted": new Date,
@@ -222,7 +222,7 @@ export default new Vuex.Store({
         "id": 6464637674574,
         "topicId": 10,
         "expertId": 2015,
-        "clientId": "0oadanvcnLEDKn50V4x6",
+        "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
         "submitted": new Date,
@@ -242,6 +242,9 @@ export default new Vuex.Store({
     topic: (state) => (id) => {
         return state.topics.find(topic => topic.Id == id)
     },
+    getTopicsWithSubstring: (state) => (substring) => {
+      return state.topics.filter(topic => topic.Name.toLowerCase().includes(substring.toLowerCase()))
+    },
     allExperts: state => {
       return state.experts
     },
@@ -257,10 +260,10 @@ export default new Vuex.Store({
       return experts;
     },
     getUserOrdersTotal: (state) => (userId) => {
-      return state.orders.filter(order => order.clientId == userId).length;
+      return state.orders.filter(order => order.userId == userId).length;
     },
     getUserOrders: (state) => (userId, startIndex, count) => {
-      return state.orders.filter(order => order.clientId == userId).sort((a, b) => b.date - a.date).slice(startIndex, startIndex + count);
+      return state.orders.filter(order => order.userId == userId).sort((a, b) => b.date - a.date).slice(startIndex, startIndex + count);
     }
   },
   modules: {

@@ -1,5 +1,7 @@
 <template>
     <div class="main">
+        <div class="banner">
+        </div>
         <v-container v-if="!submitted">
             <v-row dense class="justify-center">
                 <v-col cols="6" class="text-center">
@@ -212,6 +214,33 @@
                                 <v-file-input v-model="transcripts" accept=".doc,.docx,.pdf" multiple chips></v-file-input>
                             </v-col>
                         </v-row>
+
+                        <v-row>
+                            <v-col cols="3">
+                                <v-subheader>Certifications/Degrees: </v-subheader>
+                            </v-col>
+                            <v-col cols="9">
+                                <v-text-field v-model="certifications"></v-text-field>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col cols="3">
+                                <v-subheader>Years of Experience: </v-subheader>
+                            </v-col>
+                            <v-col cols="9" style="text-align: left;">
+                                    <VueNumberInput v-model="yearsOfExperience" :min="1" inline center controls ></VueNumberInput>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col cols="3">
+                                <v-subheader>Additional Notes: </v-subheader>
+                            </v-col>
+                            <v-col cols="9">
+                                <v-textarea v-model="notes" placeholder="Add any additional qualifications or useful notes for us to consider here."></v-textarea>
+                            </v-col>
+                        </v-row>
                         
                         <v-row>
                             <v-checkbox v-model="agreeToTerms" label="Do you agree to our Terms and Conditions?" :error-messages="agreeToTermsErrors" 
@@ -246,11 +275,13 @@
 import { validationMixin } from "vuelidate";
 import { required } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
+import VueNumberInput from '@chenfengyuan/vue-number-input';
 
 export default {
     name: 'expertRegistration',
     components: {
-        VueRecaptcha
+        VueRecaptcha,
+        VueNumberInput
     },
 
     mixins: [validationMixin],
@@ -283,10 +314,13 @@ export default {
             weehMenu: null,
             weekendEndHours: null,
 
+            certifications: "",
             linkedinUrl: null,
             websiteUrl: null,
             resumes: null,
             transcripts: null,
+            yearsOfExperience: 0,
+            notes: "",
             agreeToTerms: false,
 
             submitted: false
@@ -374,7 +408,10 @@ export default {
                 weekdayHours: this.weekdayStartHours + "-" + this.weekdayEndHours,
                 weekendHours: this.weekendStartHours + "-" + this.weekendEndHours,
                 websiteUrl: this.websiteUrl,
-                linkedinUrl: this.linkedinUrl
+                linkedinUrl: this.linkedinUrl,
+                certifications: this.certifications,
+                yearsOfExperience: this.yearsOfExperience,
+                notes: this.notes
             }            
             
             fetch("https://localhost:44343/api/expert/UploadDocuments", {
@@ -404,7 +441,9 @@ export default {
 </script>
 
 <style scoped>
-    .main {
+    .banner {
+        background-color: #DEA800;
+        height: 80px;
     }
 
     form {

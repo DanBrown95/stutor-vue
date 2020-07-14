@@ -35,7 +35,9 @@ export default {
       this.getUser();
     },
     async getUser() {
-      this.user = await this.$auth.getUser()
+      //this.user = await this.$auth.getUser()
+      const accessToken = await this.$auth.getAccessToken();
+      this.user = await this.$auth.getUser(accessToken);
     }
   }
 };
