@@ -18,7 +18,7 @@
             </div>
             <div v-else> <!-- Otherwise show records-->
                 <div v-for="order in orders" :key="order.Id">
-                    <Order :id="order.id" :status="order.status" :charge="order.charge" :topicId="order.topicId" :submitted="order.submitted" :callLength="order.callLength" />
+                    <Order :id="order.id" :status="order.status" :charge="order.charge" :topicId="order.topicId" :submitted="order.submitted" :clientPasskey="order.clientPasskey" />
                 </div>
                 <v-row justify="center">
                     <v-col cols="11">

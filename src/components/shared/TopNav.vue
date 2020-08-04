@@ -28,7 +28,7 @@
                           <a href="#">Account</a>
                         </div>
                         <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.sub }}">Order History</router-link>
-                        <a href="#">Preferences</a>
+                        <router-link :to="{name: 'Acknowledge'}">Acknowledge</router-link>
                       </div>
                     </div>
                     <v-btn id="btnLogout" class="ma-2" tile outlined small color="white" @click="logout">Log out</v-btn>

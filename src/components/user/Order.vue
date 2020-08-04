@@ -10,7 +10,7 @@
                     <h5>Topic: {{topic.Name}}</h5>
                     <h5>Charge: ${{charge}}</h5>
                     <h5>Submitted: {{formattedSubmitDate}}</h5>
-                    <h5>Call Time: {{callLength}}</h5>
+                    <h5>Passkey: {{clientPasskey}}</h5>
                 </v-col>
                 <hr>
             </v-row>
@@ -23,7 +23,7 @@ import moment from 'moment'
 
 export default {
     name: 'Order',
-    props: ['id', 'topicId', 'expertId', 'charge', 'status', 'submitted', 'callLength'],
+    props: ['id', 'topicId', 'expertId', 'charge', 'status', 'submitted', 'clientPasskey'],
     data(){
         return {
             topic: {}

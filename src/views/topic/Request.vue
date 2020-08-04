@@ -180,16 +180,15 @@ export default {
                 this.$refs.invisibleRecaptcha.execute()
             }
         },
-        onVerify: function (response) {
-            console.log('Verified: ' + response);
+        onVerify: function () {
             //send data to backend
             var payload = {
-                newTopicName: this.newTopicName,
+                name: this.newTopicName,
                 description: this.description,
-                selectedCategoryId: this.selectedCategoryId
+                categoryId: this.selectedCategoryId
             }
 
-            fetch("https://localhost:44343/api/topic/request", {
+            fetch("https://localhost:44343/api/topic/SubmitRequest", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

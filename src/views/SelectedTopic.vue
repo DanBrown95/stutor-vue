@@ -49,7 +49,7 @@
             </v-container>
 
             
-            <v-container>
+            <v-container style="display: none;">
                 <v-row class="justify-center">
                     <v-col cols="10">
                         <v-card color="#ECEBEB" dark flat>
@@ -91,7 +91,7 @@
                             <br />
                             <br />
                             <div>
-                                <v-btn :to="callLink" rounded outlined color="green darken-3">Start Call</v-btn>
+                                <p style="color: red;">You will recieve a text message with further instructions. Do not delete that message.</p>
                             </div>
                         </v-card>
                     </v-col>
@@ -103,7 +103,7 @@
 </template>
 
 <script>
-import router from '../router'
+// import router from '../router'
 import experts from '@/components/expert/ExpertIcons.vue'
 import card from "@/components/stripe/Card.vue";
 
@@ -115,6 +115,7 @@ export default {
     },
     data () {
         return {
+            user: {},
             topic: null,
             selectedExpertId: null,
             selectedExpert: {},
@@ -126,15 +127,17 @@ export default {
 
             showSuccess: false,
             paymentVerification: "",
-            callLink: "/#"
+            payloadSent: false
         }
     },
     created() {
         this.topic = this.$store.getters.topic(this.$route.params.id);
+        this.getUser();
     },
     methods: {
-        goBack() {
-            router.go(-1);
+        async getUser(){ // Bad form but having issues accessing the global user property for its Id
+            const accessToken = await this.$auth.getAccessToken();
+            this.user = await this.$auth.getUser(accessToken);
         },
         expertSelected: function(expertId) {
             this.selectedExpertId = expertId;
@@ -208,6 +211,7 @@ export default {
             // Calls stripe.confirmCardPayment
             // If the card requires authentication Stripe shows a pop-up modal to
             // prompt the user to enter authentication details without leaving your page.
+            document.getElementById("submit").disabled = true;
             this.loading(true);
             this.stripe
                 .confirmCardPayment(clientSecret, {
@@ -217,6 +221,7 @@ export default {
                 }
                 })
                 .then(result => {
+                    document.getElementById("submit").disabled = false;
                     if (result.error) {
                         // Show error to your customer
                         this.showError(result.error.message);
@@ -230,19 +235,29 @@ export default {
         orderComplete: function(paymentIntentId){
             // Shows a success message when the payment is complete
             this.loading(false);
-            document
-                .querySelector(".result-message a")
-                .setAttribute(
-                "href",
-                "https://dashboard.stripe.com/test/payments/" + paymentIntentId
-                );
-            document.querySelector(".result-message").classList.remove("hidden");
-            document.querySelector("button").disabled = true;
-            // Show the success div, hide the card element, and display verificationId
             this.showSuccess = true;
             this.paymentVerification = paymentIntentId;
-            // Set the link on the start call button. Setting here as another safe guard from hacks.
-            //this.callLink = "/#";
+            //Create the stutor call intent in the database.
+            var order = {
+                clientId: this.user.sub,
+                expertId: this.selectedExpertId,
+                topicId: this.topic.Id,
+                charge: this.selectedExpert.Price,
+                submitted: new Date
+            }
+            
+            fetch("https://localhost:44343/api/order/SubmitIntent", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(order)
+            })
+            .then((response) => {
+                if(response.ok){
+                    this.payloadSent = true;
+                }
+            });
         },
         showError: function(errorMsgText){
             // Show the customer the error from Stripe if their card fails to charge

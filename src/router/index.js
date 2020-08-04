@@ -67,6 +67,13 @@ Vue.use(VueRouter)
     meta: {
       requiresAuth: true
     },
+  },{
+    path: '/expert/acknowledge',
+    name: 'Acknowledge',
+    component: () => import('../views/expert/Acknowledgement.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 

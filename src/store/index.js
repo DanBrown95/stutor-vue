@@ -82,151 +82,179 @@ export default new Vuex.Store({
           "Name": "Java",
       }],
       experts: [{
-        "Id": 1026,
+        "Id": '1026',
         "Rating": 2,
         "Price": "6.50",
       },{
-        "Id": 2015,
+        "Id": '2015',
         "Rating": 5,
         "Price": "11.20",
       },{
-        "Id": 1422,
+        "Id": '1422',
         "Rating": 2,
         "Price": "6.50",
       }],
       topicExperts: [{
         "topicId": 10,
-        "expertId": 2015
+        "expertId": '2015'
       },{
         "topicId": 10,
-        "expertId": 1422
+        "expertId": '1422'
       }],
       orders: [{
-        "id": 15348978452,
+        "id": 15352,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "pineapple",
+        "expertPasskey": 'tomatoes',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 458349568212,
+        "id": 45812,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "bologna",
+        "expertPasskey": 'interesting',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 650
       },{
-        "id": 158676848452,
+        "id": 15852,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "salami",
+        "expertPasskey": 'robust',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 459999765512,
+        "id": 45992,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "hippopotamus",
+        "expertPasskey": 'sour',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 650
       },{
-        "id": 1534374845472,
+        "id": 15472,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "irreverent",
+        "expertPasskey": 'jumanji',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 650
       },{
-        "id": 45837567576542,
+        "id": 46542,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "matramony",
+        "expertPasskey": 'exquisite',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 650
       },{
-        "id": 156886878452,
+        "id": 15452,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "cylindrical",
+        "expertPasskey": 'forbiden',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 458765678212,
+        "id": 45812,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '00udanvuiR0zHzzzi4x6',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "patriarchy",
+        "expertPasskey": 'aristotle',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 650
       },{
-        "id": 15345978452,
+        "id": 15352,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "interesting",
+        "expertPasskey": 'unwind',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 4583495454612,
+        "id": 40612,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "inescapable",
+        "expertPasskey": 'polite',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 0
       },{
-        "id": 15348978852,
+        "id": 15312,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "portrait",
+        "expertPasskey": 'robot',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 458349668212,
+        "id": 45712,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "undefined",
+        "expertPasskey": 'vacation',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 0
       },{
-        "id": 155675678452,
+        "id": 15652,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '00udanvuiR0zHzzzi4x6',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
+        "clientPasskey": "inexcusable",
+        "expertPasskey": 'lampshade',
         "submitted": new Date,
-        "callLength": ""
+        "callLength": 0
       },{
-        "id": 6464637674574,
+        "id": 64674,
         "topicId": 10,
-        "expertId": 2015,
+        "expertId": '00udanvuiR0zHzzzi4x6',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
+        "clientPasskey": "indescribable",
+        "expertPasskey": 'wind',
         "submitted": new Date,
-        "callLength": "12m10s"
+        "callLength": 650
       }]
   },
   getters: {
@@ -264,6 +292,9 @@ export default new Vuex.Store({
     },
     getUserOrders: (state) => (userId, startIndex, count) => {
       return state.orders.filter(order => order.userId == userId).sort((a, b) => b.date - a.date).slice(startIndex, startIndex + count);
+    },
+    getExpertsOrders: (state) => (expertId) => {
+      return state.orders.filter(order => order.expertId === expertId).sort((a, b) => b.date - a.date);
     }
   },
   modules: {
