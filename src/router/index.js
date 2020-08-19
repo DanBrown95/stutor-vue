@@ -12,7 +12,10 @@ Vue.use(VueRouter)
   {
     path: '/',
     name: 'Main',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue')
+    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue'),
+    meta: {
+      requiresAuth: false
+    },
   },
   {
     path: '/topic/:id',
@@ -79,9 +82,9 @@ Vue.use(VueRouter)
 
 Vue.use(Auth, {
   issuer: 'https://dev-870310.okta.com/oauth2/default',
-  clientId: '0oadanvcnLEDKn50V4x6',
+  clientId: '0oap3ngm4mAP0SOV34x6',
   redirectUri: 'http://localhost:8080/implicit/callback',
-  scopes: ['openid', 'profile', 'email', 'phone'],
+  scopes: ['openid', 'profile', 'email', 'phone', 'groups'],
   pkce: true
 })
 

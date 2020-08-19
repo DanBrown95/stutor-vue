@@ -28,7 +28,7 @@
                           <a href="#">Account</a>
                         </div>
                         <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.sub }}">Order History</router-link>
-                        <router-link :to="{name: 'Acknowledge'}">Acknowledge</router-link>
+                        <router-link v-if="isExpert" :to="{name: 'Acknowledge'}">Acknowledge</router-link>
                       </div>
                     </div>
                     <v-btn id="btnLogout" class="ma-2" tile outlined small color="white" @click="logout">Log out</v-btn>
@@ -56,6 +56,14 @@ export default {
       this.$router.push({ path: '/' })
     }
   },
+  computed: {
+    isExpert: function() {
+      if(this.$parent.$parent.user.groups != null){
+        return this.$parent.$parent.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+      }
+      return false;
+    }
+  }
 };
 </script>
 

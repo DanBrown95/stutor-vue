@@ -76,12 +76,12 @@ export default {
     watch: {
         currentPage() {
             this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage);
+            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage).map(o => ({...o, clientPasskey: this.$store.getters.getClientPasskey(o.id)}) );
             this.loading = false;
         },
         user(){
             this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage);
+            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage).map(o => ({...o, clientPasskey: this.$store.getters.getClientPasskey(o.id)}) );
             this.totalOrders = this.$store.getters.getUserOrdersTotal(this.user.sub);
             this.loading = false;
         }
@@ -98,7 +98,7 @@ export default {
     .header {
         display:flex;
         align-items: center;
-        height: 120px;
+        height: 80px;
         background-color: #EDC7B7;
     }
 

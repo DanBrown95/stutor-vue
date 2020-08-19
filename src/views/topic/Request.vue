@@ -172,7 +172,6 @@ export default {
         },
         verify () {
             this.$v.$touch();
-            console.log("verifying");
             if (this.$v.$invalid) {
                 console.log("form invalid")
             } else {

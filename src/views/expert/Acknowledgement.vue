@@ -1,5 +1,8 @@
 <template>
     <div>
+        <div class="header">
+
+        </div>
         <v-container>
             <v-row dense class="justify-center">
                 <v-col cols="10" class="text-center">
@@ -25,9 +28,19 @@
                                 small
                                 class="mr-2"
                                 @click="editItem(item)"
+                                color="red"
                             >
                                 mdi-pencil
                             </v-icon>
+                        </template>
+
+                        <template v-slot:header.actions="{ header }">
+                            <v-tooltip bottom>
+                                <template v-slot:activator="{ on }">
+                                    <span v-on="on">{{header.text}}</span>
+                                </template>
+                                <span>Click the pencil icon to add the passkey. These are required to verify the call and submit payments</span>
+                            </v-tooltip>
                         </template>
                         
                         <!-- The edit passkeys modal -->
@@ -36,7 +49,7 @@
                                 <v-dialog v-model="dialog" max-width="500px">
                                     <v-card>
                                         <v-card-title>
-                                        <span class="headline">Edit Passkeys</span>
+                                        <span class="headline">Edit Passkey</span>
                                         </v-card-title>
 
                                         <v-card-text>
@@ -45,9 +58,9 @@
                                                     <v-col cols="12" sm="6" md="4">
                                                         <v-text-field v-model="editedItem.clientPasskey" label="Client Passkey"></v-text-field>
                                                     </v-col>
-                                                    <v-col cols="12" sm="6" md="4">
-                                                        <v-text-field v-model="editedItem.expertPasskey" label="Expert Passkey"></v-text-field>
-                                                    </v-col>
+                                                    <!-- <v-col cols="12" sm="6" md="4">
+                                                        <v-text-field v-model="editedItem.expertPasskey" label="Expert Passkey" disabled></v-text-field>
+                                                    </v-col> -->
                                                 </v-row>
                                             </v-container>
                                         </v-card-text>
@@ -97,14 +110,8 @@ export default {
                 },{
                     text: 'Payment',
                     value: 'charge',
-                },{
-                    text: 'Client Passkey',
-                    value: 'clientPasskey',
-                },{
-                    text: 'Expert Passkey',
-                    value: 'expertPasskey',
                 },{ 
-                    text: 'Actions', 
+                    text: 'Verify Call', 
                     value: 'actions', 
                     sortable: false 
                 }
@@ -113,11 +120,7 @@ export default {
             editedIndex: -1,
             editedItem: {
                 id: '',
-                submitted: null,
                 clientPasskey: '',
-                expertPasskey: '',
-                userId: '',
-                expertId: ''
             }
         }
     },
@@ -155,19 +158,20 @@ export default {
             this.editedIndex = -1
             })
         },
-        save () {
+        async save () {
             if (this.editedIndex > -1) {
-
+                const accessToken = await this.$auth.getAccessToken();
                 fetch("https://localhost:44343/api/order/SubmitPasskeys", {
                     method: "POST",
                     headers: {
+                        "Authorization": `Bearer ${accessToken}`,
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify(this.editedItem)
                 })
                 .then((response) => {
                     if(response.ok){
-                        console.log("passkeys saved");
+                        console.log("passkey saved");
                     }
                 });
 
@@ -191,12 +195,15 @@ export default {
     watch: {
         user: function(user){
             //Get the orders and get the topic name from the Id and format the submitted date
-            this.orders = this.$store.getters.getExpertsOrders(user.sub).map(o => ({...o, topicName: this.$store.getters.topic(o.topicId).Name}) );
+            this.orders = this.$store.getters.getExpertsOrders(user.sub).map(o => ({...o, topicName: this.$store.getters.topic(o.topicId).Name }) );
         }
     }
 }
 </script>
 
 <style scoped>
-
+    .header {
+        height: 80px;
+        background-color: #DEA800;
+    }
 </style>

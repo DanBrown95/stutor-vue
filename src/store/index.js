@@ -108,8 +108,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "pineapple",
-        "expertPasskey": 'tomatoes',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -119,8 +117,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "bologna",
-        "expertPasskey": 'interesting',
         "submitted": new Date,
         "callLength": 650
       },{
@@ -130,8 +126,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "salami",
-        "expertPasskey": 'robust',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -141,8 +135,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "hippopotamus",
-        "expertPasskey": 'sour',
         "submitted": new Date,
         "callLength": 650
       },{
@@ -152,8 +144,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "irreverent",
-        "expertPasskey": 'jumanji',
         "submitted": new Date,
         "callLength": 650
       },{
@@ -163,8 +153,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "matramony",
-        "expertPasskey": 'exquisite',
         "submitted": new Date,
         "callLength": 650
       },{
@@ -174,30 +162,24 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "cylindrical",
-        "expertPasskey": 'forbiden',
         "submitted": new Date,
         "callLength": 0
       },{
-        "id": 45812,
+        "id": 63548,
         "topicId": 10,
         "expertId": '00udanvuiR0zHzzzi4x6',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "patriarchy",
-        "expertPasskey": 'aristotle',
         "submitted": new Date,
         "callLength": 650
       },{
-        "id": 15352,
+        "id": 62538,
         "topicId": 10,
         "expertId": '2015',
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "interesting",
-        "expertPasskey": 'unwind',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -207,8 +189,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "inescapable",
-        "expertPasskey": 'polite',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -218,8 +198,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "portrait",
-        "expertPasskey": 'robot',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -229,8 +207,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "undefined",
-        "expertPasskey": 'vacation',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -240,8 +216,6 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "6.50",
         "status": "Unanswered",
-        "clientPasskey": "inexcusable",
-        "expertPasskey": 'lampshade',
         "submitted": new Date,
         "callLength": 0
       },{
@@ -251,10 +225,51 @@ export default new Vuex.Store({
         "userId": "00udanvuiR0zHzzzi4x6",
         "charge": "14.00",
         "status": "Completed",
-        "clientPasskey": "indescribable",
-        "expertPasskey": 'wind',
         "submitted": new Date,
         "callLength": 650
+      }],
+      orderPasskeys: [{
+        "orderId": 15352,
+        "clientPasskey": "pineapple"
+      },{
+        "orderId": 45812,
+        "clientPasskey": "bologna"
+      },{
+        "orderId": 15852,
+        "clientPasskey": "salami"
+      },{
+        "orderId": 45992,
+        "clientPasskey": "hippopotamus"
+      },{
+        "orderId": 15472,
+        "clientPasskey": "irreverent"
+      },{
+        "orderId": 46542,
+        "clientPasskey": "matramony"
+      },{
+        "orderId": 15452,
+        "clientPasskey": "cylindrical"
+      },{
+        "orderId": 63548,
+        "clientPasskey": "patriarchy"
+      },{
+        "orderId": 62538,
+        "clientPasskey": "interesting"
+      },{
+        "orderId": 40612,
+        "clientPasskey": "inescapable"
+      },{
+        "orderId": 15312,
+        "clientPasskey": "portrait"
+      },{
+        "orderId": 45712,
+        "clientPasskey": "undefined"
+      },{
+        "orderId": 15652,
+        "clientPasskey": "inexcusable"
+      },{
+        "orderId": 64674,
+        "clientPasskey": "indescribable"
       }]
   },
   getters: {
@@ -295,6 +310,9 @@ export default new Vuex.Store({
     },
     getExpertsOrders: (state) => (expertId) => {
       return state.orders.filter(order => order.expertId === expertId).sort((a, b) => b.date - a.date);
+    },
+    getClientPasskey: (state) => (_orderId) => {
+      return state.orderPasskeys.find(order => order.orderId == _orderId).clientPasskey;
     }
   },
   modules: {

@@ -4,7 +4,7 @@
         </div>
         <v-container v-if="!submitted">
             <v-row dense class="justify-center">
-                <v-col cols="6" class="text-center">
+                <v-col cols="10" class="text-center">
                     <v-form @submit.prevent="onSubmit">
 
                         <v-row>
@@ -181,6 +181,25 @@
 
                         <v-row>
                             <v-col cols="3">
+                                <v-subheader>* Timezone</v-subheader>
+                            </v-col>
+                            <v-col cols="9">
+                                <v-select
+                                    v-model="selectedTimezone"
+                                    :items="tz_timezones"
+                                    menu-props="auto"
+                                    label="Select your local timezone"
+                                    value="value"
+                                    prepend-icon="mdi-earth"
+                                    single-line
+                                    :error-messages="timezoneErrors" 
+                                    @change="$v.selectedTimezone.$touch()" @blur="$v.selectedTimezone.$touch()" required
+                                ></v-select>
+                            </v-col>
+                        </v-row>
+
+                        <v-row>
+                            <v-col cols="3">
                                 <v-subheader>Linkedin Url: </v-subheader>
                             </v-col>
                             <v-col cols="9">
@@ -288,6 +307,7 @@ export default {
 
     validations: {
         selectedTopic: { required },
+        selectedTimezone: { required },
         resumes: { required },
         agreeToTerms: {
             checked (val) {
@@ -314,6 +334,32 @@ export default {
             weehMenu: null,
             weekendEndHours: null,
 
+            tz_timezones: [
+                {
+                    text: '	Hawaii Standard Time',
+                    value: 'Pacific/Honolulu',
+                },{
+                    text: 'Alaska Daylight Time',
+                    value: 'America/Anchorage',
+                },{
+                    text: 'Pacific Daylight Time',
+                    value: 'America/Los_Angeles',
+                },{
+                    text: 'Mountain Standard Time (MST)',
+                    value: 'America/Phoenix',
+                },{ 
+                    text: 'Mountain Daylight Time (MDT)', 
+                    value: 'America/Denver',
+                },{
+                    text: 'Central Time (US and Canada)',
+                    value: 'America/Chicago'
+                },{
+                    text: 'Eastern Daylight Time',
+                    value: 'America/New_York'
+                }
+            ],
+            selectedTimezone: null,
+
             certifications: "",
             linkedinUrl: null,
             websiteUrl: null,
@@ -332,6 +378,7 @@ export default {
     computed: {
         formValid () {
             var topicValid = (this.selectedTopic != null)
+            var timezoneValid = (this.selectedTimezone != null && this.selectedTimezone != '')
             var daysValid = (this.selectedDays != [] && this.selectedDays.length > 0)
             var weekdayTimesValid = true;
             if (this.weekdaysSelected){
@@ -343,7 +390,7 @@ export default {
             }
             var resumeValid = (this.resumes != null && this.resumes.length > 0)
             var checkboxValid = this.agreeToTerms
-            return (topicValid && daysValid && weekdayTimesValid && weekendTimesValid && resumeValid && checkboxValid);
+            return (topicValid && timezoneValid && daysValid && weekdayTimesValid && weekendTimesValid && resumeValid && checkboxValid);
         },
         weekdaysSelected: function() {
             var weekdays = ["MON","TUE","WED","THU","FRI"]
@@ -363,6 +410,12 @@ export default {
             const errors = []
             if(!this.$v.selectedTopic.$dirty) return errors
             !this.$v.selectedTopic.required && errors.push("Topic is required")
+            return errors
+        },
+        timezoneErrors () {
+            const errors = []
+            if(!this.$v.selectedTimezone.$dirty) return errors
+            !this.$v.selectedTimezone.required && errors.push("Timezone is required")
             return errors
         },
         resumeErrors () {
