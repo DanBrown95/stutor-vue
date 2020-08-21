@@ -99,6 +99,7 @@
             </v-container>
 
       </v-navigation-drawer>
+        <v-btn rounded color="blue lighten-3" @click="back" id="btn-back">Back</v-btn>
     </div>
 </template>
 
@@ -135,6 +136,9 @@ export default {
         this.getUser();
     },
     methods: {
+        back() {
+            history.back();
+        },
         async getUser(){ // Bad form but having issues accessing the global user property for its Id
             const accessToken = await this.$auth.getAccessToken();
             this.user = await this.$auth.getUser(accessToken);
@@ -297,7 +301,7 @@ export default {
 
 <style scoped>
     .main {
-        height: 940px;
+        min-height: 100vh;
         background-color: #F7F8FC;
     }
 
@@ -327,14 +331,10 @@ export default {
     .hidden {
         display: none;
     }
-</style>
 
-<style>
-    #txtUser {
-        color: #3F3B3B !important;
-    }
-
-    #btnLogout {
-        color: #3F3B3B !important;
+    #btn-back {
+        position: fixed;
+        bottom: 5%;
+        left: 2%;
     }
 </style>

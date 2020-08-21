@@ -1,6 +1,6 @@
 <template>
   <v-app>
-    <TopNav />
+    <TopNav :class="{ 'color-nav': colorNav }"/>
     <v-content>
       <router-view></router-view>
     </v-content>
@@ -21,13 +21,17 @@ export default {
   data: function () {
     return { 
       authenticated: false, 
-      user: {} 
+      user: {},
+      colorNav: true
     }
   },
   created () { this.isAuthenticated() },
   watch: {
     // Everytime the route changes, check for auth status
-    '$route': 'isAuthenticated'
+    '$route'() {
+      this.isAuthenticated();
+      this.colorNav = (this.$route.meta.colorNav === true);
+    }    
   },
   methods: {
     async isAuthenticated () {

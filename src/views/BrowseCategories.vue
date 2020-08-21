@@ -68,10 +68,10 @@ export default {
         background-image: url("../assets/categories-banner.png");
         background-repeat: no-repeat;
         background-size: cover;
-        height: 940px;
+        min-height: 100vh;
     }
 
     .main {
-        padding: 7em 0;
+        padding-top: 5%;
     }
 </style>

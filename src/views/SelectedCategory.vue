@@ -3,6 +3,7 @@
         <div class="main">
             <ListWithSearch :fullArray="topics" @listSelectedItem="setTopic" />
         </div>
+        <v-btn rounded color="blue lighten-3" @click="back" id="btn-back">Back</v-btn>
     </div>
 </template>
 
@@ -28,6 +29,9 @@ export default {
     methods: {
         setTopic (topic) {
             this.selectedTopic = topic;
+        },
+        back(){
+            history.back();
         }
     },
     watch: {
@@ -42,7 +46,7 @@ export default {
     .banner {
         background: url('../assets/topics-banner.jpg');
         background-size:cover;
-        height: 940px;
+        min-height: 100vh;
     }
 
     .main {
@@ -52,5 +56,11 @@ export default {
     .items-visible {
         position: relative;
         float: right;
+    }
+
+    #btn-back {
+        position: fixed;
+        left: 2%;
+        bottom: 5%;
     }
 </style>

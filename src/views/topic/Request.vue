@@ -238,7 +238,7 @@ export default {
 
 <style scoped>
     .main {
-        height: 940px;
+        min-height: 100vh;
         background-color: #80AFBA;
     }
 

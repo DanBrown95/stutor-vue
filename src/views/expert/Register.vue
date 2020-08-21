@@ -334,30 +334,7 @@ export default {
             weehMenu: null,
             weekendEndHours: null,
 
-            tz_timezones: [
-                {
-                    text: '	Hawaii Standard Time',
-                    value: 'Pacific/Honolulu',
-                },{
-                    text: 'Alaska Daylight Time',
-                    value: 'America/Anchorage',
-                },{
-                    text: 'Pacific Daylight Time',
-                    value: 'America/Los_Angeles',
-                },{
-                    text: 'Mountain Standard Time (MST)',
-                    value: 'America/Phoenix',
-                },{ 
-                    text: 'Mountain Daylight Time (MDT)', 
-                    value: 'America/Denver',
-                },{
-                    text: 'Central Time (US and Canada)',
-                    value: 'America/Chicago'
-                },{
-                    text: 'Eastern Daylight Time',
-                    value: 'America/New_York'
-                }
-            ],
+            tz_timezones: [],
             selectedTimezone: null,
 
             certifications: "",
@@ -374,6 +351,7 @@ export default {
     },
     mounted() {
         this.topics = this.$store.getters.allTopics;
+        this.tz_timezones = this.$store.getters.getTimezones;
     },
     computed: {
         formValid () {
@@ -496,7 +474,7 @@ export default {
 <style scoped>
     .banner {
         background-color: #DEA800;
-        height: 80px;
+        height: 62px;
     }
 
     form {

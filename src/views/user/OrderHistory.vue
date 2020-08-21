@@ -91,15 +91,15 @@ export default {
 
 <style scoped>
     .main {
-        min-height: 700px;
+        min-height: 100vh;
         padding-bottom: 2em;
     }
 
     .header {
         display:flex;
         align-items: center;
-        height: 80px;
-        background-color: #EDC7B7;
+        height: 62px;
+        background-color: #DEA800;
     }
 
     #no-orders-row {

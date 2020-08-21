@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="main">
         <div class="header">
 
         </div>
@@ -203,7 +203,11 @@ export default {
 
 <style scoped>
     .header {
-        height: 80px;
+        height: 62px;
         background-color: #DEA800;
+    }
+
+    .main {
+        min-height: 100vh;
     }
 </style>

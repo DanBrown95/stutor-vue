@@ -25,13 +25,13 @@
                             </template>
                             <span>{{$parent.$parent.user.email}}</span>
                           </v-tooltip>
-                          <a href="#">Account</a>
+                          <router-link :to="{name: 'UserAccount'}">Account</router-link>
                         </div>
                         <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.sub }}">Order History</router-link>
                         <router-link v-if="isExpert" :to="{name: 'Acknowledge'}">Acknowledge</router-link>
                       </div>
                     </div>
-                    <v-btn id="btnLogout" class="ma-2" tile outlined small color="white" @click="logout">Log out</v-btn>
+                    <v-btn id="btnLogout" class="ma-2" tile outlined small @click="logout">Log out</v-btn>
                 </div>
             </div>
         </nav>
@@ -68,6 +68,21 @@ export default {
 </script>
 
 <style scoped>
+
+  /* colored variant */
+
+  .color-nav #txtUser {
+    color: #DEA800;
+  }
+
+  .color-nav #btnLogout {
+    color: #DEA800;
+  }
+
+  .color-nav .user-dropdown:hover #txtUser {color: rgb(199, 174, 36);} 
+
+  /* Transparent Variant */
+
   .inline-block {
       display: inline-block;
   }
@@ -75,6 +90,10 @@ export default {
   #auth {
       margin: .5em 1em 0px 0px;
       float: right;
+  }
+
+  #btnLogout {
+    color: white;
   }
 
   #nav {
@@ -141,7 +160,7 @@ export default {
   }
 
   /* Top link (rounded top right corner) */
-  .user-dropdown-content .top-row a:hover {background-color: #ddd; border-radius:0 11% 0 0;}
+  .user-dropdown-content .top-row a:hover {background-color: #ddd; border-radius:11% 11% 0 0;}
 
   /* Last link (rounded bottom corners) */
   .user-dropdown-content > a:hover:last-child {background-color: #ddd; border-radius:0 0 11% 11%;}

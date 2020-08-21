@@ -5,6 +5,30 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    tz_timezones: [
+      {
+          text: '	Hawaii Standard Time',
+          value: 'Pacific/Honolulu',
+      },{
+          text: 'Alaska Daylight Time',
+          value: 'America/Anchorage',
+      },{
+          text: 'Pacific Daylight Time',
+          value: 'America/Los_Angeles',
+      },{
+          text: 'Mountain Standard Time (MST)',
+          value: 'America/Phoenix',
+      },{ 
+          text: 'Mountain Daylight Time (MDT)', 
+          value: 'America/Denver',
+      },{
+          text: 'Central Time (US and Canada)',
+          value: 'America/Chicago'
+      },{
+          text: 'Eastern Daylight Time',
+          value: 'America/New_York'
+      }
+    ],
     categories: [
       {
           "Id": 1,
@@ -85,14 +109,17 @@ export default new Vuex.Store({
         "Id": '1026',
         "Rating": 2,
         "Price": "6.50",
+        "Timezone": "America/Chicago"
       },{
         "Id": '2015',
         "Rating": 5,
         "Price": "11.20",
+        "Timezone": "America/Los_Angeles"
       },{
         "Id": '1422',
         "Rating": 2,
         "Price": "6.50",
+        "Timezone": "America/New_York"
       }],
       topicExperts: [{
         "topicId": 10,
@@ -273,6 +300,9 @@ export default new Vuex.Store({
       }]
   },
   getters: {
+    getTimezones: state => {
+      return state.tz_timezones
+    },
     allCategories: state => {
       return state.categories
     },
@@ -301,6 +331,12 @@ export default new Vuex.Store({
         experts.push(state.experts.find(expert => expert.Id == element.expertId));
       });
       return experts;
+    },
+    getExpertTopics: (state) => (userId) => {
+      return state.topicExperts.filter(topicExpert => topicExpert.expertId == userId);
+    },
+    getExpertTimezone: (state) => (userId) => {
+      return state.experts.find(expert => expert.Id == userId).Timezone;
     },
     getUserOrdersTotal: (state) => (userId) => {
       return state.orders.filter(order => order.userId == userId).length;

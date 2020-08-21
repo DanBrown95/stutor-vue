@@ -22,7 +22,8 @@ Vue.use(VueRouter)
     name: 'Topic',
     component: () => import('../views/SelectedTopic.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      colorNav: true
     },
   },
   {
@@ -47,15 +48,24 @@ Vue.use(VueRouter)
     path: '/contactUs',
     name: 'ContactUs',
     component: () => import('../views/shared/ContactUs.vue'),
+    meta: {
+      colorNav: true
+    }
   },
   {
     path: '/legal/privacy-policy',
     name: 'PrivacyPolicy',
-    component: () => import('../views/legal/PrivacyPolicy.vue'), 
+    component: () => import('../views/legal/PrivacyPolicy.vue'),
+    meta: {
+      colorNav: true
+    }
   },{
     path: '/legal/terms-of-use',
     name: 'TermsOfUse',
     component: () => import('../views/legal/TermsOfUse.vue'),
+    meta: {
+      colorNav: true
+    }
   },{
     path: '/user/order-history',
     name: 'OrderHistory',
@@ -77,6 +87,10 @@ Vue.use(VueRouter)
     meta: {
       requiresAuth: true
     }
+  },{
+    path: '/user/account',
+    name: 'UserAccount',
+    component: () => import('../views/user/Account.vue')
   }
 ]
 
