@@ -27,7 +27,7 @@
                           </v-tooltip>
                           <router-link :to="{name: 'UserAccount'}">Account</router-link>
                         </div>
-                        <router-link :to="{name: 'OrderHistory', params: { userId: $parent.$parent.user.sub }}">Order History</router-link>
+                        <router-link :to="{name: 'OrderHistory'}">Order History</router-link>
                         <router-link v-if="isExpert" :to="{name: 'Acknowledge'}">Acknowledge</router-link>
                       </div>
                     </div>

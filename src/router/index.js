@@ -90,7 +90,10 @@ Vue.use(VueRouter)
   },{
     path: '/user/account',
     name: 'UserAccount',
-    component: () => import('../views/user/Account.vue')
+    component: () => import('../views/user/Account.vue'),
+    meta: {
+      requiresAuth: true
+    }
   }
 ]
 

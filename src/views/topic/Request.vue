@@ -179,7 +179,7 @@ export default {
                 this.$refs.invisibleRecaptcha.execute()
             }
         },
-        onVerify: function () {
+        async onVerify() {
             //send data to backend
             var payload = {
                 name: this.newTopicName,
@@ -187,10 +187,12 @@ export default {
                 categoryId: this.selectedCategoryId
             }
 
+            const accessToken = await this.$auth.getAccessToken();
             fetch("https://localhost:44343/api/topic/SubmitRequest", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(payload)
                 })

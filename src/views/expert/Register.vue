@@ -418,7 +418,7 @@ export default {
         onExpired: function () {
             this.$refs.invisibleRecaptcha.reset()
         },
-        submit(recaptchaResponse) {
+        async submit(recaptchaResponse) {
             console.log("captcha response", recaptchaResponse);
             var documents = new FormData()
             for (let index = 0; index < this.resumes.length; index++) {
@@ -445,16 +445,22 @@ export default {
                 notes: this.notes
             }            
             
+            const accessToken = await this.$auth.getAccessToken();
             fetch("https://localhost:44343/api/expert/UploadDocuments", {
                 method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${accessToken}`
+                },
                 body: documents
             })
             .then( (response) => {
                 console.log("posted documents:", response);
-
                 if(response.ok){
                     fetch('https://localhost:44343/api/expert/Register', {
                         method: "POST",
+                        headers: {
+                            "Authorization": `Bearer ${accessToken}`,
+                        },
                         body: JSON.stringify(formData)
                     })
                     .then ((response) => {

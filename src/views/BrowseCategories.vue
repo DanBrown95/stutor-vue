@@ -12,16 +12,19 @@
                 <v-btn @click="back">Back</v-btn>
             </v-container>
         </div>
+        <ButtonBack/>
     </div>
 </template>
 
 <script>
-import ListWithSearch from "@/components/useful/ListWithSearch.vue";
+import ListWithSearch from "@/components/utils/ListWithSearch.vue";
+import ButtonBack from "@/components/utils/ButtonBack.vue";
 
 export default {
     name: 'browseCategories',
     components: {
-        ListWithSearch
+        ListWithSearch,
+        ButtonBack
     },
     data () {
         return {
@@ -35,9 +38,21 @@ export default {
         }
     },
     created() {
-        this.categories = this.$store.getters.allCategories;
+        this.fetchCategories();
     },
     methods: {
+        async fetchCategories(){
+            fetch("https://localhost:44343/api/category/GetAll", {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json"
+                }
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                this.categories = jsonData;
+            });
+        },
         selectCategory(item) {
             this.selectedCategory = item;
             this.searchReset = false;
@@ -53,11 +68,21 @@ export default {
     watch: {
         selectedCategory: function () {
             if(this.selectedCategory){
-                this.topics = this.$store.getters.topics(this.selectedCategory.Id);
+                fetch("https://localhost:44343/api/topic/GetTopicsByCategory", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: this.selectedCategory.id
+                })
+                .then(response => response.json())
+                .then(jsonData => {
+                    this.topics = jsonData;
+                });
             }
         },
         selectedTopic: function() {
-            this.$router.push({name: 'Topic', params: {id: this.selectedTopic.Id} });
+            this.$router.push({name: 'Topic', params: {id: this.selectedTopic.id} });
         }
     }
 }

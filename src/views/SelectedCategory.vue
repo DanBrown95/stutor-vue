@@ -1,19 +1,21 @@
 <template>
     <div class="banner">
         <div class="main">
-            <ListWithSearch :fullArray="topics" @listSelectedItem="setTopic" />
+            <ListWithSearch v-if="topics" :fullArray="topics" @listSelectedItem="setTopic" />
         </div>
-        <v-btn rounded color="blue lighten-3" @click="back" id="btn-back">Back</v-btn>
+        <ButtonBack/>
     </div>
 </template>
 
 <script>
-import ListWithSearch from "@/components/useful/ListWithSearch.vue";
+import ListWithSearch from "@/components/utils/ListWithSearch.vue";
+import ButtonBack from "@/components/utils/ButtonBack.vue";
 
 export default {
     name: 'selectedCategory',
     components: {
-        ListWithSearch
+        ListWithSearch,
+        ButtonBack
     },
     data () {
         return {
@@ -24,19 +26,29 @@ export default {
     },
     created() {
         this.categoryId = this.$route.params.id;
-        this.topics = this.$store.getters.topics(this.categoryId);
+        this.fetchTopics();
     },
     methods: {
+        async fetchTopics() {
+            fetch("https://localhost:44343/api/topic/GetTopicsByCategory", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: this.categoryId
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                this.topics = jsonData;
+            });
+        },
         setTopic (topic) {
             this.selectedTopic = topic;
-        },
-        back(){
-            history.back();
         }
     },
     watch: {
         selectedTopic: function () {
-            this.$router.push({name: 'Topic', params: {id: this.selectedTopic.Id} });
+            this.$router.push({name: 'Topic', params: {id: this.selectedTopic.id} });
         }
     }
 }
@@ -56,11 +68,5 @@ export default {
     .items-visible {
         position: relative;
         float: right;
-    }
-
-    #btn-back {
-        position: fixed;
-        left: 2%;
-        bottom: 5%;
     }
 </style>

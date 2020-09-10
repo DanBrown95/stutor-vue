@@ -15,12 +15,16 @@
                             <v-chip :color="getStatusColor(item.status)">{{item.status}}</v-chip>
                         </template>
 
+                        <template v-slot:item.topicName="{ item }">
+                            <span>{{item.topic.name}}</span>
+                        </template>
+
                         <template v-slot:item.callLength="{ item }">
                             <span>{{item.callLength | secondsAsReadableString}}</span>
                         </template>
 
                         <template v-slot:item.charge="{ item }">
-                            <span>${{item.charge}}</span>
+                            <span>${{item.charge.toFixed(2)}}</span>
                         </template>
 
                         <template v-slot:item.actions="{ item }">
@@ -85,12 +89,13 @@
 
 <script>
 import moment from 'moment'
+import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js'
 
 export default {
     name: "Acknowledgment",
+    props: ['user'],
     data(){
         return {
-            user: {},
             orders: [],
             headers: [
                 {
@@ -124,13 +129,21 @@ export default {
             }
         }
     },
-    mounted(){
-        this.getUser();
-    },
     methods: {
-        async getUser(){ // Bad form but having issues accessing the global user property for its Id
-            const accessToken = await this.$auth.getAccessToken();
-            this.user = await this.$auth.getUser(accessToken);
+        getOrders(){
+            fetch("https://localhost:44343/api/expert/OrdersByUserId", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(
+                    this.user.sub
+                )
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                this.orders = jsonData.sort(CompareBySubmittedThenStatus);
+            });
         },
         getStatusColor(status){
             var color = "#DC3545";
@@ -193,9 +206,8 @@ export default {
         }
     },
     watch: {
-        user: function(user){
-            //Get the orders and get the topic name from the Id and format the submitted date
-            this.orders = this.$store.getters.getExpertsOrders(user.sub).map(o => ({...o, topicName: this.$store.getters.topic(o.topicId).Name }) );
+        user() {
+            this.getOrders();
         }
     }
 }

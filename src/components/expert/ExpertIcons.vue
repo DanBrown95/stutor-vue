@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div class="experts">
-            <div v-for="x in experts" :key="x.Id" class="inline-block">
-                <ExpertIcon :id="x.Id" :price="x.Price" :rating="x.Rating" @clicked="expertSelected"></ExpertIcon>
+        <div class="center" v-if="experts.length > 0">
+            <div v-for="x in experts" :key="x.id" class="inline-block">
+                <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
             </div>
-            <div v-if="experts.length < 1">
-                <h2>There are no experts available for this topic at this time &#9785;</h2>
-            </div>
+        </div>
+        <div class="center" v-else>
+            <h2>There are no experts available for this topic at this time &#9785;</h2>
         </div>
     </div>
 </template>
@@ -22,8 +22,24 @@ export default {
     },
     data() {
         return {
-            experts: this.$store.getters.expertsByTopicId(this.TopicId)
+            experts: []
         }
+    },
+    mounted() {
+        fetch("https://localhost:44343/api/expert/TopicExpertsByTopicId", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                topicId: this.TopicId,
+                userTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone 
+            })
+        })
+        .then(response => response.json())
+        .then(jsonData => {
+            this.experts = jsonData;
+        });
     },
     methods: {
         expertSelected: function(e) {
@@ -39,7 +55,7 @@ export default {
         display: inline-block;
     }
 
-    .experts {
+    .center {
         text-align: center;
     }
 </style>

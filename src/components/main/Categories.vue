@@ -3,8 +3,8 @@
     <h2 class="header">Browse by Category</h2>
     <v-row>
         <v-layout row justify-center class="categories">
-            <v-col md="2" v-for="c in Categories" :key="c.Id">
-                <Category :id="c.Id" :name="c.Name" :imageUrl="c.ImageUrl" class="category"></Category>
+            <v-col md="2" v-for="c in categories" :key="c.Id">
+                <Category :id="c.id" :name="c.name" :imageUrl="c.imageUrl" class="category"></Category>
             </v-col>
         </v-layout>
     </v-row>
@@ -14,6 +14,7 @@
 
 <script>
 import Category from '@/components/main/Category.vue'
+import { ALL_CATEGORIES_QUERY } from '../../graphql/category/queries'
 
 export default {
     name: 'Categories',
@@ -22,12 +23,15 @@ export default {
     },
     data() {
         return {
-            Categories: this.$store.getters.allCategories
+            categories: []
         }
     },
-    computed: {
-
+    apollo: {
+      categories: {
+        query: ALL_CATEGORIES_QUERY
+      }
     }
+
 }
 </script>
 

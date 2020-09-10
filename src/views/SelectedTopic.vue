@@ -1,9 +1,9 @@
 <template>
     <div class="main">
         <div class="banner">
-            <h1>{{topic.Name}}</h1>
+            <h1>{{topic.name}}</h1>
         </div>
-        <experts id="experts" :TopicId="topic.Id" @expertSelected="expertSelected"/>
+        <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected"/>
 
         <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">
             <v-list-item style="background-color: #385F73;">  
@@ -14,23 +14,23 @@
 
             <v-divider></v-divider>
 
-            <v-container>
+            <v-container v-if="!showSuccess && selectedExpert">
                 <v-row dense>
                     <v-col cols="12">
                     <v-card color="#385F73" dark flat>
                         <v-card-subtitle class="text-center">Confirm your purchase and we will conect you with an expert!</v-card-subtitle>
 
                         <v-card-title class="justify-center">
-                            Price: ${{selectedExpert.Price}}
+                            Price: ${{selectedExpert.price | AsFixedDecimal}}
                         </v-card-title>
 
                         <v-card-title class="justify-center">
-                            Description: {{topic.Name}} Service by Stutor
+                            Description: {{topic.name}} Service by Stutor
                         </v-card-title>
 
                         <v-card-title class="justify-center">
                             <span style="margin-right: 10px;">Expert Rating:</span>
-                            <div v-for="index in selectedExpert.Rating" :key="index">
+                            <div v-for="index in selectedExpert.rating" :key="index">
                                 <img src="@/assets/gold-star.png" height="30" width="30"/>
                             </div>
                         </v-card-title>
@@ -43,7 +43,7 @@
             <v-container id="payment-card" v-if="!showSuccess">
                 <v-row dense>
                     <v-col cols="12">
-                        <card></card>
+                        <Card/>
                     </v-col>
                 </v-row>
             </v-container>
@@ -59,7 +59,9 @@
                 </v-row>
             </v-container>
 
-            <v-container id="success" v-if="showSuccess">
+            <v-container id="success" v-if="showSuccess && selectedExpert">
+                <br />
+                <br />
                 <v-row dense>
                     <v-col cols="12">
                         <v-card color="white" class="text-center" dark flat>
@@ -69,7 +71,7 @@
                             </div>
                             <br/>
                             <div>
-                                <h3>${{selectedExpert.Price}}</h3>
+                                <h3>${{selectedExpert.price | AsFixedDecimal}}</h3>
                                 <h3>Your payment is complete</h3>
                             </div>
                             <br />
@@ -91,7 +93,7 @@
                             <br />
                             <br />
                             <div>
-                                <p style="color: red;">You will recieve a text message with further instructions. Do not delete that message.</p>
+                                <p style="color: red;">You will receive a text message with further instructions. Do not delete that message.</p>
                             </div>
                         </v-card>
                     </v-col>
@@ -99,26 +101,26 @@
             </v-container>
 
       </v-navigation-drawer>
-        <v-btn rounded color="blue lighten-3" @click="back" id="btn-back">Back</v-btn>
+      <ButtonBack/>
     </div>
 </template>
 
 <script>
-// import router from '../router'
-import experts from '@/components/expert/ExpertIcons.vue'
-import card from "@/components/stripe/Card.vue";
+import Experts from '@/components/expert/ExpertIcons.vue'
+import Card from "@/components/stripe/Card.vue";
+import ButtonBack from "@/components/utils/ButtonBack.vue";
 
 export default {
     name: 'SelectedTopic',
     components: {
-        experts,
-        card
+        Experts,
+        Card,
+        ButtonBack
     },
     data () {
         return {
             user: {},
             topic: null,
-            selectedExpertId: null,
             selectedExpert: {},
             drawer: null,
 
@@ -132,23 +134,36 @@ export default {
         }
     },
     created() {
-        this.topic = this.$store.getters.topic(this.$route.params.id);
+        this.getTopic();
         this.getUser();
     },
     methods: {
         back() {
             history.back();
         },
+        getTopic(){
+            fetch("https://localhost:44343/api/topic/Get", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: this.$route.params.id
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                this.topic = jsonData;
+            });
+        },
         async getUser(){ // Bad form but having issues accessing the global user property for its Id
             const accessToken = await this.$auth.getAccessToken();
             this.user = await this.$auth.getUser(accessToken);
         },
-        expertSelected: function(expertId) {
-            this.selectedExpertId = expertId;
+        expertSelected: function(expert) {
+            this.selectedExpert = expert;
             this.showSuccess = false;
             this.openDrawer();
         },
-        openDrawer: function() {
+        async openDrawer() {
             this.drawer = !this.drawer;
             
             // A reference to Stripe.js initialized with your real test publishable API key.
@@ -159,15 +174,17 @@ export default {
             
             // The items the customer wants to buy
             var purchase = {
-                items: [{ id: self.selectedExpertId }]
+                items: [{ id: this.selectedExpert.id }]
             };
 
+            const accessToken = await this.$auth.getAccessToken();
             // Disable the button until we have Stripe set up on the page
             document.querySelector("button").disabled = true;
             fetch("https://localhost:44343/create-payment-intent", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(purchase)
                 })
@@ -236,7 +253,7 @@ export default {
                 });
         },
         /* ------- UI helper methods ------- */
-        orderComplete: function(paymentIntentId){
+        async orderComplete(paymentIntentId){
             // Shows a success message when the payment is complete
             this.loading(false);
             this.showSuccess = true;
@@ -250,10 +267,12 @@ export default {
                 submitted: new Date
             }
             
+            const accessToken = await this.$auth.getAccessToken();
             fetch("https://localhost:44343/api/order/SubmitIntent", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json"
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
                 },
                 body: JSON.stringify(order)
             })
@@ -287,15 +306,17 @@ export default {
         }
     },
     watch: {
-        selectedExpertId: function(id){
-            this.selectedExpert = this.$store.getters.expertById(id);
-        },
         drawer: function(e){
             if(e == false){
                 this.card.unmount("#card-element");
             }
         }
     },
+    filters: {
+        AsFixedDecimal: function(decimal){
+            return decimal != null ? decimal.toFixed(2) : null;
+        },
+    }
 }
 </script>
 

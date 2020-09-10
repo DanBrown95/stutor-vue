@@ -17,13 +17,13 @@
                 </v-row>
             </div>
             <div v-else> <!-- Otherwise show records-->
-                <div v-for="order in orders" :key="order.Id">
-                    <Order :id="order.id" :status="order.status" :charge="order.charge" :topicId="order.topicId" :submitted="order.submitted" :clientPasskey="order.clientPasskey" />
+                <div v-for="order in ordersToDisplay" :key="order.Id">
+                    <Order :order="order" />
                 </div>
                 <v-row justify="center">
                     <v-col cols="11">
                         <pagination style="float: right;" :initial-page="currentPage" :totalPages="totalPagesForPagination" @pageChange="paginationChange"></pagination>
-                        <span style=" float: left;">Displaying up to {{ordersPerPage}} of {{totalOrders}} orders</span>
+                        <span style=" float: left;">{{startIndex + 1}} - {{startIndex + ordersToDisplay.length}} of {{totalOrders}}</span>
                     </v-col>
                 </v-row>
             </div>
@@ -34,55 +34,68 @@
 
 <script>
 import Order from "@/components/user/Order.vue";
-import Pagination from "@/components/useful/Pagination.vue";
+import Pagination from "@/components/utils/Pagination.vue";
+import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js'
 
 export default {
     name: 'OrderHistory',
+    props: ['user'],
     components: {
         Order,
         Pagination
     },
     data(){
         return{
-            user: {},
-            orders: [],
+            allOrders: [],
             totalOrders: 0,
             
             currentPage: 1,
             ordersPerPage: 5,
-            loading: true
+            loading: false
         }
-    },
-    created() {
-        this.getUser();
     },
     computed: {
         totalPagesForPagination() {
             return Math.ceil(this.totalOrders / this.ordersPerPage);
-        },
+        }, 
         startIndex() {
             return (this.currentPage * this.ordersPerPage) - this.ordersPerPage;
+        },
+        ordersToDisplay(){
+            return this.allOrders.slice(this.startIndex, this.startIndex + this.ordersPerPage);
         }
     },
     methods: {
+        async getOrders(){
+            const accessToken = await this.$auth.getAccessToken();
+
+            fetch("https://localhost:44343/api/order/GetAllByUserId", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify(
+                    this.user.sub
+                )
+            })
+            .then(response => response.json())
+            .then(jsonData => {
+                this.allOrders = jsonData.sort(CompareBySubmittedThenStatus);
+            });
+        },
         paginationChange(page){
             this.currentPage = page;
-        },
-        async getUser(){ // Bad form but having issues accessing the global user property for its Id
-            const accessToken = await this.$auth.getAccessToken();
-            this.user = await this.$auth.getUser(accessToken);
         }
     },
     watch: {
-        currentPage() {
-            this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage).map(o => ({...o, clientPasskey: this.$store.getters.getClientPasskey(o.id)}) );
-            this.loading = false;
+        allOrders(orders) {
+            this.totalOrders = orders.length;
+            this.currentPage = 1;
         },
         user(){
             this.loading = true;
-            this.orders = this.$store.getters.getUserOrders(this.user.sub, this.startIndex, this.ordersPerPage).map(o => ({...o, clientPasskey: this.$store.getters.getClientPasskey(o.id)}) );
-            this.totalOrders = this.$store.getters.getUserOrdersTotal(this.user.sub);
+            this.getOrders();
             this.loading = false;
         }
     }

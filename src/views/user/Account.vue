@@ -3,36 +3,52 @@
         <div id="banner">
             
         </div>
-        <div>
+        <div v-if="isExpert">
             <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Timezone Changed!</v-snackbar>
             <v-row>
-                <v-col cols="3">
+                <v-col cols="2">
                     <v-subheader class="float-right">Timezone </v-subheader>
                 </v-col>
                 <v-col cols="6">
                     <v-select
-                        v-model="selectedTimezone"
-                        :items="tz_timezones"
+                        v-model="selectedTimezoneId"
+                        :items="timezones"
                         menu-props="auto"
                         label="Select your local timezone"
-                        value="value"
-                        prepend-icon="mdi-earth"
+                        item-value="id"
+                        item-text="friendlyName"
                         single-line
-                    ></v-select>
+                    >
+                        <template v-slot:prepend>
+                            <v-icon color="blue">mdi-earth</v-icon>
+                        </template>
+                    </v-select>
                 </v-col>
             </v-row>
-            <v-row >
-                <v-col cols="3">
+            <v-row>
+                <v-col cols="2">
                     <v-subheader class="float-right">Topics</v-subheader>
                 </v-col>
-                <v-col cols="6">
-                    <div v-for="expertTopic in expertTopics" :key="expertTopic.topicId">
-                        <span>
-                            {{expertTopic.topicName}}
-                        </span>
-                        <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red">
-                            mdi-delete
-                        </v-icon>
+                <v-col cols="9" >
+                    <div v-for="expertTopic in expertTopics" :key="expertTopic.id">
+                        <v-row align="center">
+                            <v-col cols="1">
+                                <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red">
+                                    mdi-delete
+                                </v-icon>
+                            </v-col>
+                            <v-col cols="3">
+                                <v-tooltip top>
+                                    <template v-slot:activator="{ on, attrs }">
+                                        <span v-bind="attrs" v-on="on">{{expertTopic.name}}</span>
+                                    </template>
+                                    <span>Rating: {{expertTopic.topicExpert.rating}}/5 <br /> Price: ${{expertTopic.topicExpert.price.toFixed(2)}}</span>
+                                </v-tooltip>
+                            </v-col>
+                            <v-col cols="7">
+                                <AvailabilityDisplay :availability="expertTopic.topicExpert.availability"></AvailabilityDisplay>
+                            </v-col>
+                        </v-row>
                     </div>
                 </v-col>
             </v-row>
@@ -44,34 +60,87 @@
 </template>
 
 <script>
+import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue'
     export default {
+        name: 'Account',
+        props: ['user'],
+        components: {
+            AvailabilityDisplay
+        },
         data() {
             return {
-                user: [],
-                tz_timezones: [],
-                selectedTimezone: "",
+                timezones: [],
+                selectedTimezoneId: null,
                 expertTopics: [],
 
                 showSuccess: false
             }
         },
-        mounted() {
-            this.getUser();
-            this.tz_timezones = this.$store.getters.getTimezones;
-            this.selectedTimezone = this.$store.getters.getExpertTimezone('2015');
-            this.expertTopics = this.$store.getters.getExpertTopics('2015').map(t => ({...t, topicName: this.$store.getters.topic(t.topicId).Name}));
+        computed: {
+            isExpert: function(){
+                if(this.user.groups != null){
+                    return this.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+                }
+                return false;
+            }
         },
         watch: {
-            selectedTimezone(newValue, oldValue) {
+            user() {
+                this.populateData();
+            },
+            selectedTimezoneId(newValue, oldValue) {
                 // change the experts timezone in the db
                 // if successful
-                this.showSuccess = (oldValue != '');
+                this.showSuccess = (oldValue);
             }
         },
         methods: {
-            async getUser(){
-                const accessToken = await this.$auth.getAccessToken();
-                this.user = await this.$auth.getUser(accessToken);
+            async populateData() {
+
+                if(this.isExpert){
+                    // Populate the timezones
+                    fetch("https://localhost:44343/api/DisplayUtils/timezones", {
+                        method: "GET",
+                        headers: {
+                            "Content-Type": "application/json"
+                        }
+                    })
+                    .then(response => response.json())
+                    .then(jsonData => {
+                        this.timezones = jsonData;
+                    });
+
+                    // Get the experts timezone
+                    fetch("https://localhost:44343/api/Expert/expertTimezone", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(
+                            this.user.sub
+                        )
+                    })
+                    .then(response => response.json())
+                    .then(jsonData => {
+                        this.selectedTimezoneId = jsonData.id;
+                    });
+
+                    // Get the experts expertTopics
+                    fetch("https://localhost:44343/api/Expert/TopicsByUserId", {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(
+                            this.user.sub
+                        )
+                    })
+                    .then(response => response.json())
+                    .then(jsonData => {
+                        this.expertTopics = jsonData;
+                    });
+                }
+
             },
             deactivateExpert() {
                 let message = "Are you sure you want to remove your expert status?";
@@ -98,8 +167,7 @@
                 });
             },
             unassignTopic(expertTopic) {
-                console.log(expertTopic);
-                let message = "Are you sure you no longer want to be an expert on " + expertTopic.topicName + "?";
+                let message = "Are you sure you no longer want to be an expert on " + expertTopic.name + "?";
 
                 let options = {
                     html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
@@ -109,7 +177,7 @@
                     cancelText: 'Close',
                     animation: 'zoom', // Available: "zoom", "bounce", "fade"
                     type: 'hard', // coming soon: 'soft', 'hard'
-                    verification: expertTopic.topicName, // for hard confirm, user will be prompted to type this to enable the proceed button
+                    verification: expertTopic.name, // for hard confirm, user will be prompted to type this to enable the proceed button
                     verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
                     backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
                     customClass: '' // Custom class to be injected into the parent node for the current dialog instance
@@ -142,5 +210,9 @@
     .main {
         min-height: 100vh;
         padding-bottom: 2em;
+    }
+
+    .column {
+        display: inline-block;
     }
 </style>

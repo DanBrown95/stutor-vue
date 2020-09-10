@@ -1,11 +1,11 @@
 <template>
     <div class="main">
-        <a @click.stop="iconPressed">
+        <a @click.stop="iconPressed(this)">
             <img class="image">
         </a>
         <div class="overlay">
-            <div class="text">${{ this.price }}</div>
-            <div class="text">{{ this.rating }}/5 Rating</div>
+            <div class="text">${{ this.expert.price.toFixed(2) }}</div>
+            <div class="text">{{ this.expert.rating }}/5 Rating</div>
         </div>
     </div>
 </template>
@@ -13,14 +13,13 @@
 <script>
 export default {
     name: 'ExpertIcon',
-    props: ['id', 'rating', 'price'],
+    props: ['expert'],
     data: function () {
-        return {
-        }
+        return {}
     },
     methods: {
         iconPressed: function(){
-            this.$emit("clicked", this.id);
+            this.$emit("clicked", this.expert);
         }
     }
 }

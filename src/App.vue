@@ -2,7 +2,7 @@
   <v-app>
     <TopNav :class="{ 'color-nav': colorNav }"/>
     <v-content>
-      <router-view></router-view>
+      <router-view :user="user"></router-view>
     </v-content>
     <Footer />
   </v-app>
