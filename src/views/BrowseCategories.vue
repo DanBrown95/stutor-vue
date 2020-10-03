@@ -19,6 +19,8 @@
 <script>
 import ListWithSearch from "@/components/utils/ListWithSearch.vue";
 import ButtonBack from "@/components/utils/ButtonBack.vue";
+import { GetAll as _categoryRepo_GetAll } from "@/store/category/repository.js";
+import { GetAllByCategoryId as _topicRepo_GetAllByCategoryId } from "@/store/topic/repository.js";
 
 export default {
     name: 'browseCategories',
@@ -42,16 +44,7 @@ export default {
     },
     methods: {
         async fetchCategories(){
-            fetch("https://localhost:44343/api/category/GetAll", {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json"
-                }
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                this.categories = jsonData;
-            });
+            this.categories = await _categoryRepo_GetAll();
         },
         selectCategory(item) {
             this.selectedCategory = item;
@@ -66,19 +59,9 @@ export default {
         }
     },
     watch: {
-        selectedCategory: function () {
+        async selectedCategory() {
             if(this.selectedCategory){
-                fetch("https://localhost:44343/api/topic/GetTopicsByCategory", {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: this.selectedCategory.id
-                })
-                .then(response => response.json())
-                .then(jsonData => {
-                    this.topics = jsonData;
-                });
+                this.topics = await _topicRepo_GetAllByCategoryId(this.selectedCategory.id);
             }
         },
         selectedTopic: function() {

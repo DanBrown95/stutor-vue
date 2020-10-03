@@ -10,6 +10,7 @@
 <script>
 import ListWithSearch from "@/components/utils/ListWithSearch.vue";
 import ButtonBack from "@/components/utils/ButtonBack.vue";
+import { GetAllByCategoryId as _topicRepo_GetAllByCategoryId } from "@/store/topic/repository.js";
 
 export default {
     name: 'selectedCategory',
@@ -30,17 +31,7 @@ export default {
     },
     methods: {
         async fetchTopics() {
-            fetch("https://localhost:44343/api/topic/GetTopicsByCategory", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: this.categoryId
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                this.topics = jsonData;
-            });
+            this.topics = await _topicRepo_GetAllByCategoryId(this.categoryId);
         },
         setTopic (topic) {
             this.selectedTopic = topic;

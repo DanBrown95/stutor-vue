@@ -10,7 +10,7 @@
                     <h5>Topic: {{order.topic.name}}</h5>
                     <h5>Charge: ${{order.charge.toFixed(2)}}</h5>
                     <h5>Submitted: {{formattedSubmitDate}}</h5>
-                    <h5>Passkey: {{order.orderPasskey.clientPasskey}}</h5>
+                    <!-- <h5>Passkey: {{order.orderPasskey.clientPasskey}}</h5> -->
                     <v-dialog v-model="dialog" max-width="600px">
                         <template v-slot:activator="{ on, attrs }">
                             <v-btn small style="margin-top: 5px;"
@@ -44,7 +44,8 @@ export default {
     },
     computed: {
         formattedSubmitDate(){
-            return moment(this.order.submitted).format("lll");
+            var local_date = moment.utc(this.order.submitted).local().format('lll');
+            return local_date;
         },
         statusColor(){
             return (this.order.status === "Completed") ? '#28A745' : ((this.order.status === "Unanswered") ? "#FFC107" : "#DC3545")

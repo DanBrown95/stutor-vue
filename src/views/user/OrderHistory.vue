@@ -1,6 +1,8 @@
 <template>
     <div class="main">
         <div class="header">
+        </div>
+        <div>
             <v-row justify="center">
                 <h1 class="header-heading">Your Order History </h1>
             </v-row>
@@ -35,7 +37,8 @@
 <script>
 import Order from "@/components/user/Order.vue";
 import Pagination from "@/components/utils/Pagination.vue";
-import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js'
+import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js';
+import { GetAllByUserId as _orderRepo_GetAllByUserId} from '@/store/order/repository.js';
 
 export default {
     name: 'OrderHistory',
@@ -51,7 +54,7 @@ export default {
             
             currentPage: 1,
             ordersPerPage: 5,
-            loading: false
+            loading: true
         }
     },
     computed: {
@@ -68,21 +71,8 @@ export default {
     methods: {
         async getOrders(){
             const accessToken = await this.$auth.getAccessToken();
-
-            fetch("https://localhost:44343/api/order/GetAllByUserId", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: JSON.stringify(
-                    this.user.sub
-                )
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                this.allOrders = jsonData.sort(CompareBySubmittedThenStatus);
-            });
+            const unordered = await _orderRepo_GetAllByUserId(this.user.sub, accessToken);
+            this.allOrders = unordered.sort(CompareBySubmittedThenStatus);
         },
         paginationChange(page){
             this.currentPage = page;

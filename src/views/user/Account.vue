@@ -42,7 +42,7 @@
                                     <template v-slot:activator="{ on, attrs }">
                                         <span v-bind="attrs" v-on="on">{{expertTopic.name}}</span>
                                     </template>
-                                    <span>Rating: {{expertTopic.topicExpert.rating}}/5 <br /> Price: ${{expertTopic.topicExpert.price.toFixed(2)}}</span>
+                                    <span>Rating: {{ expertTopic.topicExpert.rating | RatingAsTitle }} <br /> Price: ${{expertTopic.topicExpert.price.toFixed(2)}}</span>
                                 </v-tooltip>
                             </v-col>
                             <v-col cols="7">
@@ -53,146 +53,154 @@
                 </v-col>
             </v-row>
             <v-row dense class="justify-center">
-                <v-btn color="error" @click="deactivateExpert">Remove Expert Status</v-btn>
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn style="margin-right: 5px;" v-bind="attrs" v-on="on" 
+                                @click="toggleIsActive" v-bind:class="isActive ? 'error' : 'success' "
+                        >
+                                {{isActiveButtonText}}
+                        </v-btn>
+                    </template>
+                    <span>When deactivated you will no longer be recommended to users.</span>
+                </v-tooltip>
+
+                <v-tooltip top>
+                    <template v-slot:activator="{ on, attrs }">
+                        <v-btn color="error" v-bind="attrs" v-on="on" 
+                                @click="deactivateExpert">Remove Expert Status</v-btn>
+                    </template>
+                    <span>This will revert you to a normal user.</span>
+                </v-tooltip>
+                
             </v-row>
         </div>
     </div>
 </template>
 
 <script>
-import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue'
-    export default {
-        name: 'Account',
-        props: ['user'],
-        components: {
-            AvailabilityDisplay
-        },
-        data() {
-            return {
-                timezones: [],
-                selectedTimezoneId: null,
-                expertTopics: [],
+import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
+import { RatingAsTitle } from '@/helpers/Rating.js';
+import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
+import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
+         ExpertTopics as _expertRepo_ExpertTopics,
+         GetActiveStatus as _expertRepo_GetActiveStatus,
+         ToggleIsActive as _expertRepo_ToggleIsActive } from '@/store/expert/repository.js';
 
-                showSuccess: false
-            }
-        },
-        computed: {
-            isExpert: function(){
-                if(this.user.groups != null){
-                    return this.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
-                }
-                return false;
-            }
-        },
-        watch: {
-            user() {
-                this.populateData();
-            },
-            selectedTimezoneId(newValue, oldValue) {
-                // change the experts timezone in the db
-                // if successful
-                this.showSuccess = (oldValue);
-            }
-        },
-        methods: {
-            async populateData() {
+export default {
+    name: 'Account',
+    props: ['user'],
+    components: {
+        AvailabilityDisplay
+    },
+    data() {
+        return {
+            timezones: [],
+            selectedTimezoneId: null,
+            expertTopics: [],
+            isActive: false,
 
-                if(this.isExpert){
-                    // Populate the timezones
-                    fetch("https://localhost:44343/api/DisplayUtils/timezones", {
-                        method: "GET",
-                        headers: {
-                            "Content-Type": "application/json"
-                        }
-                    })
-                    .then(response => response.json())
-                    .then(jsonData => {
-                        this.timezones = jsonData;
-                    });
-
-                    // Get the experts timezone
-                    fetch("https://localhost:44343/api/Expert/expertTimezone", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(
-                            this.user.sub
-                        )
-                    })
-                    .then(response => response.json())
-                    .then(jsonData => {
-                        this.selectedTimezoneId = jsonData.id;
-                    });
-
-                    // Get the experts expertTopics
-                    fetch("https://localhost:44343/api/Expert/TopicsByUserId", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json"
-                        },
-                        body: JSON.stringify(
-                            this.user.sub
-                        )
-                    })
-                    .then(response => response.json())
-                    .then(jsonData => {
-                        this.expertTopics = jsonData;
-                    });
-                }
-
-            },
-            deactivateExpert() {
-                let message = "Are you sure you want to remove your expert status?";
-
-                let options = {
-                    html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
-                    loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
-                    reverse: false, // switch the button positions (left to right, and vise versa)
-                    okText: 'Yes',
-                    cancelText: 'Close',
-                    animation: 'bounce', // Available: "zoom", "bounce", "fade"
-                    type: 'hard', // coming soon: 'soft', 'hard'
-                    verification: 'remove', // for hard confirm, user will be prompted to type this to enable the proceed button
-                    verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
-                    backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
-                    customClass: '' // Custom class to be injected into the parent node for the current dialog instance
-                };
-                this.$dialog.confirm(message, options)
-                .then(function () {
-                    // remove the users expert status
-                })
-                .catch(function () {
-                    // This will be triggered when user clicks on cancel. Do nothing.
-                });
-            },
-            unassignTopic(expertTopic) {
-                let message = "Are you sure you no longer want to be an expert on " + expertTopic.name + "?";
-
-                let options = {
-                    html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
-                    loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
-                    reverse: false, // switch the button positions (left to right, and vise versa)
-                    okText: 'Yes',
-                    cancelText: 'Close',
-                    animation: 'zoom', // Available: "zoom", "bounce", "fade"
-                    type: 'hard', // coming soon: 'soft', 'hard'
-                    verification: expertTopic.name, // for hard confirm, user will be prompted to type this to enable the proceed button
-                    verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
-                    backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
-                    customClass: '' // Custom class to be injected into the parent node for the current dialog instance
-                };
-                this.$dialog.confirm(message, options)
-                .then(function () {
-                    // remove the users expert status
-                })
-                .catch(function () {
-                    // This will be triggered when user clicks on cancel. Do nothing.
-                });
-            }
-
+            showSuccess: false
         }
+    },
+    computed: {
+        isExpert: function(){
+            if(this.user.groups != null){
+                return this.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+            }
+            return false;
+        },
+        isActiveButtonText() {
+            return this.isActive ? "Temporarily Deactivate" : "Re-enable your availability";
+        }
+    },
+    filters: {
+        RatingAsTitle(rating) {
+            return RatingAsTitle(rating);
+        }
+    },
+    watch: {
+        user() {
+            this.populateData();
+        },
+        selectedTimezoneId(newValue, oldValue) {
+            // change the experts timezone in the db
+            // if successful
+            this.showSuccess = (oldValue);
+        }
+    },
+    methods: {
+        async populateData() {
+
+            if(this.isExpert){
+                // Populate the timezones
+                this.timezones = await _timezoneRepo_GetAll();
+
+                // Get the experts timezone
+                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user.sub);
+
+                // Get the experts expertTopics
+                this.expertTopics = await _expertRepo_ExpertTopics(this.user.sub);
+
+                // Get the experts Active status
+                this.isActive = await _expertRepo_GetActiveStatus(this.user.sub);
+            }
+
+        },
+        async toggleIsActive() {
+            // toggle the active status
+            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user.sub);
+        },
+        deactivateExpert() {
+            let message = "Are you sure you want to remove your expert status?";
+
+            let options = {
+                html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
+                loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
+                reverse: false, // switch the button positions (left to right, and vise versa)
+                okText: 'Yes',
+                cancelText: 'Close',
+                animation: 'bounce', // Available: "zoom", "bounce", "fade"
+                type: 'hard', // coming soon: 'soft', 'hard'
+                verification: 'remove', // for hard confirm, user will be prompted to type this to enable the proceed button
+                verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
+                backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
+                customClass: '' // Custom class to be injected into the parent node for the current dialog instance
+            };
+            this.$dialog.confirm(message, options)
+            .then(function () {
+                // remove the users expert status
+            })
+            .catch(function () {
+                // This will be triggered when user clicks on cancel. Do nothing.
+            });
+        },
+        unassignTopic(expertTopic) {
+            let message = "Are you sure you no longer want to be an expert on " + expertTopic.name + "?";
+
+            let options = {
+                html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
+                loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
+                reverse: false, // switch the button positions (left to right, and vise versa)
+                okText: 'Yes',
+                cancelText: 'Close',
+                animation: 'zoom', // Available: "zoom", "bounce", "fade"
+                type: 'hard', // coming soon: 'soft', 'hard'
+                verification: expertTopic.name, // for hard confirm, user will be prompted to type this to enable the proceed button
+                verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
+                backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
+                customClass: '' // Custom class to be injected into the parent node for the current dialog instance
+            };
+            this.$dialog.confirm(message, options)
+            .then(function () {
+                // remove the users expert status
+            })
+            .catch(function () {
+                // This will be triggered when user clicks on cancel. Do nothing.
+            });
+        }
+
     }
+}
 </script>
 
 <style scoped>

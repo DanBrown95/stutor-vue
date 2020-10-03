@@ -7,6 +7,10 @@
             <v-row dense class="justify-center">
                 <v-col cols="10" class="text-center">
                     <v-data-table :items="orders" sort-by="submitted" :headers="headers" item-key="id">
+                        <template v-slot:item.id="{ item }">
+                            <span>{{ item.id }}</span>
+                        </template>
+
                         <template v-slot:item.submitted="{ item }">
                             <span>{{item.submitted | AsMomentShortDate}}</span>
                         </template>
@@ -52,19 +56,16 @@
                             <v-toolbar flat color="white">
                                 <v-dialog v-model="dialog" max-width="500px">
                                     <v-card>
-                                        <v-card-title>
-                                        <span class="headline">Edit Passkey</span>
+                                        <v-card-title class="justify-center">
+                                            <span class="headline">Edit Passkey</span>
                                         </v-card-title>
 
                                         <v-card-text>
                                             <v-container>
-                                                <v-row>
-                                                    <v-col cols="12" sm="6" md="4">
+                                                <v-row justify="center">
+                                                    <v-col cols="12" sm="6" md="9">
                                                         <v-text-field v-model="editedItem.clientPasskey" label="Client Passkey"></v-text-field>
                                                     </v-col>
-                                                    <!-- <v-col cols="12" sm="6" md="4">
-                                                        <v-text-field v-model="editedItem.expertPasskey" label="Expert Passkey" disabled></v-text-field>
-                                                    </v-col> -->
                                                 </v-row>
                                             </v-container>
                                         </v-card-text>
@@ -90,6 +91,8 @@
 <script>
 import moment from 'moment'
 import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js'
+import { OrdersByUserId as _expertRepo_OrdersByUserId } from '@/store/expert/repository.js'
+import { SubmitPasskey as _orderRepo_SubmitPasskey } from '@/store/order/repository.js';
 
 export default {
     name: "Acknowledgment",
@@ -99,6 +102,9 @@ export default {
             orders: [],
             headers: [
                 {
+                    text: 'Id',
+                    value: 'id',
+                },{
                     text: 'Requested',
                     value: 'submitted',
                     sortable: true,
@@ -130,20 +136,9 @@ export default {
         }
     },
     methods: {
-        getOrders(){
-            fetch("https://localhost:44343/api/expert/OrdersByUserId", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(
-                    this.user.sub
-                )
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                this.orders = jsonData.sort(CompareBySubmittedThenStatus);
-            });
+        async getOrders(){
+            var unordered = await _expertRepo_OrdersByUserId(this.user.sub);
+            this.orders = unordered.sort(CompareBySubmittedThenStatus);
         },
         getStatusColor(status){
             var color = "#DC3545";
@@ -174,28 +169,19 @@ export default {
         async save () {
             if (this.editedIndex > -1) {
                 const accessToken = await this.$auth.getAccessToken();
-                fetch("https://localhost:44343/api/order/SubmitPasskeys", {
-                    method: "POST",
-                    headers: {
-                        "Authorization": `Bearer ${accessToken}`,
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(this.editedItem)
-                })
-                .then((response) => {
-                    if(response.ok){
-                        console.log("passkey saved");
-                    }
-                });
-
-                Object.assign(this.orders[this.editedIndex], this.editedItem)
+                
+                var response = await _orderRepo_SubmitPasskey(this.editedItem.id, this.editedItem.clientPasskey, this.user.sub, accessToken);
+                if(response.ok){
+                    Object.assign(this.orders[this.editedIndex], this.editedItem)
+                }
             }
             this.close()
         }
     },
     filters: {
         AsMomentShortDate: function(date){
-            return moment(date).format('lll');
+            var local_date = moment.utc(date).local().format('lll');
+            return local_date;
         },
         secondsAsReadableString: function(seconds){
             var d = Number(seconds);

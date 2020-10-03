@@ -1,9 +1,33 @@
 <template>
     <div>
-        <div class="center" v-if="experts.length > 0">
-            <div v-for="x in experts" :key="x.id" class="inline-block">
-                <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
-            </div>
+        <div class="center" v-if="hasExperts">
+            <template v-if="(this.experts.localExperts && this.experts.localExperts.length)">
+                <v-card class="mx-auto">
+                    <v-card-title>
+                    <span class="title font-weight-light">Local Experts</span>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <div v-for="x in experts.localExperts" :key="x.id" class="inline-block">
+                            <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </template>
+            <br />
+            <template v-if="(this.experts.distantExperts && this.experts.distantExperts.length)">
+                <v-card class="mx-auto">
+                    <v-card-title>
+                    <span class="title font-weight-light">Distant Experts</span>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <div v-for="x in experts.distantExperts" :key="x.id" class="inline-block">
+                            <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
+                        </div>
+                    </v-card-text>
+                </v-card>
+            </template>
         </div>
         <div class="center" v-else>
             <h2>There are no experts available for this topic at this time &#9785;</h2>
@@ -13,6 +37,7 @@
 
 <script>
 import ExpertIcon from '@/components/expert/ExpertIcon.vue'
+import { TopicExpertsByTopicId as _expertRepo_TopicExpertsByTopicId } from "@/store/expert/repository.js";
 
 export default {
     name: 'ExpertIcons',
@@ -25,25 +50,20 @@ export default {
             experts: []
         }
     },
+    computed: {
+        hasExperts() {
+            return (this.experts.localExperts && this.experts.localExperts.length) || (this.experts.distantExperts && this.experts.distantExperts.length);
+        }
+    },
     mounted() {
-        fetch("https://localhost:44343/api/expert/TopicExpertsByTopicId", {
-            method: "POST",
-            headers: {
-                "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-                topicId: this.TopicId,
-                userTimezone: Intl.DateTimeFormat().resolvedOptions().timeZone 
-            })
-        })
-        .then(response => response.json())
-        .then(jsonData => {
-            this.experts = jsonData;
-        });
+        this.getTopicExperts();
     },
     methods: {
         expertSelected: function(e) {
             this.$emit("expertSelected", e);
+        },
+        async getTopicExperts() {
+            this.experts = await _expertRepo_TopicExpertsByTopicId(this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone);
         }
     }
         

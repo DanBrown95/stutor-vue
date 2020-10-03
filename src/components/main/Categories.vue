@@ -30,6 +30,20 @@ export default {
       categories: {
         query: ALL_CATEGORIES_QUERY
       }
+    },
+    mounted() {
+        this.applyOverlay();
+    },
+    methods: {
+        applyOverlay() { // automatically show/hide overlay on a timer
+            setTimeout(function tick() {
+                var elements = document.getElementsByClassName("overlay");
+                elements.forEach(element => {
+                    element.classList.toggle("visible");
+                });
+                setTimeout(tick, 5000); // (*)
+            }, 5000);
+        }
     }
 
 }

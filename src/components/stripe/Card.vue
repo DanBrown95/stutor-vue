@@ -1,7 +1,7 @@
 <template>
     <div>
         <form id="payment-form">
-            <input type="text" id="email" placeholder="Email address for receipt" />
+            <!-- <input type="email" id="email" placeholder="Email address for receipt" required/> -->
             <div id="card-element"><!--Stripe.js injects the Card Element--></div>
             <button id="submit">
                 <div class="spinner hidden" id="spinner"></div>

@@ -33,7 +33,7 @@
                         </v-col>
                     </v-row>
                     <v-row justify="center">
-                        <v-col cols="4">
+                        <v-col cols="8">
                             <v-textarea v-model="message" label="Message" required 
                                             @input="$v.message.$touch()" @blur="$v.message.$touch()"
                                             :error-messages="messageErrors">
@@ -47,8 +47,8 @@
                         <v-btn color="primary" @click="verify">Submit</v-btn> -->
                         <vue-recaptcha
                             ref="invisibleRecaptcha"
-                            @verify="onVerify"
-                            @expired="onExpired"
+                            @verify="onCaptchaVerify"
+                            @expired="onCaptchaExpired"
                             size="invisible"
                             :sitekey="sitekey">
                         </vue-recaptcha>
@@ -61,8 +61,8 @@
             <v-container style="position: relative; top: 45%;">
                 <v-row class="text-center">
                     <v-col>
-                        <h2>Message Sent!</h2>
-                        <p>We will get back to as soon as possible.</p>
+                        <h2>{{responseHeader}}</h2>
+                        <p>{{responseParagraph}}</p>
                     </v-col>
                 </v-row>
             </v-container>
@@ -74,6 +74,7 @@
 import { validationMixin } from 'vuelidate'
 import { required, minLength, email } from 'vuelidate/lib/validators'
 import VueRecaptcha from 'vue-recaptcha';
+import { SendEmail as _utilsRepo_SendEmail } from '@/store/utils/repository.js';
 
 export default {
     mixins: [validationMixin],
@@ -104,7 +105,9 @@ export default {
                 "Report a problem",
                 "Other"
             ],
-            messageSent: false
+            messageSent: false,
+            responseHeader: "",
+            responseParagraph: ""
         }
     },
     computed: {
@@ -152,8 +155,10 @@ export default {
                 this.$refs.invisibleRecaptcha.execute()
             }
         },
-        onVerify: function (response) {
-            console.log('Verified: ' + response);
+        async onCaptchaVerify(token) {
+            this.$refs.invisibleRecaptcha.reset();
+            console.log('Verified: ' + token);
+
             //send data to backend
             var payload = {
                 firstName: this.firstName,
@@ -163,22 +168,20 @@ export default {
                 message: this.message
             }
 
-            fetch("https://localhost:44343/api/contact/SendEmailAsync", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(payload)
-                })
-            .then((response) => {
-                if(response.ok){
-                    this.messageSent = true;
-                }
-            });
+            var response = await _utilsRepo_SendEmail(payload);
+            if(response.ok){
+                this.responseHeader = "Message Sent!";
+                this.responseParagraph = "We will get back to as soon as possible.";
+                this.messageSent = true;
+            }else{
+                this.responseHeader = "Oops something went wrong.";
+                this.responseParagraph = "This is embaressing. We will get working on this ASAP!";
+                this.messageSent = true;
+            }
 
         },
-        onExpired: function () {
-            this.$refs.invisibleRecaptcha.reset()
+        onCaptchaExpired: function () {
+            this.$refs.invisibleRecaptcha.reset();
         }
     }
 }
@@ -195,6 +198,7 @@ export default {
     }
 
     h2 {
+        font-size: 2em;
         color: #DEA800;
     }
 </style>

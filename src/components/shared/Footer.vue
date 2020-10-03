@@ -19,19 +19,12 @@
             <div class="col">
                 <h1>Accounts</h1>
                 <ul>
-                    <li>Mission</li>
-                    <li>Services</li>
-                    <li>Social</li>
-                    <li>Get in touch</li>
                 </ul>
             </div>
             <div class="col">
                 <h1>Resources</h1>
                 <ul>
                     <router-link tag="li" :to="{ name: 'TopicRequest' }">Request a topic</router-link>
-                    <li>Redeem code</li>
-                    <li>Web templates</li>
-                    <li>Email templates</li>
                 </ul>
             </div>
             <div class="col">

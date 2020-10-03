@@ -1,11 +1,11 @@
 <template>
-    <div class="main">
+    <div class="main" v-if="topic">
         <div class="banner">
             <h1>{{topic.name}}</h1>
         </div>
-        <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected"/>
+        <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected"/> <!-- The experts -->
 
-        <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">
+        <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">  <!-- Slide out drawer -->
             <v-list-item style="background-color: #385F73;">  
             <v-list-item-content >
                 <v-list-item-title style="color: white;" class="headline text-center">Purchase Confirmation</v-list-item-title>
@@ -14,7 +14,7 @@
 
             <v-divider></v-divider>
 
-            <v-container v-if="!showSuccess && selectedExpert">
+            <v-container v-if="!showSuccess && selectedExpert && !showOrderError"> <!-- Order details -->
                 <v-row dense>
                     <v-col cols="12">
                     <v-card color="#385F73" dark flat>
@@ -29,9 +29,9 @@
                         </v-card-title>
 
                         <v-card-title class="justify-center">
-                            <span style="margin-right: 10px;">Expert Rating:</span>
+                            <span style="margin-right: 10px;">Expert Rating: </span>
                             <div v-for="index in selectedExpert.rating" :key="index">
-                                <img src="@/assets/gold-star.png" height="30" width="30"/>
+                                <img class="star" src="@/assets/gold-star.png"/>
                             </div>
                         </v-card-title>
 
@@ -40,7 +40,7 @@
                 </v-row>
             </v-container>
 
-            <v-container id="payment-card" v-if="!showSuccess">
+            <v-container id="payment-card" v-if="!showSuccess && !showOrderError"> <!-- Card container -->
                 <v-row dense>
                     <v-col cols="12">
                         <Card/>
@@ -49,7 +49,7 @@
             </v-container>
 
             
-            <v-container style="display: none;">
+            <v-container style="">
                 <v-row class="justify-center">
                     <v-col cols="10">
                         <v-card color="#ECEBEB" dark flat>
@@ -59,7 +59,7 @@
                 </v-row>
             </v-container>
 
-            <v-container id="success" v-if="showSuccess && selectedExpert">
+            <v-container id="success" v-if="showSuccess && selectedExpert && showOrderError != true"> <!-- Purchase confirmation container -->
                 <br />
                 <br />
                 <v-row dense>
@@ -84,16 +84,28 @@
                         </v-card>
                     </v-col>
                 </v-row>
+                 <v-row dense>
+                    <v-col cols="12">
+                        <v-card color="white" class="text-center" dark flat>
+                            <br />
+                            <br />
+                            <div>
+                                <p style="color: red;">You will receive a text message & email with further instructions. Do not delete that message.</p>
+                            </div>
+                        </v-card>
+                    </v-col>
+                </v-row>
             </v-container>
 
-            <v-container id="call-wrapper" v-if="paymentVerification">
+            <v-container id="success" v-if="showOrderError"> <!-- Purchase confirmation container -->
                 <v-row dense>
                     <v-col cols="12">
                         <v-card color="white" class="text-center" dark flat>
                             <br />
                             <br />
                             <div>
-                                <p style="color: red;">You will receive a text message with further instructions. Do not delete that message.</p>
+                                <p style="color: red;">There was an error saving your order but your card has been charged. <br/> Please contact support and provide them with this Id!</p>
+                                <p style="color: red;">{{paymentVerification}}</p>
                             </div>
                         </v-card>
                     </v-col>
@@ -102,6 +114,7 @@
 
       </v-navigation-drawer>
       <ButtonBack/>
+      <RatingLegend/>
     </div>
 </template>
 
@@ -109,13 +122,18 @@
 import Experts from '@/components/expert/ExpertIcons.vue'
 import Card from "@/components/stripe/Card.vue";
 import ButtonBack from "@/components/utils/ButtonBack.vue";
+import RatingLegend from "@/components/utils/RatingLegend";
+import { RatingAsTitle } from '@/helpers/Rating.js';
+import { Get as _topicRepo_Get } from "@/store/topic/repository.js";
+import moment from 'moment';
 
 export default {
     name: 'SelectedTopic',
     components: {
         Experts,
         Card,
-        ButtonBack
+        ButtonBack,
+        RatingLegend
     },
     data () {
         return {
@@ -129,8 +147,9 @@ export default {
             card: null,
 
             showSuccess: false,
+            showOrderError: false,
             paymentVerification: "",
-            payloadSent: false
+            isSending: false
         }
     },
     created() {
@@ -141,18 +160,8 @@ export default {
         back() {
             history.back();
         },
-        getTopic(){
-            fetch("https://localhost:44343/api/topic/Get", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: this.$route.params.id
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                this.topic = jsonData;
-            });
+        async getTopic(){
+            this.topic = await _topicRepo_Get(this.$route.params.id);
         },
         async getUser(){ // Bad form but having issues accessing the global user property for its Id
             const accessToken = await this.$auth.getAccessToken();
@@ -236,13 +245,12 @@ export default {
             this.loading(true);
             this.stripe
                 .confirmCardPayment(clientSecret, {
-                receipt_email: document.getElementById('email').value,
+                receipt_email: this.user.email,//document.getElementById('email').value,
                 payment_method: {
                     card: this.card
                 }
                 })
                 .then(result => {
-                    document.getElementById("submit").disabled = false;
                     if (result.error) {
                         // Show error to your customer
                         this.showError(result.error.message);
@@ -255,18 +263,21 @@ export default {
         /* ------- UI helper methods ------- */
         async orderComplete(paymentIntentId){
             // Shows a success message when the payment is complete
-            this.loading(false);
-            this.showSuccess = true;
             this.paymentVerification = paymentIntentId;
             //Create the stutor call intent in the database.
+            let date = new Date;
             var order = {
-                clientId: this.user.sub,
-                expertId: this.selectedExpertId,
-                topicId: this.topic.Id,
-                charge: this.selectedExpert.Price,
-                submitted: new Date
+                paymentIntentId: paymentIntentId,
+                userId: this.user.sub,
+                expertId: this.selectedExpert.expertId,
+                topicId: this.topic.id,
+                topicName: this.topic.name,
+                charge: this.selectedExpert.price,
+                submitted: date,
+                friendlySubmitted: moment.utc(date).local().format('MMMM Do YYYY'),
+                userPhone: this.user.MobilePhone,
+                userEmail: this.user.email
             }
-            
             const accessToken = await this.$auth.getAccessToken();
             fetch("https://localhost:44343/api/order/SubmitIntent", {
                 method: "POST",
@@ -276,9 +287,14 @@ export default {
                 },
                 body: JSON.stringify(order)
             })
-            .then((response) => {
-                if(response.ok){
-                    this.payloadSent = true;
+            .then(response => response.json())
+            .then(jsonData => {
+                if(jsonData > 0){
+                    this.loading(false);
+                    document.getElementById("submit").disabled = false;
+                    this.showSuccess = true;
+                }else{
+                    this.showOrderError = true;
                 }
             });
         },
@@ -316,6 +332,9 @@ export default {
         AsFixedDecimal: function(decimal){
             return decimal != null ? decimal.toFixed(2) : null;
         },
+        RatingAsTitle(rating) {
+            return RatingAsTitle(rating);
+        }
     }
 }
 </script>
@@ -323,7 +342,7 @@ export default {
 <style scoped>
     .main {
         min-height: 100vh;
-        background-color: #F7F8FC;
+        background-image: url('../assets/selected-topic-background.jpg');
     }
 
     h1 {
@@ -357,5 +376,10 @@ export default {
         position: fixed;
         bottom: 5%;
         left: 2%;
+    }
+
+    .star {
+        height: 30px;
+        width: 30px;
     }
 </style>

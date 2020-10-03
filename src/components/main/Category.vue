@@ -53,6 +53,10 @@ export default {
         opacity: 1;
     }
 
+    .visible {
+        opacity: 1;
+    }
+
     .text {
         color: white;
         font-size: 1.5em;

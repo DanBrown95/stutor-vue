@@ -12,9 +12,20 @@
                                 <v-subheader>* Desired Topic: </v-subheader>
                             </v-col>
                             <v-col cols="9">
-                                <v-autocomplete v-model="selectedTopic" :items="topics" item-text="Name" label="Available Topics" placeholder="Start typing for topics" 
-                                                prepend-icon="mdi-database-search" return-object :error-messages="topicErrors" 
-                                                @change="$v.selectedTopic.$touch()" @blur="$v.selectedTopic.$touch()" required></v-autocomplete>
+                                <v-autocomplete v-model="selectedTopic" 
+                                                :items="topics" item-text="name" 
+                                                label="Available Topics" 
+                                                placeholder="Start typing for topics" 
+                                                prepend-icon="mdi-database-search" 
+                                                return-object 
+                                                :error-messages="topicErrors" 
+                                                @change="$v.selectedTopic.$touch()" 
+                                                @blur="$v.selectedTopic.$touch()" 
+                                                :search-input.sync="topicSearch"
+                                                :hide-no-data="true"
+                                                required
+                                >
+                                </v-autocomplete>
                             </v-col>
                         </v-row>
 
@@ -24,13 +35,13 @@
                             </v-col>
                             <v-col cols="9">
                                 <v-btn-toggle color="primary" v-model="selectedDays" multiple>
-                                    <v-btn rounded value="MON">Monday</v-btn>
-                                    <v-btn rounded value="TUE">Tuesday</v-btn>
-                                    <v-btn rounded value="WED">Wednesday</v-btn>
-                                    <v-btn rounded value="THU">Thursday</v-btn>
-                                    <v-btn rounded value="FRI">Friday</v-btn>
-                                    <v-btn rounded value="SAT">Saturday</v-btn>
-                                    <v-btn rounded value="SUN">Sunday</v-btn>
+                                    <v-btn rounded value="mon">Monday</v-btn>
+                                    <v-btn rounded value="tue">Tuesday</v-btn>
+                                    <v-btn rounded value="wed">Wednesday</v-btn>
+                                    <v-btn rounded value="thu">Thursday</v-btn>
+                                    <v-btn rounded value="fri">Friday</v-btn>
+                                    <v-btn rounded value="sat">Saturday</v-btn>
+                                    <v-btn rounded value="sun">Sunday</v-btn>
                                 </v-btn-toggle>
                             </v-col>
                         </v-row>
@@ -179,7 +190,7 @@
                             </v-col>
                         </v-row>
 
-                        <v-row>
+                        <v-row v-if="!isExpert">
                             <v-col cols="3">
                                 <v-subheader>* Timezone</v-subheader>
                             </v-col>
@@ -189,7 +200,8 @@
                                     :items="tz_timezones"
                                     menu-props="auto"
                                     label="Select your local timezone"
-                                    value="value"
+                                    item-value="id"
+                                    item-text="friendlyName"
                                     prepend-icon="mdi-earth"
                                     single-line
                                     :error-messages="timezoneErrors" 
@@ -221,7 +233,11 @@
                                 <v-subheader>* Resume: </v-subheader>
                             </v-col>
                             <v-col cols="9">
-                                <v-file-input v-model="resumes" accept=".doc,.docx,.pdf" multiple chips required></v-file-input>
+                                <v-file-input v-model="resumes" accept=".doc,.docx,.pdf" multiple chips required
+                                                @input="$v.resumes.$touch()" 
+                                                @blur="$v.resumes.$touch()" 
+                                                :error-messages="resumeErrors"
+                                ></v-file-input>
                             </v-col>
                         </v-row>
 
@@ -239,7 +255,11 @@
                                 <v-subheader>Certifications/Degrees: </v-subheader>
                             </v-col>
                             <v-col cols="9">
-                                <v-text-field v-model="certifications"></v-text-field>
+                                <v-text-field v-model="certifications" 
+                                            @input="$v.certifications.$touch()" 
+                                            @blur="$v.certifications.$touch()" 
+                                            :error-messages="certificationErrors">
+                                </v-text-field>
                             </v-col>
                         </v-row>
 
@@ -248,7 +268,7 @@
                                 <v-subheader>Years of Experience: </v-subheader>
                             </v-col>
                             <v-col cols="9" style="text-align: left;">
-                                    <VueNumberInput v-model="yearsOfExperience" :min="1" inline center controls ></VueNumberInput>
+                                    <VueNumberInput v-model="yearsOfExperience" :min="0" inline center controls ></VueNumberInput>
                             </v-col>
                         </v-row>
 
@@ -257,7 +277,12 @@
                                 <v-subheader>Additional Notes: </v-subheader>
                             </v-col>
                             <v-col cols="9">
-                                <v-textarea v-model="notes" placeholder="Add any additional qualifications or useful notes for us to consider here."></v-textarea>
+                                <v-textarea v-model="notes" 
+                                            placeholder="Add any additional qualifications or useful notes for us to consider here."
+                                            @input="$v.notes.$touch()" 
+                                            @blur="$v.notes.$touch()" 
+                                            :error-messages="notesErrors"
+                                ></v-textarea>
                             </v-col>
                         </v-row>
                         
@@ -269,8 +294,8 @@
                         <v-row>
                             <vue-recaptcha
                                 ref="invisibleRecaptcha"
-                                @verify="onVerify"
-                                @expired="onExpired"
+                                @verify="onCaptchaVerified"
+                                @expired="onCaptchaExpired"
                                 size="invisible"
                                 :sitekey="sitekey">
                             </vue-recaptcha>
@@ -283,7 +308,7 @@
         <v-container v-else>
             <v-row dense class="justify-center">
                 <v-col cols="6" class="text-center">
-                    <h2 style="margin-top: 8em; margin-bottom: 3em;">You application has been sent. We will contact you shortly</h2>
+                    <h2 style="margin-top: 8em; margin-bottom: 3em;">{{submitResponse}}</h2>
                 </v-col>
             </v-row>
         </v-container>
@@ -292,9 +317,12 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required } from "vuelidate/lib/validators";
+import { required, maxLength, requiredIf } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import { GetBySubstring as _topicRepo_GetBySubstring } from "@/store/topic/repository.js";
+import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
+import { Register as _expertRepo_Register, UploadDocuments as _expertRepo_UploadDocuments } from '@/store/expert/repository.js';
 
 export default {
     name: 'expertRegistration',
@@ -307,8 +335,18 @@ export default {
 
     validations: {
         selectedTopic: { required },
-        selectedTimezone: { required },
+        selectedTimezone: { // Timezone not required if already an expert. Will save as null and use their existing db timezone setting
+            required: requiredIf(function(){
+                return !this.isExpert;
+            })
+        },
         resumes: { required },
+        certifications: {
+            maxLength: maxLength(500)
+        },
+        notes: {
+            maxLength: maxLength(500)
+        },
         agreeToTerms: {
             checked (val) {
                 return val
@@ -320,7 +358,7 @@ export default {
         return {
             sitekey: "6LdVY6YZAAAAAKzj2aDl_Rbw1ctMc7MKdeBwLZL8",
             topics: [],
-            search: null,
+            topicSearch: "",
 
             selectedTopic: {},
             selectedDays: [],
@@ -346,17 +384,41 @@ export default {
             notes: "",
             agreeToTerms: false,
 
-            submitted: false
+            submitted: false,
+            submitResponse: ""
         }
     },
     mounted() {
-        this.topics = this.$store.getters.allTopics;
-        this.tz_timezones = this.$store.getters.getTimezones;
+        // Get all available timezones
+        this.getTimezones();
+    },
+    watch: {
+        topicSearch(val){ 
+            this.getTopics(val);
+        }
     },
     computed: {
+        isExpert(){
+            if(this.$attrs.user.groups != null){
+                return this.$attrs.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+            }
+            return false;
+        },
+        certificationErrors () {
+            const errors = []
+            if(!this.$v.certifications.$dirty) return errors
+            !this.$v.certifications.maxLength && errors.push("Must be less than 500 characters")
+            return errors
+        },
+        notesErrors () {
+            const errors = []
+            if(!this.$v.notes.$dirty) return errors
+            !this.$v.notes.maxLength && errors.push("Must be less than 500 characters")
+            return errors
+        },
         formValid () {
-            var topicValid = (this.selectedTopic != null)
-            var timezoneValid = (this.selectedTimezone != null && this.selectedTimezone != '')
+            var topicValid = (this.selectedTopic != null && this.selectedTopic != {})
+            var timezoneValid = this.isExpert || (this.selectedTimezone != null && this.selectedTimezone != '')
             var daysValid = (this.selectedDays != [] && this.selectedDays.length > 0)
             var weekdayTimesValid = true;
             if (this.weekdaysSelected){
@@ -367,15 +429,17 @@ export default {
                 weekendTimesValid = !(this.weekendStartHours == null || this.weekendEndHours == null)
             }
             var resumeValid = (this.resumes != null && this.resumes.length > 0)
+            var notesValid = (this.notes.length < 500)
+            var certificationsValid = (this.certifications.length < 500)
             var checkboxValid = this.agreeToTerms
-            return (topicValid && timezoneValid && daysValid && weekdayTimesValid && weekendTimesValid && resumeValid && checkboxValid);
+            return (topicValid && timezoneValid && daysValid && weekdayTimesValid && weekendTimesValid && resumeValid && certificationsValid && notesValid && checkboxValid);
         },
         weekdaysSelected: function() {
-            var weekdays = ["MON","TUE","WED","THU","FRI"]
+            var weekdays = ["mon","tue","wed","thu","fri"]
             return this.selectedDays.some(x => weekdays.includes(x));
         },
         weekendsSelected: function() {
-            var weekends = ["SAT","SUN"]
+            var weekends = ["sat","sun"]
             return this.selectedDays.some(x => weekends.includes(x));
         },
         agreeToTermsErrors () {
@@ -404,6 +468,16 @@ export default {
         }
     },
     methods: {
+        async getTopics(val) {
+            if(val && val.length > 1){
+                this.topics = await _topicRepo_GetBySubstring(val);
+            }else{
+                this.topics = [];
+            }
+        },
+        async getTimezones(){
+            this.tz_timezones = await _timezoneRepo_GetAll();
+        },
         verify () {
             this.$v.$touch();
             if (!this.$v.$invalid) {
@@ -411,30 +485,20 @@ export default {
                 this.$refs.invisibleRecaptcha.execute()
             }
         },
-        onVerify: function (response) {
-            this.submit(response);
-            //send data to backend
+        onCaptchaVerified: function (recaptchaToken) {
+            this.$refs.invisibleRecaptcha.reset();
+            this.submit(recaptchaToken);
         },
-        onExpired: function () {
+        onCaptchaExpired: function () {
             this.$refs.invisibleRecaptcha.reset()
         },
-        async submit(recaptchaResponse) {
-            console.log("captcha response", recaptchaResponse);
-            var documents = new FormData()
-            for (let index = 0; index < this.resumes.length; index++) {
-                const element = this.resumes[index];
-                documents.append('resumes[]', element, 'resume'+index);
-            }
-
-            for (let index = 0; index < this.transcripts.length; index++) {
-                const element = this.transcripts[index];
-                console.log("element", element);
-                documents.append('transcripts[]', element, 'transcript'+index);
-            }
+        async submit(recaptchaToken) {
 
             var formData = {
-                captcha: recaptchaResponse,
-                selectedTopicId: this.selectedTopicId,
+                captcha: recaptchaToken,
+                userId: this.$attrs.user.sub,
+                topicId: this.selectedTopic.id,
+                timezoneId: this.selectedTimezone,
                 selectedDays: this.selectedDays,
                 weekdayHours: this.weekdayStartHours + "-" + this.weekdayEndHours,
                 weekendHours: this.weekendStartHours + "-" + this.weekendEndHours,
@@ -446,32 +510,32 @@ export default {
             }            
             
             const accessToken = await this.$auth.getAccessToken();
-            fetch("https://localhost:44343/api/expert/UploadDocuments", {
-                method: "POST",
-                headers: {
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: documents
-            })
-            .then( (response) => {
-                console.log("posted documents:", response);
-                if(response.ok){
-                    fetch('https://localhost:44343/api/expert/Register', {
-                        method: "POST",
-                        headers: {
-                            "Authorization": `Bearer ${accessToken}`,
-                        },
-                        body: JSON.stringify(formData)
-                    })
-                    .then ((response) => {
-                        console.log("form data posted", response);
-                        if(response.ok){
-                            this.submitted = true;
-                        }
-                    });
+        
+            // Submit the application and pass along the id returned
+            var applicationId = await _expertRepo_Register(formData, accessToken);
+        
+            if(applicationId !== 0){
+                // Submit the uploaded documents
+                
+                var documents = new FormData()
+                for (let index = 0; index < this.resumes.length; index++) {
+                    const element = this.resumes[index];
+                    documents.append('resumes[]', element, 'resume-'+applicationId+'-'+index);
                 }
-            });
 
+                if(this.transcripts) {
+                    for (let index = 0; index < this.transcripts.length; index++) {
+                        const element = this.transcripts[index];
+                        documents.append('transcripts[]', element, 'transcript-'+applicationId+'-'+index);
+                    }
+                }
+
+                var docUploadResponse = await _expertRepo_UploadDocuments(documents, accessToken);
+
+                this.submitResponse = (docUploadResponse.ok) ? "Your application has been submitted. We will contact you shortly." : "There was an issue submitting your application. Please try again shortly.";
+                this.submitted = true;
+            }
+            
         }// End of submit
     }
 }

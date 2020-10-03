@@ -40,7 +40,15 @@
                 </div>
             </div>
         </div> <!-- End of top -->
-        <div class="middle">
+        <v-container id="faq-section">
+            <h3>FAQ's</h3>
+            <v-row justify="center">
+                <v-col cols="7">
+                    <VueFaqAccordion borderColor="#DEA800" activeColor="#D0021B" :items="faqs"/>
+                </v-col>
+            </v-row>
+        </v-container>
+        <div id="contact-section" style="padding-top: 2em;">
             <ContactForm></ContactForm>
         </div>
         <div class="bottom">
@@ -52,16 +60,23 @@
 <script>
 import { mdiEmailMarkAsUnread, mdiCellphoneAndroid, mdiMapMarker } from '@mdi/js';
 import ContactForm from "@/components/shared/ContactForm.vue";
+import VueFaqAccordion from 'vue-faq-accordion';
+import faqs from '@/store/faq/repository.js';
 
 export default {
     components: {
-        ContactForm
+        ContactForm,
+        VueFaqAccordion
     },
-    data: () => ({
-      emailSvgPath: mdiEmailMarkAsUnread,
-      phoneSvgPath: mdiCellphoneAndroid,
-      locationSvgPath: mdiMapMarker
-    }),
+    data() {
+        return { 
+            emailSvgPath: mdiEmailMarkAsUnread,
+            phoneSvgPath: mdiCellphoneAndroid,
+            locationSvgPath: mdiMapMarker,
+
+            faqs: faqs.faqs,
+        }
+    }
 }
 </script>
 
@@ -71,9 +86,27 @@ export default {
         text-align: center;
         padding-bottom: 5em;
     }
-    .middle {
-        /* height: 600px; */
+
+    #faq-section {
+        min-height: 600px;
+        padding-top: 4em;
     }
+
+    #faq-section h3 {
+        width: 100%;
+        text-align: center;
+        margin-bottom: 1em;
+        font-size: 2em;
+    }
+
+    #faq-section div.row {
+        margin-bottom: 3em;
+    }
+
+    #contact-section {
+        background-color: #E9ECEE;
+    }
+
     .bottom {
         height: 500px;
     }

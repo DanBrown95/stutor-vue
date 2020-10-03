@@ -2,9 +2,9 @@
     <div class="search">
         <v-autocomplete class="vtext"
             v-model="selectedTopic"
-            :items="getTopics"
-            item-text="Name"
-            item-value="Id"
+            :items="topics"
+            item-text="name"
+            item-value="id"
             :outlined="false"
             :rounded="true"
             :solo="true"
@@ -22,27 +22,34 @@
 </template>
 
 <script>
+import { GetBySubstring as _topicRepo_GetBySubstring } from '@/store/topic/repository.js';
+
 export default {
     name: "Search",
     data: function () {
         return {
             searchInput: null,
             selectedTopic: null,
+            topics: []
         }
     },
     methods: {
         topicSelected() {
             if (this.selectedTopic != null) {
-                this.$router.push({name: 'Topic', params: {id: this.selectedTopic.Id} });
+                this.$router.push({name: 'Topic', params: {id: this.selectedTopic.id} });
+            }
+        },
+        async getTopics(val) {
+            if(val && val.length > 1){
+                this.topics = await _topicRepo_GetBySubstring(val);
+            }else{
+                this.topics = [];
             }
         }
     },
-    computed: {
-        getTopics: function() { // Ensure atleast 2 characters are typed before showing any topics.
-            if(this.searchInput && this.searchInput.length > 1){
-                return this.$store.getters.allTopics
-            }
-            return []
+    watch: {
+        searchInput(val){ 
+            this.getTopics(val);
         }
     }
 }

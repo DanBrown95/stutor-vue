@@ -28,6 +28,7 @@
 
 <script>
 import StarRating from 'vue-star-rating'
+import { UpdateFeedback as _utilsRepo_UpdateFeedback } from '@/store/utils/repository.js';
 
 export default {
     name: 'FeedbackModal',
@@ -52,27 +53,14 @@ export default {
         },
         async save(){
             const accessToken = await this.$auth.getAccessToken();
-            fetch("https://localhost:44343/api/order/updateFeedback", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${accessToken}`
-                },
-                body: JSON.stringify({
-                    Id: this.orderId,
-                    rating: this.updatedRating,
-                    additionalInfo: this.updatedInfo
-                })
-            })
-            .then(response => response.json())
-            .then(jsonData => {
-                if(jsonData.status === 200){
-                    this.$emit('onSave');
-                    this.$emit('input');
-                }else{
-                    alert(jsonData.error)
-                }
-            });
+            
+            var response = await _utilsRepo_UpdateFeedback(this.orderId, this.updatedRating, this.updatedInfo, accessToken);
+            if(response.status === 200){
+                this.$emit('onSave');
+                this.$emit('input');
+            }else{
+                alert(response.error)
+            }
         },
         clear() {
             this.$emit('input');

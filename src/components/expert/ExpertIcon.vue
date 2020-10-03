@@ -4,13 +4,15 @@
             <img class="image">
         </a>
         <div class="overlay">
-            <div class="text">${{ this.expert.price.toFixed(2) }}</div>
-            <div class="text">{{ this.expert.rating }}/5 Rating</div>
+            <div class="text" style="color: green;">${{ this.expert.price.toFixed(2) }}</div>
+            <div class="text">{{ this.expert.rating | RatingAsTitle }}</div>
         </div>
     </div>
 </template>
 
 <script>
+import { RatingAsTitle } from '@/helpers/Rating.js'
+
 export default {
     name: 'ExpertIcon',
     props: ['expert'],
@@ -21,6 +23,11 @@ export default {
         iconPressed: function(){
             this.$emit("clicked", this.expert);
         }
+    },
+    filters: {
+        RatingAsTitle(rating) {
+            return RatingAsTitle(rating);
+        }
     }
 }
 </script>
@@ -30,7 +37,7 @@ export default {
         display: inline-block;
         width: 80px;
         height: auto;
-        margin: 0px 2.5em;
+        margin: 10px 2.5em;
     }
 
     .image {
