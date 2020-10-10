@@ -37,7 +37,7 @@
 <script>
 import Order from "@/components/user/Order.vue";
 import Pagination from "@/components/utils/Pagination.vue";
-import { CompareBySubmittedThenStatus } from '@/helpers/Compare.js';
+import { CompareBySubmitted } from '@/helpers/Compare.js';
 import { GetAllByUserId as _orderRepo_GetAllByUserId} from '@/store/order/repository.js';
 
 export default {
@@ -72,7 +72,7 @@ export default {
         async getOrders(){
             const accessToken = await this.$auth.getAccessToken();
             const unordered = await _orderRepo_GetAllByUserId(this.user.sub, accessToken);
-            this.allOrders = unordered.sort(CompareBySubmittedThenStatus);
+            this.allOrders = unordered.sort(CompareBySubmitted);
         },
         paginationChange(page){
             this.currentPage = page;

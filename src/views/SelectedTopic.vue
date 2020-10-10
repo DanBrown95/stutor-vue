@@ -21,10 +21,6 @@
                         <v-card-subtitle class="text-center">Confirm your purchase and we will conect you with an expert!</v-card-subtitle>
 
                         <v-card-title class="justify-center">
-                            Price: ${{selectedExpert.price | AsFixedDecimal}}
-                        </v-card-title>
-
-                        <v-card-title class="justify-center">
                             Description: {{topic.name}} Service by Stutor
                         </v-card-title>
 
@@ -35,6 +31,27 @@
                             </div>
                         </v-card-title>
 
+                    </v-card>
+                    </v-col>
+                </v-row>
+            </v-container>
+
+            <v-container v-if="!showSuccess && selectedExpert && !showOrderError"> <!-- Order Costs section -->
+                <v-row justify="center" dense>
+                    <v-col cols="9">
+                    <v-card color="white" dark flat>
+
+                        <v-card-text style="text-align: right; fontSize: 18px; color: black;">
+                            Expert Price: ${{selectedExpert.price | AsFixedDecimal}}
+                        </v-card-text>
+                        <v-spacer/>
+                        <v-card-text style="text-align: right; fontSize: 18px; color: black;">
+                            Service Fees: ${{2.50 | AsFixedDecimal}}
+                        </v-card-text>
+                        <v-spacer/>
+                        <v-card-text style="text-align: center; fontSize: 18px; color: black;">
+                            Total: ${{2.50 + selectedExpert.price | AsFixedDecimal}}
+                        </v-card-text>
                     </v-card>
                     </v-col>
                 </v-row>
@@ -183,9 +200,8 @@ export default {
             
             // The items the customer wants to buy
             var purchase = {
-                items: [{ id: this.selectedExpert.id }]
+                expertId: this.selectedExpert.expertId
             };
-
             const accessToken = await this.$auth.getAccessToken();
             // Disable the button until we have Stripe set up on the page
             document.querySelector("button").disabled = true;
@@ -272,7 +288,7 @@ export default {
                 expertId: this.selectedExpert.expertId,
                 topicId: this.topic.id,
                 topicName: this.topic.name,
-                charge: this.selectedExpert.price,
+                price: this.selectedExpert.price,
                 submitted: date,
                 friendlySubmitted: moment.utc(date).local().format('MMMM Do YYYY'),
                 userPhone: this.user.MobilePhone,

@@ -131,3 +131,21 @@ export function ToggleIsActive(isActive, userId) {
     });
     return result;
 }
+
+export function UpdateTimezone(userId, timezoneId) {
+    const result = fetch("https://localhost:44343/api/Expert/UpdateTimezone", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            userId: userId,
+            timezoneId: timezoneId
+        })
+    })
+    .then(response => response.json())
+    .then(jsonData => {
+        return jsonData;
+    });
+    return result;
+}

@@ -84,7 +84,8 @@ import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
          ExpertTopics as _expertRepo_ExpertTopics,
          GetActiveStatus as _expertRepo_GetActiveStatus,
-         ToggleIsActive as _expertRepo_ToggleIsActive } from '@/store/expert/repository.js';
+         ToggleIsActive as _expertRepo_ToggleIsActive, 
+         UpdateTimezone as _expertRepo_UpdateTimezone } from '@/store/expert/repository.js';
 
 export default {
     name: 'Account',
@@ -122,10 +123,11 @@ export default {
         user() {
             this.populateData();
         },
-        selectedTimezoneId(newValue, oldValue) {
-            // change the experts timezone in the db
-            // if successful
-            this.showSuccess = (oldValue);
+        async selectedTimezoneId(newValue, oldValue) {
+            if(oldValue != null && oldValue !== newValue){
+                var success = await _expertRepo_UpdateTimezone(this.user.sub, newValue);
+                this.showSuccess = (success);
+            }
         }
     },
     methods: {

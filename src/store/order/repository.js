@@ -31,8 +31,9 @@ export function SubmitPasskey(id, clientPasskey, userId, accessToken){
         },
         body: JSON.stringify(editedItem)
     })
-    .then((response) => {
-        return response;
+    .then(response => response.json())
+    .then(jsonData => {
+        return jsonData;
     });
     return result;
 }
