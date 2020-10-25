@@ -52,7 +52,7 @@ export default {
             this.$emit('input');
         },
         async save(){
-            const accessToken = await this.$auth.getAccessToken();
+            const accessToken = await this.$auth.getTokenSilently();
             
             var response = await _utilsRepo_UpdateFeedback(this.orderId, this.updatedRating, this.updatedInfo, accessToken);
             if(response.status === 200){

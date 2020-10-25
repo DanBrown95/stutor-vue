@@ -38,7 +38,7 @@
 import Order from "@/components/user/Order.vue";
 import Pagination from "@/components/utils/Pagination.vue";
 import { CompareBySubmitted } from '@/helpers/Compare.js';
-import { GetAllByUserId as _orderRepo_GetAllByUserId} from '@/store/order/repository.js';
+import { GetAllByUserEmail as _orderRepo_GetAllByUserEmail} from '@/store/order/repository.js';
 
 export default {
     name: 'OrderHistory',
@@ -57,6 +57,11 @@ export default {
             loading: true
         }
     },
+    created() {
+        if(this.user){
+            this.getOrders();
+        }
+    },
     computed: {
         totalPagesForPagination() {
             return Math.ceil(this.totalOrders / this.ordersPerPage);
@@ -70,9 +75,11 @@ export default {
     },
     methods: {
         async getOrders(){
-            const accessToken = await this.$auth.getAccessToken();
-            const unordered = await _orderRepo_GetAllByUserId(this.user.sub, accessToken);
+            this.loading = true;
+            const accessToken = await this.$auth.getTokenSilently();
+            const unordered = await _orderRepo_GetAllByUserEmail(this.user.email, accessToken);
             this.allOrders = unordered.sort(CompareBySubmitted);
+            this.loading = false;
         },
         paginationChange(page){
             this.currentPage = page;
@@ -84,9 +91,7 @@ export default {
             this.currentPage = 1;
         },
         user(){
-            this.loading = true;
             this.getOrders();
-            this.loading = false;
         }
     }
 }

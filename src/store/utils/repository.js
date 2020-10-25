@@ -1,8 +1,9 @@
-export function SendEmail(payload) {
+export function SendEmail(payload, accessToken) {
     const result = fetch("https://localhost:44343/api/contact/SendEmailAsync", {
         method: "POST",
         headers: {
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
         },
         body: JSON.stringify(payload)
         })

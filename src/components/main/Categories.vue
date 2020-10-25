@@ -14,7 +14,7 @@
 
 <script>
 import Category from '@/components/main/Category.vue'
-import { ALL_CATEGORIES_QUERY } from '../../graphql/category/queries'
+import { GetAll as _categoryRepo_GetAll } from '@/store/category/repository.js';
 
 export default {
     name: 'Categories',
@@ -26,15 +26,16 @@ export default {
             categories: []
         }
     },
-    apollo: {
-      categories: {
-        query: ALL_CATEGORIES_QUERY
-      }
+    created() {
+      this.getAllCategories();
     },
     mounted() {
         this.applyOverlay();
     },
     methods: {
+        async getAllCategories() {
+            this.categories = await _categoryRepo_GetAll();
+        },
         applyOverlay() { // automatically show/hide overlay on a timer
             setTimeout(function tick() {
                 var elements = document.getElementsByClassName("overlay");

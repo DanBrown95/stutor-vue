@@ -171,7 +171,7 @@ export default {
     },
     created() {
         this.getTopic();
-        this.getUser();
+        this.user = this.$auth.user;
     },
     methods: {
         back() {
@@ -179,10 +179,6 @@ export default {
         },
         async getTopic(){
             this.topic = await _topicRepo_Get(this.$route.params.id);
-        },
-        async getUser(){ // Bad form but having issues accessing the global user property for its Id
-            const accessToken = await this.$auth.getAccessToken();
-            this.user = await this.$auth.getUser(accessToken);
         },
         expertSelected: function(expert) {
             this.selectedExpert = expert;
@@ -200,9 +196,10 @@ export default {
             
             // The items the customer wants to buy
             var purchase = {
-                expertId: this.selectedExpert.expertId
+                expertId: this.selectedExpert.expertId,
+                topicId: this.topic.id
             };
-            const accessToken = await this.$auth.getAccessToken();
+            const accessToken = await this.$auth.getTokenSilently();
             // Disable the button until we have Stripe set up on the page
             document.querySelector("button").disabled = true;
             fetch("https://localhost:44343/create-payment-intent", {
@@ -284,17 +281,15 @@ export default {
             let date = new Date;
             var order = {
                 paymentIntentId: paymentIntentId,
-                userId: this.user.sub,
                 expertId: this.selectedExpert.expertId,
                 topicId: this.topic.id,
                 topicName: this.topic.name,
                 price: this.selectedExpert.price,
                 submitted: date,
                 friendlySubmitted: moment.utc(date).local().format('MMMM Do YYYY'),
-                userPhone: this.user.MobilePhone,
                 userEmail: this.user.email
             }
-            const accessToken = await this.$auth.getAccessToken();
+            const accessToken = await this.$auth.getTokenSilently();
             fetch("https://localhost:44343/api/order/SubmitIntent", {
                 method: "POST",
                 headers: {

@@ -399,8 +399,8 @@ export default {
     },
     computed: {
         isExpert(){
-            if(this.$attrs.user.groups != null){
-                return this.$attrs.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+            if(this.$attrs.user['http://stutor.com/roles'] != null){
+                return this.$attrs.user['http://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
             }
             return false;
         },
@@ -496,7 +496,7 @@ export default {
 
             var formData = {
                 captcha: recaptchaToken,
-                userId: this.$attrs.user.sub,
+                userEmail: this.$attrs.user.email,
                 topicId: this.selectedTopic.id,
                 timezoneId: this.selectedTimezone,
                 selectedDays: this.selectedDays,
@@ -509,7 +509,7 @@ export default {
                 notes: this.notes
             }            
             
-            const accessToken = await this.$auth.getAccessToken();
+            const accessToken = await this.$auth.getTokenSilently();
         
             // Submit the application and pass along the id returned
             var applicationId = await _expertRepo_Register(formData, accessToken);

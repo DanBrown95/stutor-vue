@@ -103,10 +103,15 @@ export default {
             showSuccess: false
         }
     },
+    created(){
+        if(this.user){
+            this.populateData();
+        }
+    },
     computed: {
         isExpert: function(){
-            if(this.user.groups != null){
-                return this.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+            if(this.user['https://stutor.com/roles'] != null){
+                return this.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
             }
             return false;
         },
@@ -125,7 +130,7 @@ export default {
         },
         async selectedTimezoneId(newValue, oldValue) {
             if(oldValue != null && oldValue !== newValue){
-                var success = await _expertRepo_UpdateTimezone(this.user.sub, newValue);
+                var success = await _expertRepo_UpdateTimezone(this.user.email, newValue);
                 this.showSuccess = (success);
             }
         }
@@ -138,19 +143,19 @@ export default {
                 this.timezones = await _timezoneRepo_GetAll();
 
                 // Get the experts timezone
-                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user.sub);
+                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user.email);
 
                 // Get the experts expertTopics
-                this.expertTopics = await _expertRepo_ExpertTopics(this.user.sub);
+                this.expertTopics = await _expertRepo_ExpertTopics(this.user.email);
 
                 // Get the experts Active status
-                this.isActive = await _expertRepo_GetActiveStatus(this.user.sub);
+                this.isActive = await _expertRepo_GetActiveStatus(this.user.email);
             }
 
         },
         async toggleIsActive() {
             // toggle the active status
-            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user.sub);
+            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user.email);
         },
         deactivateExpert() {
             let message = "Are you sure you want to remove your expert status?";

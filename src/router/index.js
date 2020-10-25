@@ -1,28 +1,21 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Auth from '@okta/okta-vue'
+import { authGuard } from "../auth/authGuard";
 
 Vue.use(VueRouter)
 
   const routes = [
   {
-    path: '/implicit/callback', 
-    component: Auth.handleCallback()
-  },
-  {
     path: '/',
     name: 'Main',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue'),
-    meta: {
-      requiresAuth: false
-    },
+    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue')
   },
   {
     path: '/topic/:id',
     name: 'Topic',
     component: () => import('../views/SelectedTopic.vue'),
+    beforeEnter: authGuard,
     meta: {
-      requiresAuth: true,
       colorNav: true
     },
   },
@@ -40,9 +33,7 @@ Vue.use(VueRouter)
     path: '/expert/register',
     name: 'ExpertRegistration',
     component: () => import('../views/expert/Register.vue'),
-    meta: {
-      requiresAuth: true
-    },
+    beforeEnter: authGuard
   },
   {
     path: '/contactUs',
@@ -70,40 +61,24 @@ Vue.use(VueRouter)
     path: '/user/order-history',
     name: 'OrderHistory',
     component: () => import('../views/user/OrderHistory.vue'),
-    meta: {
-      requiresAuth: true
-    },
+    beforeEnter: authGuard
   },{
     path: '/resources/topic-request',
     name: 'TopicRequest',
     component: () => import('../views/topic/Request.vue'),
-    meta: {
-      requiresAuth: true
-    },
+    beforeEnter: authGuard
   },{
     path: '/expert/acknowledge',
     name: 'Acknowledge',
     component: () => import('../views/expert/Acknowledgement.vue'),
-    meta: {
-      requiresAuth: true
-    }
+    beforeEnter: authGuard
   },{
     path: '/user/account',
     name: 'UserAccount',
     component: () => import('../views/user/Account.vue'),
-    meta: {
-      requiresAuth: true
-    }
+    beforeEnter: authGuard
   }
 ]
-
-Vue.use(Auth, {
-  issuer: 'https://dev-870310.okta.com/oauth2/default',
-  clientId: '0oap3ngm4mAP0SOV34x6',
-  redirectUri: 'http://localhost:8080/implicit/callback',
-  scopes: ['openid', 'profile', 'email', 'phone', 'groups'],
-  pkce: true
-})
 
 const router = new VueRouter({
   routes,
@@ -112,7 +87,5 @@ const router = new VueRouter({
     return { x: 0, y: 0 }
   }
 })
-
-router.beforeEach(Vue.prototype.$auth.authRedirectGuard())
 
 export default router

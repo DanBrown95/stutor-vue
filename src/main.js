@@ -4,21 +4,30 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VuejsDialog from "vuejs-dialog"
-import VueApollo from 'vue-apollo'
-import ApolloClient from 'apollo-boost'
 
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 import 'vuejs-dialog/dist/vuejs-dialog.min.css'
 
-const apolloClient = new ApolloClient({
-  uri: 'https://localhost:44343/graphql'
-})
+// Import the Auth0 configuration
+import { domain, clientId, audience } from "../auth_config.json";
 
-Vue.use(VueApollo)
-const apolloProvider = new VueApollo({
-  defaultClient: apolloClient,
-})
+// Import the plugin here
+import { Auth0Plugin } from "./auth";
+
+// Install the authentication plugin here
+Vue.use(Auth0Plugin, {
+  domain,
+  clientId,
+  audience,
+  onRedirectCallback: appState => {
+    router.push(
+      appState && appState.targetUrl
+        ? appState.targetUrl
+        : window.location.pathname
+    );
+  }
+});
 
 Vue.config.productionTip = false
 Vue.use(VuejsDialog);
@@ -27,6 +36,5 @@ new Vue({
   router,
   store,
   vuetify,
-  apolloProvider,
   render: h => h(App)
 }).$mount('#app')

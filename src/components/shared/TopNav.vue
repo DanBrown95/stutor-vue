@@ -10,12 +10,12 @@
             <!-- Login/Logout buttons -->
             <div id="auth" class="inline-block" >
                 <!-- show login when not authenticated -->
-                <v-btn class="ma-2 btn-login" v-if="!$parent.$parent.authenticated" rounded color="white" @click="login">Log in</v-btn>
+                <v-btn class="ma-2 btn-login" v-if="!$auth.isAuthenticated" rounded color="white" @click="login">Log in</v-btn>
                 <!-- show logout when authenticated -->
-                <div v-if="$parent.$parent.authenticated">
+                <div v-if="$auth.isAuthenticated">
                     <!-- <v-img :src="$auth.user.picture" width="30" height="30"> -->
                     <div class="user-dropdown">
-                      <span id="txtUser" class="text-muted font-weight-medium px-2">{{$parent.$parent.user.name}}</span>
+                      <span id="txtUser" class="text-muted font-weight-medium px-2">{{$auth.user.name}}</span>
                       <div class="user-dropdown-content">
                         <div class="top-row">
                           <v-tooltip bottom>
@@ -23,7 +23,7 @@
                               <!-- <img v-on="on" v-bind:src="$parent.$parent.user.picture"> -->
                               <img v-on="on" src="../../assets/user-icon.png">
                             </template>
-                            <span>{{$parent.$parent.user.email}}</span>
+                            <span>{{$auth.user.email}}</span>
                           </v-tooltip>
                           <router-link :to="{name: 'UserAccount'}">Account</router-link>
                         </div>
@@ -47,19 +47,18 @@ export default {
   },
   methods: {
     login () {
-      this.$auth.loginRedirect()
+      this.$auth.loginWithRedirect();
     },
     async logout () {
-      await this.$auth.logout()
-
-      // Navigate back to home
-      this.$router.push({ path: '/' })
+      this.$auth.logout({
+        returnTo: window.location.origin
+      });
     }
   },
   computed: {
     isExpert: function() {
-      if(this.$parent.$parent.user.groups != null){
-        return this.$parent.$parent.user.groups.map((a) => { return a.toLowerCase() }).includes('experts');
+      if(this.$auth.user['https://stutor.com/roles'] != null){
+        return this.$auth.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
       }
       return false;
     }

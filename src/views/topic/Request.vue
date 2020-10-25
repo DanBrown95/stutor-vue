@@ -197,7 +197,7 @@ export default {
                 categoryId: this.selectedCategoryId
             }
 
-            const accessToken = await this.$auth.getAccessToken();
+            const accessToken = await this.$auth.getTokenSilently();
             if(await _topicRepo_SubmitRequest(accessToken, payload) == 1){
                 this.requestResponse = "Topic request successfully sent!"
             }else{
