@@ -42,13 +42,13 @@ import { GetAllByUserEmail as _orderRepo_GetAllByUserEmail} from '@/store/order/
 
 export default {
     name: 'OrderHistory',
-    props: ['user'],
     components: {
         Order,
         Pagination
     },
     data(){
         return{
+            user: {},
             allOrders: [],
             totalOrders: 0,
             
@@ -58,9 +58,7 @@ export default {
         }
     },
     created() {
-        if(this.user){
-            this.getOrders();
-        }
+        this.user = this.$auth.user;
     },
     computed: {
         totalPagesForPagination() {

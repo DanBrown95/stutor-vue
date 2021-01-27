@@ -105,9 +105,9 @@ import { SubmitPasskey as _orderRepo_SubmitPasskey } from '@/store/order/reposit
 
 export default {
     name: "Acknowledgment",
-    props: ['user'],
     data(){
         return {
+            user: {},
             orders: [],
             headers: [
                 {
@@ -146,6 +146,7 @@ export default {
         }
     },
     created() {
+        this.user = this.$auth.user;
         this.getOrders();
     },
     methods: {

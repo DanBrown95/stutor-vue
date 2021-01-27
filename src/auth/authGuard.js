@@ -5,8 +5,15 @@ export const authGuard = (to, from, next) => {
 
   const fn = () => {
     // If the user is authenticated, continue with the route
-    if (authService.isAuthenticated) {
+    authService.getUserInfo();
+    if (authService.isAuthenticated && authService.user.email_verified && authService.user['https://stutor.com/phone_verified']) {
       return next();
+    }
+    else if(authService.isAuthenticated && to.name == "UserAccount"){ // allow users to access their account page without email or phone verification.
+      return next();
+    }
+    else if (authService.isAuthenticated && (!authService.user.email_verified || !authService.user['https://stutor.com/phone_verification'])){
+      return next({name: 'VerificationError'});
     }
 
     // Otherwise, log in

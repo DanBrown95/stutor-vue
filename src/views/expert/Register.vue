@@ -520,13 +520,13 @@ export default {
                 var documents = new FormData()
                 for (let index = 0; index < this.resumes.length; index++) {
                     const element = this.resumes[index];
-                    documents.append('resumes[]', element, 'resume-'+applicationId+'-'+index);
+                    documents.append('resumes[]', element, this.$attrs.user.email+'-'+applicationId+'-'+index+'-resume');
                 }
 
                 if(this.transcripts) {
                     for (let index = 0; index < this.transcripts.length; index++) {
                         const element = this.transcripts[index];
-                        documents.append('transcripts[]', element, 'transcript-'+applicationId+'-'+index);
+                        documents.append('transcripts[]', element, this.$attrs.user.email+'-'+applicationId+'-'+index+'-transcript');
                     }
                 }
 

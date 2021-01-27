@@ -3,12 +3,11 @@ import VueRouter from 'vue-router'
 import { authGuard } from "../auth/authGuard";
 
 Vue.use(VueRouter)
-
   const routes = [
   {
     path: '/',
     name: 'Main',
-    component: () => import(/* webpackChunkName: "about" */ '../views/Main.vue')
+    component: () => import('../views/Main.vue')
   },
   {
     path: '/topic/:id',
@@ -77,6 +76,10 @@ Vue.use(VueRouter)
     name: 'UserAccount',
     component: () => import('../views/user/Account.vue'),
     beforeEnter: authGuard
+  },{
+    path: '/shared/verification-error',
+    name: 'VerificationError',
+    component: () => import('../views/shared/VerificationError.vue')
   }
 ]
 

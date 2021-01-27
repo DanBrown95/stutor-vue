@@ -3,7 +3,82 @@
         <div id="banner">
             
         </div>
-        <div v-if="isExpert">
+        <div>
+            <v-row>
+                <v-col cols="2">
+                    <v-subheader class="float-right">Email </v-subheader>
+                </v-col>
+                <v-col cols="6">
+                    <v-text-field v-model="user.email" readonly disabled>
+                        <template v-slot:prepend>
+                            <v-icon color="blue">mdi-email</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-col>
+                <v-col v-if="!user.email_verified">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-chip v-bind="attrs" v-on="on" v-if="!user.email_verified"
+                                class="ma-2"
+                                color="red"
+                                text-color="white"
+                            >
+                                UNVERIFIED
+                            </v-chip>
+                        </template>
+                        <span>Please verify your email by clicking the link sent to the address listed.</span>
+                    </v-tooltip>
+                </v-col>
+                <v-col v-else>
+                    <v-chip
+                        class="ma-2"
+                        color="green"
+                        text-color="white"
+                    >
+                        VERIFIED
+                    </v-chip>
+                </v-col>
+
+                
+            </v-row>
+            <v-row>
+                <v-col cols="2">
+                    <v-subheader class="float-right">Phone</v-subheader>
+                </v-col>
+                <v-col cols="6">
+                    <v-text-field type="text" :value="user['https://stutor.com/phone']" v-mask="'(###) ###-####'" readonly disabled>
+                        <template v-slot:prepend>
+                            <v-icon color="blue">mdi-phone</v-icon>
+                        </template>
+                    </v-text-field>
+                </v-col>
+                <v-col v-if="!user['https://stutor.com/phone_verified']">
+                    <v-tooltip top>
+                        <template v-slot:activator="{ on, attrs }">
+                            <v-chip v-bind="attrs" v-on="on" v-if="!user['https://stutor.com/phone_verified']"
+                                class="ma-2"
+                                color="red"
+                                text-color="white"
+                            >
+                                UNVERIFIED
+                            </v-chip>
+                        </template>
+                        <span>Please verify your phone number.</span>
+                    </v-tooltip>
+                </v-col>
+                <v-col v-else>
+                    <v-chip
+                        class="ma-2"
+                        color="green"
+                        text-color="white"
+                    >
+                        VERIFIED
+                    </v-chip>
+                </v-col>
+
+            </v-row>
+        </div>
+        <div v-if="isExpert && this.user.email_verified">
             <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Timezone Changed!</v-snackbar>
             <v-row>
                 <v-col cols="2">
@@ -89,7 +164,6 @@ import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId,
 
 export default {
     name: 'Account',
-    props: ['user'],
     components: {
         AvailabilityDisplay
     },
@@ -100,13 +174,12 @@ export default {
             expertTopics: [],
             isActive: false,
 
-            showSuccess: false
+            showSuccess: false,
+            user: {}
         }
     },
     created(){
-        if(this.user){
-            this.populateData();
-        }
+        this.user = this.$auth.user;
     },
     computed: {
         isExpert: function(){
@@ -138,7 +211,7 @@ export default {
     methods: {
         async populateData() {
 
-            if(this.isExpert){
+            if(this.isExpert && this.user.email_verified){
                 // Populate the timezones
                 this.timezones = await _timezoneRepo_GetAll();
 

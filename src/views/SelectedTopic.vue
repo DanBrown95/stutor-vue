@@ -170,8 +170,8 @@ export default {
         }
     },
     created() {
-        this.getTopic();
         this.user = this.$auth.user;
+        this.getTopic();
     },
     methods: {
         back() {

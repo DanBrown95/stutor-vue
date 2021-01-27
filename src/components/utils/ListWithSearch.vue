@@ -12,7 +12,7 @@
             <div>
                 <v-layout row justify-center>
                     <v-col sm="4" v-for="(item, index) in this.restrictedArray" :key="index" @click="selectItem(item)">
-                        <v-chip style="width: 100%; justify-content: center; background-color: white;" text-color="red" class="ma-2" large> {{ item.name }} </v-chip>
+                        <v-chip style="width: 100%; cursor: pointer; justify-content: center; background-color: white;" text-color="red" class="ma-2" large> {{ item.name }} </v-chip>
                     </v-col>
                 </v-layout>
                 <div v-if="restrictedArray.length == 0" style="text-align: center;">

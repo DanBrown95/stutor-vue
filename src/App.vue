@@ -20,24 +20,23 @@ export default {
   },
   data: function () {
     return { 
-      authenticated: false, 
       user: {},
       colorNav: true
     }
   },
-  created () { this.isAuthenticated() },
   watch: {
     // Everytime the route changes, check for auth status
     '$route'() {
-      this.isAuthenticated();
+      this.getUser();
       this.colorNav = (this.$route.meta.colorNav === true);
     }
   },
+  computed: {
+    authenticated: function() {
+      return this.user != null && this.user != {};
+    }
+  },
   methods: {
-    async isAuthenticated () {
-      // this.authenticated = await this.$auth.isAuthenticated();
-      this.getUser();
-    },
     async getUser() {
       this.user = this.$auth.user;
     }

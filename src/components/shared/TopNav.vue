@@ -10,12 +10,21 @@
             <!-- Login/Logout buttons -->
             <div id="auth" class="inline-block" >
                 <!-- show login when not authenticated -->
-                <v-btn class="ma-2 btn-login" v-if="!$auth.isAuthenticated" rounded color="white" @click="login">Log in</v-btn>
+                
+                <v-progress-circular
+                  v-if="$auth.loading"
+                  indeterminate
+                  color="primary"
+                ></v-progress-circular>
+
+                <v-btn class="ma-2 btn-login" v-if="!$auth.isAuthenticated && !$auth.loading" rounded color="white" @click="login">Log in</v-btn>
                 <!-- show logout when authenticated -->
-                <div v-if="$auth.isAuthenticated">
+                <div v-if="$auth.isAuthenticated && !$auth.loading">
                     <!-- <v-img :src="$auth.user.picture" width="30" height="30"> -->
                     <div class="user-dropdown">
-                      <span id="txtUser" class="text-muted font-weight-medium px-2">{{$auth.user.name}}</span>
+                      <span id="txtUser" class="text-muted font-weight-medium px-2">
+                        {{$auth.user['https://stutor.com/firstname'] + ' ' + $auth.user['https://stutor.com/lastname']}} 
+                      </span>
                       <div class="user-dropdown-content">
                         <div class="top-row">
                           <v-tooltip bottom>

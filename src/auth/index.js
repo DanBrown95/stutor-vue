@@ -37,12 +37,16 @@ export const useAuth0 = ({
         if(token) return null;
         return ;
       },
-      async loginWithPopup(o) {
+      async loginWithPopup(options, config) {
         this.popupOpen = true;
 
         try {
-          await this.auth0Client.loginWithPopup(o);
+          await this.auth0Client.loginWithPopup(options, config);
+          this.user = await this.auth0Client.getUser();
+          this.isAuthenticated = await this.auth0Client.isAuthenticated();
+          this.error = null;
         } catch (e) {
+          this.error = e;
           // eslint-disable-next-line
           console.error(e);
         } finally {

@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import vuetify from './plugins/vuetify'
 import VuejsDialog from "vuejs-dialog"
+import VueMask from 'v-mask'
 
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
@@ -20,6 +21,7 @@ Vue.use(Auth0Plugin, {
   domain,
   clientId,
   audience,
+  useRefreshTokens: true,
   onRedirectCallback: appState => {
     router.push(
       appState && appState.targetUrl
@@ -31,6 +33,7 @@ Vue.use(Auth0Plugin, {
 
 Vue.config.productionTip = false
 Vue.use(VuejsDialog);
+Vue.use(VueMask);
 
 new Vue({
   router,
