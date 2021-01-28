@@ -1,12 +1,12 @@
-export function GetAllByUserEmail(userEmail, accessToken){
-    const result = fetch("https://localhost:44343/api/order/GetAllByUserEmail", {
+export function GetAllByUserId(userId, accessToken){
+    const result = fetch("https://localhost:44343/api/order/GetAllByUserId", {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`
         },
         body: JSON.stringify(
-            userEmail
+            userId
         )
     })
     .then(response => response.json())
@@ -16,11 +16,11 @@ export function GetAllByUserEmail(userEmail, accessToken){
     return result;
 }
 
-export function SubmitPasskey(id, clientPasskey, userEmail, accessToken){
+export function SubmitPasskey(id, clientPasskey, userId, accessToken){
     var editedItem = {
         orderId: id,
         clientPasskey: clientPasskey,
-        userEmail: userEmail
+        userId: userId
     }
 
     const result = fetch("https://localhost:44343/api/order/SubmitPasskeys", {

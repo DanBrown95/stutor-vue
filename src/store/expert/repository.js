@@ -46,14 +46,14 @@ export function UploadDocuments(documents, accessToken) {
     return result;
 }
 
-export function OrdersByUserEmail(userEmail){
-    const result = fetch("https://localhost:44343/api/expert/OrdersByUserEmail", {
+export function OrdersByUserId(userId){
+    const result = fetch("https://localhost:44343/api/expert/OrdersByUserId", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(
-            userEmail
+            userId
         )
     })
     .then(response => response.json())
@@ -63,14 +63,14 @@ export function OrdersByUserEmail(userEmail){
     return result;
 }
 
-export function ExpertTimezoneId(userEmail) {
+export function ExpertTimezoneId(userId) {
     const result = fetch("https://localhost:44343/api/Expert/expertTimezone", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(
-            userEmail
+            userId
         )
     })
     .then(response => response.json())
@@ -80,14 +80,14 @@ export function ExpertTimezoneId(userEmail) {
     return result;
 }
 
-export function ExpertTopics(userEmail) {
-    const result = fetch("https://localhost:44343/api/Expert/TopicsByUserEmail", {
+export function ExpertTopics(userId) {
+    const result = fetch("https://localhost:44343/api/Expert/TopicsByUserId", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(
-            userEmail
+            userId
         )
     })
     .then(response => response.json())
@@ -97,14 +97,14 @@ export function ExpertTopics(userEmail) {
     return result;
 }
 
-export function GetActiveStatus(userEmail) {
+export function GetActiveStatus(userId) {
     const result = fetch("https://localhost:44343/api/Expert/IsActive", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(
-            userEmail
+            userId
         )
     })
     .then(response => response.json())
@@ -114,14 +114,14 @@ export function GetActiveStatus(userEmail) {
     return result;
 }
 
-export function ToggleIsActive(isActive, userEmail) {
+export function ToggleIsActive(isActive, userId) {
     const result = fetch("https://localhost:44343/api/Expert/ToggleIsActive", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            userEmail: userEmail,
+            userId: userId,
             isActive: isActive
         })
     })
@@ -132,14 +132,14 @@ export function ToggleIsActive(isActive, userEmail) {
     return result;
 }
 
-export function UpdateTimezone(userEmail, timezoneId) {
+export function UpdateTimezone(userId, timezoneId) {
     const result = fetch("https://localhost:44343/api/Expert/UpdateTimezone", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            userEmail: userEmail,
+            userId: userId,
             timezoneId: timezoneId
         })
     })

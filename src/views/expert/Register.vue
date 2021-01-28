@@ -496,7 +496,7 @@ export default {
 
             var formData = {
                 captcha: recaptchaToken,
-                userEmail: this.$attrs.user.email,
+                userId: this.$attrs.user['https://stutor.com/id'],
                 topicId: this.selectedTopic.id,
                 timezoneId: this.selectedTimezone,
                 selectedDays: this.selectedDays,
@@ -520,13 +520,13 @@ export default {
                 var documents = new FormData()
                 for (let index = 0; index < this.resumes.length; index++) {
                     const element = this.resumes[index];
-                    documents.append('resumes[]', element, this.$attrs.user.email+'-'+applicationId+'-'+index+'-resume');
+                    documents.append('resumes[]', element, this.$attrs.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-resume');
                 }
 
                 if(this.transcripts) {
                     for (let index = 0; index < this.transcripts.length; index++) {
                         const element = this.transcripts[index];
-                        documents.append('transcripts[]', element, this.$attrs.user.email+'-'+applicationId+'-'+index+'-transcript');
+                        documents.append('transcripts[]', element, this.$attrs.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-transcript');
                     }
                 }
 

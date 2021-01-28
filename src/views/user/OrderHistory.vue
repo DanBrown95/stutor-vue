@@ -38,7 +38,7 @@
 import Order from "@/components/user/Order.vue";
 import Pagination from "@/components/utils/Pagination.vue";
 import { CompareBySubmitted } from '@/helpers/Compare.js';
-import { GetAllByUserEmail as _orderRepo_GetAllByUserEmail} from '@/store/order/repository.js';
+import { GetAllByUserId as _orderRepo_GetAllByUserId} from '@/store/order/repository.js';
 
 export default {
     name: 'OrderHistory',
@@ -75,7 +75,7 @@ export default {
         async getOrders(){
             this.loading = true;
             const accessToken = await this.$auth.getTokenSilently();
-            const unordered = await _orderRepo_GetAllByUserEmail(this.user.email, accessToken);
+            const unordered = await _orderRepo_GetAllByUserId(this.user['https://stutor.com/id'], accessToken);
             this.allOrders = unordered.sort(CompareBySubmitted);
             this.loading = false;
         },

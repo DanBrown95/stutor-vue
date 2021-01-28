@@ -287,7 +287,7 @@ export default {
                 price: this.selectedExpert.price,
                 submitted: date,
                 friendlySubmitted: moment.utc(date).local().format('MMMM Do YYYY'),
-                userEmail: this.user.email
+                userId: this.user['https://stutor.com/id']
             }
             const accessToken = await this.$auth.getTokenSilently();
             fetch("https://localhost:44343/api/order/SubmitIntent", {

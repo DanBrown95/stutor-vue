@@ -15,10 +15,10 @@
                         </template>
                     </v-text-field>
                 </v-col>
-                <v-col v-if="!user.email_verified">
+                <v-col v-if="!user['https://stutor.com/email_verified']">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-chip v-bind="attrs" v-on="on" v-if="!user.email_verified"
+                            <v-chip v-bind="attrs" v-on="on" v-if="!user['https://stutor.com/email_verified']"
                                 class="ma-2"
                                 color="red"
                                 text-color="white"
@@ -78,7 +78,7 @@
 
             </v-row>
         </div>
-        <div v-if="isExpert && this.user.email_verified">
+        <div v-if="isExpert">
             <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Timezone Changed!</v-snackbar>
             <v-row>
                 <v-col cols="2">
@@ -203,7 +203,7 @@ export default {
         },
         async selectedTimezoneId(newValue, oldValue) {
             if(oldValue != null && oldValue !== newValue){
-                var success = await _expertRepo_UpdateTimezone(this.user.email, newValue);
+                var success = await _expertRepo_UpdateTimezone(this.user['https://stutor.com/id'], newValue);
                 this.showSuccess = (success);
             }
         }
@@ -211,24 +211,24 @@ export default {
     methods: {
         async populateData() {
 
-            if(this.isExpert && this.user.email_verified){
+            if(this.isExpert){
                 // Populate the timezones
                 this.timezones = await _timezoneRepo_GetAll();
 
                 // Get the experts timezone
-                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user.email);
+                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user['https://stutor.com/id']);
 
                 // Get the experts expertTopics
-                this.expertTopics = await _expertRepo_ExpertTopics(this.user.email);
+                this.expertTopics = await _expertRepo_ExpertTopics(this.user['https://stutor.com/id']);
 
                 // Get the experts Active status
-                this.isActive = await _expertRepo_GetActiveStatus(this.user.email);
+                this.isActive = await _expertRepo_GetActiveStatus(this.user['https://stutor.com/id']);
             }
 
         },
         async toggleIsActive() {
             // toggle the active status
-            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user.email);
+            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user['https://stutor.com/id']);
         },
         deactivateExpert() {
             let message = "Are you sure you want to remove your expert status?";

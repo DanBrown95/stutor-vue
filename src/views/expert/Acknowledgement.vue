@@ -100,7 +100,7 @@
 import moment from 'moment'
 import { CompareByStatus } from '@/helpers/Compare.js'
 import { CompareBySubmitted } from '@/helpers/Compare.js' 
-import { OrdersByUserEmail as _expertRepo_OrdersByUserEmail } from '@/store/expert/repository.js'
+import { OrdersByUserId as _expertRepo_OrdersByUserId } from '@/store/expert/repository.js'
 import { SubmitPasskey as _orderRepo_SubmitPasskey } from '@/store/order/repository.js';
 
 export default {
@@ -151,7 +151,7 @@ export default {
     },
     methods: {
         async getOrders(){
-            var unordered = await _expertRepo_OrdersByUserEmail(this.user.email);
+            var unordered = await _expertRepo_OrdersByUserId(this.user['https://stutor.com/id']);
             var status = unordered.sort(CompareByStatus);
             this.orders = status.sort(CompareBySubmitted);
         },
@@ -203,7 +203,7 @@ export default {
                 const accessToken = await this.$auth.getTokenSilently();
                 
                 this.unshakePasskeyError();
-                var response = await _orderRepo_SubmitPasskey(this.editedItem.id, this.editedItem.clientPasskey, this.user.email, accessToken);
+                var response = await _orderRepo_SubmitPasskey(this.editedItem.id, this.editedItem.clientPasskey, this.user['https://stutor.com/id'], accessToken);
                 if(response == 1){
                     Object.assign(this.orders[this.editedIndex], this.editedItem)
                     this.close();
