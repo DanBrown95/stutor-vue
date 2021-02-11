@@ -2,7 +2,6 @@ export function AvailabilityParser(availability){
 
     try{
         var parsed = JSON.parse(availability);
-        console.log("parsed", parsed);
         return parsed;
     }catch(e){
         console.log("e",e);

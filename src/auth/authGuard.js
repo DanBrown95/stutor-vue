@@ -5,7 +5,6 @@ export const authGuard = (to, from, next) => {
 
   const fn = () => {
     // If the user is authenticated, continue with the route
-    authService.getUserInfo();
     if (authService.isAuthenticated && authService.user['https://stutor.com/email_verified'] && authService.user['https://stutor.com/phone_verified']) {
       return next();
     }

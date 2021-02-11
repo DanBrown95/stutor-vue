@@ -32,11 +32,6 @@ export const useAuth0 = ({
     },
     methods: {
       /** Authenticates the user using a popup window */
-      async getUserInfo(){
-        var token = await this.getTokenSilently();
-        if(token) return null;
-        return ;
-      },
       async loginWithPopup(options, config) {
         this.popupOpen = true;
 
@@ -63,6 +58,7 @@ export const useAuth0 = ({
           await this.auth0Client.handleRedirectCallback();
           this.user = await this.auth0Client.getUser();
           this.isAuthenticated = true;
+          this.error = null;
         } catch (e) {
           this.error = e;
         } finally {
@@ -109,6 +105,8 @@ export const useAuth0 = ({
         ) {
           // handle the redirect and retrieve tokens
           const { appState } = await this.auth0Client.handleRedirectCallback();
+
+          this.error = null;
 
           // Notify subscribers that the redirect callback has happened, passing the appState
           // (useful for retrieving any pre-authentication state)

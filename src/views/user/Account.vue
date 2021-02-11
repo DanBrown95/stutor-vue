@@ -28,6 +28,10 @@
                         </template>
                         <span>Please verify your email by clicking the link sent to the address listed.</span>
                     </v-tooltip>
+                                        
+                    <v-chip class="ma-2" @click="resendEmailVerification">
+                        Resend Link
+                    </v-chip>
                 </v-col>
                 <v-col v-else>
                     <v-chip
@@ -65,6 +69,10 @@
                         </template>
                         <span>Please verify your phone number.</span>
                     </v-tooltip>
+                    
+                    <v-chip class="ma-2" @click="resendPhoneVerification">
+                        Resend Link
+                    </v-chip>
                 </v-col>
                 <v-col v-else>
                     <v-chip
@@ -155,6 +163,8 @@
 <script>
 import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
 import { RatingAsTitle } from '@/helpers/Rating.js';
+import { EmailConfirmation as _accountRepo_ResendEmail,
+         PhoneConfirmation as _accountRepo_ResendPhone } from '@/store/account/repository.js'; 
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
          ExpertTopics as _expertRepo_ExpertTopics,
@@ -277,6 +287,14 @@ export default {
             .catch(function () {
                 // This will be triggered when user clicks on cancel. Do nothing.
             });
+        },
+        async resendEmailVerification(){
+            const accessToken = await this.$auth.getTokenSilently();
+            await _accountRepo_ResendEmail(this.user.sub, accessToken);
+        },
+        async resendPhoneVerification(){
+            const accessToken = await this.$auth.getTokenSilently();
+            await _accountRepo_ResendPhone(this.user.sub, accessToken);
         }
 
     }
