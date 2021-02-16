@@ -17,7 +17,25 @@ export function EmailConfirmation(userId, accessToken){
 }
 
 export function PhoneConfirmation(userId, accessToken){
-    const result = fetch('https://localhost:44343/api/verification/ResendPhoneConfirmation', {
+    const result = fetch('https://localhost:44343/api/account/ResendPhoneConfirmation', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify(
+            userId
+        )
+    })
+    .then((response) => response.json())
+    .then((jsonData) => {
+        return jsonData;
+    });
+    return result;
+}
+
+export function VerifyPhonePin(userId, pin, accessToken){
+    const result = fetch('https://localhost:44343/api/account/VerifyPhonePin', {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
@@ -25,11 +43,11 @@ export function PhoneConfirmation(userId, accessToken){
         },
         body: JSON.stringify({
             userId: userId,
-            token: accessToken
+            pin: pin
         })
     })
-    .then(response => response.json())
-    .then(jsonData => {
+    .then((response) => response.json())
+    .then((jsonData) => {
         return jsonData;
     });
     return result;

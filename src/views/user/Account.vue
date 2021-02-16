@@ -70,9 +70,14 @@
                         <span>Please verify your phone number.</span>
                     </v-tooltip>
                     
-                    <v-chip class="ma-2" @click="resendPhoneVerification">
+                    <v-chip v-show="phoneVerificationStatus == null" id="btn-phone-resend" class="ma-2" @click="resendPhoneVerification">
                         Resend Link
                     </v-chip>
+                    <div style="display: inline-block;" v-if="phoneVerificationStatus == 'pending'">
+                        <v-label>Verification Code</v-label>
+                        <CodeInput :fieldWidth=35 :fieldHeight=35 :loading="verifyLoading" class="input" v-on:complete="onPhoneVerifyComplete" />
+                        <span v-text="pinMessage" color="red"></span>
+                    </div>
                 </v-col>
                 <v-col v-else>
                     <v-chip
@@ -164,7 +169,8 @@
 import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
 import { RatingAsTitle } from '@/helpers/Rating.js';
 import { EmailConfirmation as _accountRepo_ResendEmail,
-         PhoneConfirmation as _accountRepo_ResendPhone } from '@/store/account/repository.js'; 
+         PhoneConfirmation as _accountRepo_ResendPhone,
+         VerifyPhonePin as _accountRepo_verifyPhonePin } from '@/store/account/repository.js'; 
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
          ExpertTopics as _expertRepo_ExpertTopics,
@@ -172,10 +178,13 @@ import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId,
          ToggleIsActive as _expertRepo_ToggleIsActive, 
          UpdateTimezone as _expertRepo_UpdateTimezone } from '@/store/expert/repository.js';
 
+import CodeInput from "vue-verification-code-input";
+
 export default {
     name: 'Account',
     components: {
-        AvailabilityDisplay
+        AvailabilityDisplay,
+        CodeInput
     },
     data() {
         return {
@@ -185,7 +194,11 @@ export default {
             isActive: false,
 
             showSuccess: false,
-            user: {}
+            user: {},
+
+            phoneVerificationStatus: null,
+            verifyLoading: false,
+            pinMessage: null,
         }
     },
     created(){
@@ -294,7 +307,23 @@ export default {
         },
         async resendPhoneVerification(){
             const accessToken = await this.$auth.getTokenSilently();
-            await _accountRepo_ResendPhone(this.user.sub, accessToken);
+            const res = await _accountRepo_ResendPhone(this.user["https://stutor.com/id"], accessToken);
+            this.phoneVerificationStatus = res.status;
+        },
+        async onPhoneVerifyComplete(pin) {
+            this.verifyLoading = true;
+            const accessToken = await this.$auth.getTokenSilently();
+            const res = await _accountRepo_verifyPhonePin(this.user["https://stutor.com/id"], pin, accessToken);
+            if(res.success == true){
+                window.location.reload()
+            }else{
+                if(res.exception){
+                    this.pinMessage = "Error occured: Please try again later"
+                }else{
+                    this.pinMessage = res.error;
+                }
+            }
+            this.verifyLoading = false;
         }
 
     }
