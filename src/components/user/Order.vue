@@ -48,7 +48,7 @@ export default {
             return local_date;
         },
         statusColor(){
-            return (this.order.status === "Completed") ? '#28A745' : ((this.order.status === "Unanswered") ? "#FFC107" : "#DC3545")
+            return (this.order.status.toLowerCase() === "completed") ? '#28A745' : ((this.order.status.toLowerCase() === "unanswered") ? "#FFC107" : "#DC3545")
         }
     },
     methods: {
