@@ -14,14 +14,18 @@
                 </v-content>
             </v-container>
         </div>
+        <ButtonBack />
     </div>
 </template>
 
 <script>
 import PrivacyPolicyContent from "../../components/legal/PrivacyPolicyContent.vue";
+import ButtonBack from "@/components/utils/ButtonBack.vue";
+
 export default {
     components: {
-        PrivacyPolicyContent
+        PrivacyPolicyContent,
+        ButtonBack
     }
 }
 </script>

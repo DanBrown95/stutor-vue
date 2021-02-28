@@ -14,14 +14,18 @@
                 </v-content>
             </v-container>
         </div>
+        <ButtonBack/>
     </div>
 </template>
 
 <script>
 import TermsOfUseContent from "../../components/legal/TermsOfUseContent.vue";
+import ButtonBack from "@/components/utils/ButtonBack.vue";
+
 export default {
     components: {
-        TermsOfUseContent
+        TermsOfUseContent,
+        ButtonBack
     }
 }
 </script>
