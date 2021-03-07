@@ -5,7 +5,7 @@
       <Search class="search"/>
     </div>
 
-    <Categories />
+    <PopularCategories />
 
   </div>
 </template>
@@ -13,13 +13,13 @@
 <script>
 // @ is an alias to /src
 import Search from '@/components/main/Search.vue'
-import Categories from '@/components/main/Categories.vue'
+import PopularCategories from '@/components/main/PopularCategories.vue'
 
 export default {
   name: 'Main',
   components: {
     Search,
-    Categories
+    PopularCategories
   }
 }
 </script>

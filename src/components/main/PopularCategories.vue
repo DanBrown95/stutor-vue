@@ -4,7 +4,7 @@
     <v-row>
         <v-layout row justify-center class="categories">
             <v-col md="2" v-for="c in categories" :key="c.Id">
-                <Category :id="c.id" :name="c.name" :imageUrl="c.imageUrl" class="category"></Category>
+                <Category :id="c.category.id" :name="c.category.name" :imageUrl="c.imageUrl" class="category"></Category>
             </v-col>
         </v-layout>
     </v-row>
@@ -14,7 +14,7 @@
 
 <script>
 import Category from '@/components/main/Category.vue'
-import { GetAll as _categoryRepo_GetAll } from '@/store/category/repository.js';
+import { GetAllPopular as _categoryRepo_GetAllPopular } from '@/store/category/repository.js';
 
 export default {
     name: 'Categories',
@@ -27,14 +27,14 @@ export default {
         }
     },
     created() {
-      this.getAllCategories();
+      this.getAllPopularCategories();
     },
     mounted() {
         this.applyOverlay();
     },
     methods: {
-        async getAllCategories() {
-            this.categories = await _categoryRepo_GetAll();
+        async getAllPopularCategories() {
+            this.categories = await _categoryRepo_GetAllPopular();
         },
         applyOverlay() { // automatically show/hide overlay on a timer
             setTimeout(function tick() {
