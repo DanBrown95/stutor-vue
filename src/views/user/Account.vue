@@ -50,11 +50,12 @@
                     <v-subheader class="float-right">Phone</v-subheader>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field type="text" :value="user['https://stutor.com/phone']" v-mask="'(###) ###-####'" readonly disabled>
-                        <template v-slot:prepend>
-                            <v-icon color="blue">mdi-phone</v-icon>
-                        </template>
-                    </v-text-field>
+                    <template>
+                        <vue-tel-input :allCountries="allowedCountries" @validate="validatePhone" v-model="phoneField"></vue-tel-input>
+                    </template>
+                    <div v-if="displayNewPhoneUpdateButton">
+                        <v-btn  @click="updatePhone">Update</v-btn>
+                    </div>
                 </v-col>
                 <v-col v-if="!user['https://stutor.com/phone_verified']">
                     <v-tooltip top>
@@ -113,34 +114,51 @@
                     </v-select>
                 </v-col>
             </v-row>
-            <v-row>
-                <v-col cols="2">
-                    <v-subheader class="float-right">Topics</v-subheader>
-                </v-col>
-                <v-col cols="9" >
-                    <div v-for="expertTopic in expertTopics" :key="expertTopic.id">
-                        <v-row align="center">
-                            <v-col cols="1">
-                                <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red">
-                                    mdi-delete
-                                </v-icon>
-                            </v-col>
-                            <v-col cols="3">
-                                <v-tooltip top>
-                                    <template v-slot:activator="{ on, attrs }">
-                                        <span v-bind="attrs" v-on="on">{{expertTopic.name}}</span>
-                                    </template>
-                                    <span>Rating: {{ expertTopic.topicExpert.rating | RatingAsTitle }} <br /> Price: ${{expertTopic.topicExpert.price.toFixed(2)}}</span>
-                                </v-tooltip>
-                            </v-col>
-                            <v-col cols="7">
-                                <AvailabilityDisplay :availability="expertTopic.topicExpert.availability"></AvailabilityDisplay>
-                            </v-col>
-                        </v-row>
-                    </div>
-                </v-col>
-            </v-row>
-            <v-row dense class="justify-center">
+
+            <div class="btn-wrapper" v-if="expertTopics != null && expertTopics.length > 0">
+                <v-btn @click="toggleExpertTopics" class="inst-btn" color="success" rounded outlined>View Expert Topics</v-btn>
+            </div>
+            <slide-up-down :active="showExpertTopics" :duration="500">
+                <v-row>
+                    <v-col cols="2">
+                        <v-subheader class="float-right">Topics</v-subheader>
+                    </v-col>
+                    <v-col cols="9" >
+                        <div v-for="expertTopic in expertTopics" :key="expertTopic.id">
+                            <v-row align="center">
+                                <v-col cols="1">
+                                    <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red">
+                                        mdi-delete
+                                    </v-icon>
+                                </v-col>
+                                <v-col cols="3">
+                                    <v-tooltip top>
+                                        <template v-slot:activator="{ on, attrs }">
+                                            <span v-bind="attrs" v-on="on">{{expertTopic.name}}</span>
+                                        </template>
+                                        <span>Rating: {{ expertTopic.topicExpert.rating | RatingAsTitle }} <br /> Price: ${{expertTopic.topicExpert.price.toFixed(2)}}</span>
+                                    </v-tooltip>
+                                </v-col>
+                                <v-col cols="7">
+                                    <AvailabilityDisplay :availability="expertTopic.topicExpert.availability"></AvailabilityDisplay>
+                                </v-col>
+                            </v-row>
+                        </div>
+                    </v-col>
+                </v-row>
+            </slide-up-down>
+
+            <div class="btn-wrapper">
+                <v-btn @click="togglePaymentInfo" class="inst-btn" color="success" rounded outlined>View Payment Information</v-btn>
+            </div>
+            <slide-up-down :active="showPaymentInfo" :duration="500">
+                <v-row class="justify-center" style="margin-top: 2em;">
+                    <v-btn @click="gotoPaymentPortal" class="inst-btn" color="info" rounded outlined>Payment Portal</v-btn>
+                </v-row>
+            </slide-up-down>
+            
+
+            <v-row dense class="justify-center" style="margin-top: 2em;">
                 <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn style="margin-right: 5px;" v-bind="attrs" v-on="on" 
@@ -170,6 +188,7 @@ import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
 import { RatingAsTitle } from '@/helpers/Rating.js';
 import { EmailConfirmation as _accountRepo_ResendEmail,
          PhoneConfirmation as _accountRepo_ResendPhone,
+         UpdatePhone as _accountRepo_UpdatePhone,
          VerifyPhonePin as _accountRepo_verifyPhonePin } from '@/store/account/repository.js'; 
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
@@ -179,21 +198,33 @@ import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId,
          UpdateTimezone as _expertRepo_UpdateTimezone } from '@/store/expert/repository.js';
 
 import CodeInput from "vue-verification-code-input";
+import SlideUpDown from 'vue-slide-up-down';
 
 export default {
     name: 'Account',
     components: {
         AvailabilityDisplay,
-        CodeInput
+        CodeInput,
+        SlideUpDown
     },
     data() {
         return {
             timezones: [],
             selectedTimezoneId: null,
+            showExpertTopics: false,
+            showPaymentInfo: false,
             expertTopics: [],
             isActive: false,
 
             showSuccess: false,
+            phoneField: {},
+            newPhoneValid: false,
+            newPhoneNumber: "",
+            allowedCountries: [{
+                "name": "United States",
+                "iso2": "US",
+                "dialCode": "1"
+            }],
             user: {},
 
             phoneVerificationStatus: null,
@@ -203,6 +234,7 @@ export default {
     },
     created(){
         this.user = this.$auth.user;
+        this.phoneField = this.$auth.user['https://stutor.com/phone'];
     },
     computed: {
         isExpert: function(){
@@ -213,6 +245,9 @@ export default {
         },
         isActiveButtonText() {
             return this.isActive ? "Temporarily Deactivate" : "Re-enable your availability";
+        },
+        displayNewPhoneUpdateButton(){
+            return (this.newPhoneValid && this.newPhoneNumber != this.user["https://stutor.com/phone"]);
         }
     },
     filters: {
@@ -252,6 +287,15 @@ export default {
         async toggleIsActive() {
             // toggle the active status
             this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user['https://stutor.com/id']);
+        },
+        validatePhone(phone){
+            if(phone.valid === true){
+                this.newPhoneValid = true;
+                this.newPhoneNumber = phone.number;
+            }else{
+                this.newPhoneValid = true;
+                this.newPhoneNumber = this.user["https://stutor.com/phone"];
+            }
         },
         deactivateExpert() {
             let message = "Are you sure you want to remove your expert status?";
@@ -324,6 +368,45 @@ export default {
                 }
             }
             this.verifyLoading = false;
+        },
+        toggleExpertTopics(){
+            this.showExpertTopics = !this.showExpertTopics;
+        },
+        togglePaymentInfo(){
+            this.showPaymentInfo = !this.showPaymentInfo;
+        },
+        async gotoPaymentPortal() {
+            // redirect to backend code that connects to stripe customer portal
+            const accessToken = await this.$auth.getTokenSilently();
+
+            var formData = {
+                userId: this.user['https://stutor.com/id'],
+                customerId: this.user['https://stutor.com/customer_id']
+            };
+
+            fetch("https://localhost:44343/api/PaymentPortal/RedirectToCustomerPortal", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${accessToken}`
+                },
+                body: JSON.stringify(formData)
+            }).
+            then((response) => response.json())
+            .then((jsonData) => {
+                window.location.href = jsonData;
+            });
+        },
+        async updatePhone(){
+            const accessToken = await this.$auth.getTokenSilently();
+            const oldPhone = this.user['https://stutor.com/phone'];
+            const newPhone = this.newPhoneNumber;
+            const res = await _accountRepo_UpdatePhone(accessToken, this.user["https://stutor.com/id"], oldPhone, newPhone);
+            if(res.success == true){
+                window.location.reload()
+            }else{
+                this.$dialog.alert("There was an error saving the new number. Please try again later.", {okText: "OK"});
+            }
         }
 
     }
@@ -349,5 +432,26 @@ export default {
 
     .column {
         display: inline-block;
+    }
+
+    /* Code below for the show expert topics button */
+
+    .btn-wrapper {
+        margin: 1em auto 0em;
+        text-align: center;
+    }
+    .inst-btn{ 
+        color: white; 
+        padding: 5px; 
+        margin: 0; 
+        font-family: "arial"; 
+    }
+    .btn-wrapper:before,.btn-wrapper:after{
+        content:" ";
+        width: 15%;
+        height: 2px;
+        margin: 0 10px;
+        background-color: lightgray;
+        display:inline-block;
     }
 </style>

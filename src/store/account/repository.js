@@ -52,3 +52,23 @@ export function VerifyPhonePin(userId, pin, accessToken){
     });
     return result;
 }
+
+export function UpdatePhone(accessToken, userId, oldPhone, newPhone){
+    const result = fetch('https://localhost:44343/api/account/UpdatePhoneNumber', {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`,
+        },
+        body: JSON.stringify({
+            userId: userId,
+            oldPhone: oldPhone,
+            newPhone: newPhone
+        })
+    })
+    .then((response) => response.json())
+    .then((jsonData) => {
+        return jsonData;
+    });
+    return result;
+}

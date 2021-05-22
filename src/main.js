@@ -5,6 +5,8 @@ import store from './store'
 import vuetify from './plugins/vuetify'
 import VuejsDialog from "vuejs-dialog"
 import VueMask from 'v-mask'
+import VueTelInput from 'vue-tel-input'
+import 'vue-tel-input/dist/vue-tel-input.css'
 
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
@@ -34,6 +36,7 @@ Vue.use(Auth0Plugin, {
 Vue.config.productionTip = false
 Vue.use(VuejsDialog);
 Vue.use(VueMask);
+Vue.use(VueTelInput)
 
 new Vue({
   router,
