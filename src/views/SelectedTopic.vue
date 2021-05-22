@@ -3,7 +3,10 @@
         <div class="banner">
             <h1>{{topic.name}}</h1>
         </div>
-        <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected"/> <!-- The experts -->
+
+        <loading-pulse :showLoading="searchingForExperts"></loading-pulse>
+
+        <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected" @searching="searching"/> <!-- The experts -->
 
         <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">  <!-- Slide out drawer -->
             <v-list-item style="background-color: #385F73;">  
@@ -136,7 +139,8 @@
 </template>
 
 <script>
-import Experts from '@/components/expert/ExpertIcons.vue'
+import Experts from '@/components/expert/ExpertIcons.vue';
+import LoadingPulse from '@/components/utils/LoadingPulse.vue';
 import Card from "@/components/stripe/Card.vue";
 import ButtonBack from "@/components/utils/ButtonBack.vue";
 import RatingLegend from "@/components/utils/RatingLegend";
@@ -150,13 +154,15 @@ export default {
         Experts,
         Card,
         ButtonBack,
-        RatingLegend
+        RatingLegend,
+        LoadingPulse
     },
     data () {
         return {
             user: {},
             topic: null,
             selectedExpert: {},
+            searchingForExperts: false,
             drawer: null,
 
             stripe: null,
@@ -179,6 +185,9 @@ export default {
         },
         async getTopic(){
             this.topic = await _topicRepo_Get(this.$route.params.id);
+        },
+        searching: function(searching){
+            this.searchingForExperts = searching;
         },
         expertSelected: function(expert) {
             this.selectedExpert = expert;

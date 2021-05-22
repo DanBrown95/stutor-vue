@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div v-if="!searching">
         <div class="center" v-if="hasExperts">
             <template v-if="(this.experts.localExperts && this.experts.localExperts.length)">
                 <v-card class="mx-auto">
@@ -47,7 +47,8 @@ export default {
     },
     data() {
         return {
-            experts: []
+            experts: [],
+            searching: false
         }
     },
     computed: {
@@ -63,7 +64,14 @@ export default {
             this.$emit("expertSelected", e);
         },
         async getTopicExperts() {
+            this.searching = true;
             this.experts = await _expertRepo_TopicExpertsByTopicId(this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone);
+            this.searching = false;
+        }
+    },
+    watch: {
+        searching: function(e){
+            this.$emit("searching", e);
         }
     }
         
