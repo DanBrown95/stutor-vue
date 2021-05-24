@@ -4,10 +4,15 @@
             <h1>{{topic.name}}</h1>
         </div>
 
-        <loading-pulse :showLoading="searchingForExperts"></loading-pulse>
+        <!-- Shows the searching component when searching for experts -->
+        <searching-pulse :showSearching="searchingForExperts" color="skyblue"
+                            :allowAlternateText="true" searchingText="Searching for Experts"
+                            alternateText="We are still searching for experts. Please continue to wait" />
 
+        <!-- Shows the experts component -->
         <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected" @searching="searching"/> <!-- The experts -->
 
+        <!-- Shows the payment slide out drawer -->
         <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">  <!-- Slide out drawer -->
             <v-list-item style="background-color: #385F73;">  
             <v-list-item-content >
@@ -140,7 +145,7 @@
 
 <script>
 import Experts from '@/components/expert/ExpertIcons.vue';
-import LoadingPulse from '@/components/utils/LoadingPulse.vue';
+import SearchingPulse from '@/components/utils/SearchingPulse.vue';
 import Card from "@/components/stripe/Card.vue";
 import ButtonBack from "@/components/utils/ButtonBack.vue";
 import RatingLegend from "@/components/utils/RatingLegend";
@@ -155,7 +160,7 @@ export default {
         Card,
         ButtonBack,
         RatingLegend,
-        LoadingPulse
+        SearchingPulse
     },
     data () {
         return {
