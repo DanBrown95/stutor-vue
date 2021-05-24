@@ -65,7 +65,8 @@ export default {
         },
         async getTopicExperts() {
             this.searching = true;
-            this.experts = await _expertRepo_TopicExpertsByTopicId(this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone);
+            var userId = this.$parent.user['https://stutor.com/id']
+            this.experts = await _expertRepo_TopicExpertsByTopicId(this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone, userId);
             this.searching = false;
         }
     },

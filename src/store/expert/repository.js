@@ -1,4 +1,4 @@
-export function TopicExpertsByTopicId(topicId, userTimezone) {
+export function TopicExpertsByTopicId(topicId, userTimezone, userId) {
     const result = fetch("https://localhost:44343/api/expert/TopicExpertsByTopicId", {
         method: "POST",
         headers: {
@@ -6,7 +6,8 @@ export function TopicExpertsByTopicId(topicId, userTimezone) {
         },
         body: JSON.stringify({
             topicId: topicId,
-            userTimezone: userTimezone
+            userTimezone: userTimezone,
+            requestingUserId: userId
         })
     })
     .then(response => response.json())
