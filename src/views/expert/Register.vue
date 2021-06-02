@@ -79,6 +79,7 @@
                                             v-model="weekdayStartHours"
                                             full-width
                                             @click:minute="$refs.menu.save(weekdayStartHours)"
+                                            :max="weekdayEndHours"
                                             ></v-time-picker>
                                         </v-menu>
                                     </v-col>
@@ -111,6 +112,7 @@
                                             v-model="weekdayEndHours"
                                             full-width
                                             @click:minute="$refs.d.save(weekdayEndHours)"
+                                            :min="weekdayStartHours"
                                             ></v-time-picker>
                                         </v-menu>
                                     </v-col>
@@ -151,6 +153,7 @@
                                             v-model="weekendStartHours"
                                             full-width
                                             @click:minute="$refs.weshmenu.save(weekendStartHours)"
+                                            :max="weekendEndHours"
                                             ></v-time-picker>
                                         </v-menu>
                                     </v-col>
@@ -183,6 +186,7 @@
                                             v-model="weekendEndHours"
                                             full-width
                                             @click:minute="$refs.weehmenu.save(weekendEndHours)"
+                                            :min="weekendStartHours"
                                             ></v-time-picker>
                                         </v-menu>
                                     </v-col>
