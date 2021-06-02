@@ -48,7 +48,19 @@ export default {
             return local_date;
         },
         statusColor(){
-            return (this.order.status.toLowerCase() === "completed") ? '#28A745' : ((this.order.status.toLowerCase() === "unanswered") ? "#FFC107" : "#DC3545")
+            var color = "#DC3545";
+            switch (this.order.status.toLowerCase()) {
+                case "completed":
+                    color = "#28A745";
+                    break;
+                case "unanswered":
+                    color = "#FFC107";
+                    break;
+                case "refunded":
+                    color = "#6527a8";
+                    break;
+            }
+            return color;
         }
     },
     methods: {

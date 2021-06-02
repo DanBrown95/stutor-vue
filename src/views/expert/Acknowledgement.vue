@@ -32,7 +32,7 @@
                         </template>
 
                         <template v-slot:[`item.actions`]="{ item }">
-                            <v-icon v-if="item.status.toLowerCase() !== 'completed'"
+                            <v-icon v-if="item.status.toLowerCase() === 'unanswered'"
                                 small
                                 class="mr-2"
                                 @click="editItem(item)"
@@ -164,7 +164,8 @@ export default {
                 case "unanswered":
                     color = '#FFC107';
                     break;
-                default:
+                case "refunded":
+                    color = "#bd0300";
                     break;
             }
             return color;
