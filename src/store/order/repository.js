@@ -1,19 +1,33 @@
+import axios from 'axios'
+
 export function GetAllByUserId(userId, accessToken){
-    const result = fetch("https://localhost:44343/api/order/GetAllByUserId", {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/order/GetAllByUserId',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify(
-            userId
-        )
+        data: JSON.stringify(userId)
     })
-    .then(response => response.json())
-    .then(jsonData => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+    
+    // const result = fetch("https://localhost:44343/api/order/GetAllByUserId", {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`
+    //     },
+    //     body: JSON.stringify(
+    //         userId
+    //     )
+    // })
+    // .then(response => response.json())
+    // .then(jsonData => {
+    //     return jsonData;
+    // });
+    // return result;
 }
 
 export function SubmitPasskey(id, clientPasskey, userId, accessToken){
@@ -23,17 +37,29 @@ export function SubmitPasskey(id, clientPasskey, userId, accessToken){
         userId: userId
     }
 
-    const result = fetch("https://localhost:44343/api/order/SubmitPasskeys", {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/order/SubmitPasskeys',
+        method: 'POST',
         headers: {
-            "Authorization": `Bearer ${accessToken}`,
-            "Content-Type": "application/json"
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify(editedItem)
+        data: editedItem
     })
-    .then(response => response.json())
-    .then(jsonData => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+
+    // const result = fetch("https://localhost:44343/api/order/SubmitPasskeys", {
+    //     method: "POST",
+    //     headers: {
+    //         "Authorization": `Bearer ${accessToken}`,
+    //         "Content-Type": "application/json"
+    //     },
+    //     body: JSON.stringify(editedItem)
+    // })
+    // .then(response => response.json())
+    // .then(jsonData => {
+    //     return jsonData;
+    // });
+    // return result;
 }

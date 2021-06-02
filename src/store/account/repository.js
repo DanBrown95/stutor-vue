@@ -1,74 +1,131 @@
+import axios from 'axios'
+
 export function EmailConfirmation(userId, accessToken){
-    const result = fetch('https://localhost:44343/api/verification/ResendEmailVerification', {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/verification/ResendEmailVerification',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
+            "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify(
-            userId
-        )
+        data: JSON.stringify(userId)
     })
-    .then(response => response.json())
-    .then(jsonData => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+
+    // const result = fetch('https://localhost:44343/api/verification/ResendEmailVerification', {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`,
+    //     },
+    //     body: JSON.stringify(
+    //         userId
+    //     )
+    // })
+    // .then(response => response.json())
+    // .then(jsonData => {
+    //     return jsonData;
+    // });
+    // return result;
 }
 
 export function PhoneConfirmation(userId, accessToken){
-    const result = fetch('https://localhost:44343/api/account/ResendPhoneConfirmation', {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/account/ResendPhoneConfirmation',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
+            "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify(
-            userId
-        )
+        data: JSON.stringify(userId)
     })
-    .then((response) => response.json())
-    .then((jsonData) => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+    
+    // const result = fetch('https://localhost:44343/api/account/ResendPhoneConfirmation', {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`,
+    //     },
+    //     body: JSON.stringify(
+    //         userId
+    //     )
+    // })
+    // .then((response) => response.json())
+    // .then((jsonData) => {
+    //     return jsonData;
+    // });
+    // return result;
 }
 
 export function VerifyPhonePin(userId, pin, accessToken){
-    const result = fetch('https://localhost:44343/api/account/VerifyPhonePin', {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/account/VerifyPhonePin',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
+            "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify({
+        data: {
             userId: userId,
             pin: pin
-        })
+        }
     })
-    .then((response) => response.json())
-    .then((jsonData) => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+    
+    // const result = fetch('https://localhost:44343/api/account/VerifyPhonePin', {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`,
+    //     },
+    //     body: JSON.stringify({
+    //         userId: userId,
+    //         pin: pin
+    //     })
+    // })
+    // .then((response) => response.json())
+    // .then((jsonData) => {
+    //     return jsonData;
+    // });
+    // return result;
 }
 
 export function UpdatePhone(accessToken, userId, oldPhone, newPhone){
-    const result = fetch('https://localhost:44343/api/account/UpdatePhoneNumber', {
-        method: "POST",
+    return axios({
+        url: 'https://localhost:44343/api/account/UpdatePhoneNumber',
+        method: 'POST',
         headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${accessToken}`,
+            "Authorization": `Bearer ${accessToken}`
         },
-        body: JSON.stringify({
+        data: {
             userId: userId,
             oldPhone: oldPhone,
             newPhone: newPhone
-        })
+        }
     })
-    .then((response) => response.json())
-    .then((jsonData) => {
-        return jsonData;
-    });
-    return result;
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+    
+    // const result = fetch('https://localhost:44343/api/account/UpdatePhoneNumber', {
+    //     method: "POST",
+    //     headers: {
+    //         "Content-Type": "application/json",
+    //         "Authorization": `Bearer ${accessToken}`,
+    //     },
+    //     body: JSON.stringify({
+    //         userId: userId,
+    //         oldPhone: oldPhone,
+    //         newPhone: newPhone
+    //     })
+    // })
+    // .then((response) => response.json())
+    // .then((jsonData) => {
+    //     return jsonData;
+    // });
+    // return result;
 }

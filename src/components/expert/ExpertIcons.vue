@@ -66,7 +66,8 @@ export default {
         async getTopicExperts() {
             this.searching = true;
             var userId = this.$parent.user['https://stutor.com/id']
-            this.experts = await _expertRepo_TopicExpertsByTopicId(this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone, userId);
+            const accessToken = await this.$auth.getTokenSilently();
+            this.experts = await _expertRepo_TopicExpertsByTopicId(accessToken, this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone, userId);
             this.searching = false;
         }
     },

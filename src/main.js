@@ -36,7 +36,7 @@ Vue.use(Auth0Plugin, {
 Vue.config.productionTip = false
 Vue.use(VuejsDialog);
 Vue.use(VueMask);
-Vue.use(VueTelInput)
+Vue.use(VueTelInput);
 
 new Vue({
   router,
