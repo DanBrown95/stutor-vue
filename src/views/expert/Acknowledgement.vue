@@ -6,7 +6,7 @@
         <v-container>
             <v-row dense class="justify-center">
                 <v-col cols="10" class="text-center">
-                    <v-data-table :items="orders" :headers="headers" item-key="id">
+                    <v-data-table :items="orders" :headers="headers" item-key="id" :footer-props="{itemsPerPageOptions: [10, 20, 30]}">
                         <template v-slot:[`item.id`]="{ item }">
                             <span>{{ item.id }}</span>
                         </template>

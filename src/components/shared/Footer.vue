@@ -4,7 +4,8 @@
             <div class="col">
                 <h1>Company</h1>
                 <ul>
-                    <li>About</li>
+                    <li>About Us</li>
+                    <router-link tag="li" :to="{name: 'Careers'}">Careers</router-link>
                     <router-link tag="li" :to="{name: 'PrivacyPolicy'}">Privacy Policy</router-link>
                     <router-link tag="li" :to="{name: 'TermsOfUse'}">Terms of Service</router-link>
                 </ul>

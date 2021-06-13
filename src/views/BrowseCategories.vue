@@ -73,7 +73,8 @@ export default {
 
 <style scoped>
     .banner {
-        background-image: url("../assets/categories-banner.png");
+        /* background-image: url("../assets/categories-banner.png"); */
+        background-color: #A8D0E6;
         background-repeat: no-repeat;
         background-size: cover;
         min-height: 100vh;

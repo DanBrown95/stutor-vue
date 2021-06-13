@@ -316,6 +316,7 @@
                 </v-col>
             </v-row>
         </v-container>
+        <ButtonBack/>
     </div>
 </template>
 
@@ -324,6 +325,7 @@ import { validationMixin } from "vuelidate";
 import { required, maxLength, requiredIf } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
+import ButtonBack from "@/components/utils/ButtonBack.vue";
 import { GetBySubstring as _topicRepo_GetBySubstring } from "@/store/topic/repository.js";
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { Register as _expertRepo_Register, UploadDocuments as _expertRepo_UploadDocuments } from '@/store/expert/repository.js';
@@ -332,7 +334,8 @@ export default {
     name: 'expertRegistration',
     components: {
         VueRecaptcha,
-        VueNumberInput
+        VueNumberInput,
+        ButtonBack
     },
 
     mixins: [validationMixin],
@@ -403,8 +406,8 @@ export default {
     },
     computed: {
         isExpert(){
-            if(this.$attrs.user['http://stutor.com/roles'] != null){
-                return this.$attrs.user['http://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
+            if(this.$attrs.user['https://stutor.com/roles'] != null){
+                return this.$attrs.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
             }
             return false;
         },

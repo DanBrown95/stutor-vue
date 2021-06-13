@@ -80,6 +80,10 @@ Vue.use(VueRouter)
     path: '/shared/verification-error',
     name: 'VerificationError',
     component: () => import('../views/shared/VerificationError.vue')
+  },{
+    path: '/careers',
+    name: 'Careers',
+    component: () => import('../views/company/Careers.vue')
   }
 ]
 
