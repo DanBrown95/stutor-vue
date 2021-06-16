@@ -124,3 +124,9 @@ export default {
         color: #DEA800;
     }
 </style>
+
+<style>
+    #faq-section .faq-wrapper {
+        max-width: none;
+    }
+</style>

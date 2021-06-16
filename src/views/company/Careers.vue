@@ -66,7 +66,6 @@ export default {
         async getAvailableJobs() {
             this.searching = true;
             this.availableJobs = await _careerRepo_GetAllAvailableJobs();
-            this.availableJobs = [];
             this.searching = false;
         }
     }
@@ -85,7 +84,7 @@ export default {
 
     .main-content-wrapper {
         background-color: #f1f5f8;
-        height: 500px;
+        min-height: 500px;
         padding-top: 2em;
         padding-bottom: 2em;
     }

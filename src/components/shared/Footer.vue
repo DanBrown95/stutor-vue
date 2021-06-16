@@ -38,30 +38,35 @@
             <div class="col social">
                 <h1>Social</h1>
                 <ul>
-                    <li><a href="https://twitter.com/Stutor9"><img src="../../assets/social-media/twitter.png" width="32" style="width: 32px;"></a></li>
-                    <li><a href="https://www.facebook.com/Stutor-107227027650859"><img src="../../assets/social-media/facebook.png" width="32" style="width: 32px;"></a></li>
-                    <li><a href="https://instagram.com"><img src="../../assets/social-media/instagram.png"  width="32" style="width: 32px;"></a></li>
+                    <li><a href="https://twitter.com/Stutor9"><img src="../../assets/social-media/twitter.png" class="social-img" ></a></li>
+                    <li><a href="https://facebook.com/Stutor-107227027650859"><img src="../../assets/social-media/facebook.png" class="social-img" ></a></li>
+                    <li><a href="https://instagram.com"><img src="../../assets/social-media/instagram.png" class="social-img" ></a></li>
                 </ul>
             </div>
             <div class="clearfix"></div>
         </div>
+        <p>© {{ currentYear }} Stutor • All rights reserved.</p>
     </div>
 </template>
 
 <script>
 export default {
-    
+  computed: {
+    currentYear: function () {
+      return new Date().getFullYear();
+    },
+  }
 }
 </script>
 
 <style scoped>
 
-    .footer {
-  width: 100%;
-  /* position: relative; */
-  height: auto;
-  background-color: #DEA800;
-}
+  .footer {
+    width: 100%;
+    /* position: relative; */
+    height: auto;
+    background-color: #DEA800;
+  }
 
 .footer .col {
   width: 190px;
@@ -113,6 +118,14 @@ export default {
 }
 .clearfix {
   clear: both;
+}
+.footer > p {
+  text-align: center;
+  font-size: smaller;
+  color: white;
+}
+.social-img {
+  width: 32px;
 }
 @media only screen and (min-width: 1280px) {
   .contain {
