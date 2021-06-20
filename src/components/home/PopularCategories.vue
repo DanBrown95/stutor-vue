@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import Category from '@/components/main/Category.vue'
+import Category from '@/components/home/Category.vue'
 import { GetAllPopular as _categoryRepo_GetAllPopular } from '@/store/category/repository.js';
 
 export default {

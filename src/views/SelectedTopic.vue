@@ -13,7 +13,7 @@
         <Experts v-if="topic" id="experts" :TopicId="topic.id" @expertSelected="expertSelected" @searching="searching"/> <!-- The experts -->
 
         <!-- Shows the payment slide out drawer -->
-        <v-navigation-drawer id="drawer" v-model="drawer" absolute temporary right :width="700">  <!-- Slide out drawer -->
+        <v-navigation-drawer id="drawer" v-model="drawer" :permanent="keepDrawerVisible" absolute temporary right :width="700">  <!-- Slide out drawer -->
             <v-list-item style="background-color: #385F73;">  
             <v-list-item-content >
                 <v-list-item-title style="color: white;" class="headline text-center">Purchase Confirmation</v-list-item-title>
@@ -175,6 +175,7 @@ export default {
             card: null,
 
             showSuccess: false,
+            keepDrawerVisible: false,
             showOrderError: false,
             paymentVerification: "",
             isSending: false
@@ -336,10 +337,12 @@ export default {
             // Show a spinner on payment submission
             if (isLoading) {
                 // Disable the button and show a spinner
+                this.keepDrawerVisible = true;
                 document.querySelector("button").disabled = true;
                 document.querySelector("#spinner").classList.remove("hidden");
                 document.querySelector("#button-text").classList.add("hidden");
             } else {
+                this.keepDrawerVisible = false;
                 document.querySelector("button").disabled = false;
                 document.querySelector("#spinner").classList.add("hidden");
                 document.querySelector("#button-text").classList.remove("hidden");

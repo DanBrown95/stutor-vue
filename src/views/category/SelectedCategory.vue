@@ -47,7 +47,7 @@ export default {
 
 <style scoped>
     .banner {
-        background: url('../assets/topics-banner.jpg');
+        background: url('../../assets/topics-banner.jpg');
         background-size:cover;
         min-height: 100vh;
     }

@@ -12,11 +12,11 @@
 
 <script>
 // @ is an alias to /src
-import Search from '@/components/main/Search.vue'
-import PopularCategories from '@/components/main/PopularCategories.vue'
+import Search from '@/components/home/Search.vue'
+import PopularCategories from '@/components/home/PopularCategories.vue'
 
 export default {
-  name: 'Main',
+  name: 'Home',
   components: {
     Search,
     PopularCategories

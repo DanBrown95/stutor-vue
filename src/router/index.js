@@ -6,8 +6,8 @@ Vue.use(VueRouter)
   const routes = [
   {
     path: '/',
-    name: 'Main',
-    component: () => import('../views/Main.vue')
+    name: 'Home',
+    component: () => import('../views/Home.vue')
   },
   {
     path: '/topic/:id',
@@ -21,12 +21,12 @@ Vue.use(VueRouter)
   {
     path: '/browse',
     name: 'BrowseCategory',
-    component: () => import('../views/BrowseCategories.vue'),
+    component: () => import('../views/category/BrowseCategories.vue'),
   },
   {
     path: '/category/:id',
     name: 'Category',
-    component: () => import('../views/SelectedCategory.vue'),
+    component: () => import('../views/category/SelectedCategory.vue'),
   },
   {
     path: '/expert/register',
@@ -84,6 +84,11 @@ Vue.use(VueRouter)
     path: '/careers',
     name: 'Careers',
     component: () => import('../views/company/Careers.vue')
+  },
+  {
+    path: '/unauthorized',
+    name: 'EmailUnverified',
+    component: () => import('../views/shared/EmailUnverified.vue')
   }
 ]
 
