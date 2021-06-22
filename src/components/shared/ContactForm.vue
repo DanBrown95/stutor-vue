@@ -169,7 +169,7 @@ export default {
             }
 
             var response = await _utilsRepo_SendEmail(payload);
-            if(response.ok){
+            if(response.status == 200){
                 this.responseHeader = "Message Sent!";
                 this.responseParagraph = "We will get back to as soon as possible.";
                 this.messageSent = true;
