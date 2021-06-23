@@ -9,7 +9,7 @@
                     <v-list-item-subtitle><i class="fas fa-map-marker-alt" style="color: red;"></i>&nbsp;{{job.location}}</v-list-item-subtitle>
                 </v-list-item-content>
                 <v-list-item-content style="flex: none !important;">
-                    <a :href="job.url"><i class="fas fa-external-link-alt"></i></a>
+                    <a :href="job.url" target="_blank"><i class="fas fa-external-link-alt"></i></a>
                 </v-list-item-content>
             </v-list-item>
         </v-card>

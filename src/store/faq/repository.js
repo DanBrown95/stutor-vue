@@ -26,6 +26,11 @@ export default {
           category: 'General Questions'
         },
         {
+          title: 'Why is noone ordering my services?',
+          value: 'In order to be shown to those seeking help, you must have your Email and Phone verified in your Account page and must have a card stored on your payment portal in order to receive payments.',
+          category: 'Expert Questions'
+        },
+        {
           title: 'When do I receive payment?',
           value: 'Payment will be processed once you have entered the passkey received by the client.',
           category: 'Expert Questions'
@@ -53,7 +58,7 @@ export default {
         },
         {
           title: 'What do I do if the expert hasn\'t called me?',
-          value: 'Our experts may be requested by multiple clients at any given time and need adequate time to provide a quality response, but if you have not received a call ' +
+          value: 'Our experts may have many requests at any given time and need adequate time to provide a quality response, but if you have not received a call ' +
                  'within a reasonable amount of time, feel free to contact our support team.',
           category: 'Payment Questions'
         }
