@@ -2,7 +2,7 @@
   <v-app>
     <TopNav :class="{ 'color-nav': colorNav }"/>
     <v-content>
-      <router-view :user="user"></router-view>
+      <router-view></router-view>
     </v-content>
     <Footer />
   </v-app>
@@ -20,25 +20,13 @@ export default {
   },
   data: function () {
     return { 
-      user: {},
       colorNav: true
     }
   },
   watch: {
     // Everytime the route changes, check for auth status
     '$route'() {
-      this.getUser();
       this.colorNav = (this.$route.meta.colorNav === true);
-    }
-  },
-  computed: {
-    authenticated: function() {
-      return this.user != null && this.user != {};
-    }
-  },
-  methods: {
-    async getUser() {
-      this.user = this.$auth.user;
     }
   }
 };

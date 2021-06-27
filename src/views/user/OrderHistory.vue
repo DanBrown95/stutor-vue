@@ -48,7 +48,6 @@ export default {
     },
     data(){
         return{
-            user: {},
             allOrders: [],
             totalOrders: 0,
             
@@ -58,7 +57,7 @@ export default {
         }
     },
     created() {
-        this.user = this.$auth.user;
+        this.getOrders();
     },
     computed: {
         totalPagesForPagination() {
@@ -75,7 +74,7 @@ export default {
         async getOrders(){
             this.loading = true;
             const accessToken = await this.$auth.getTokenSilently();
-            const unordered = await _orderRepo_GetAllByUserId(this.user['https://stutor.com/id'], accessToken);
+            const unordered = await _orderRepo_GetAllByUserId(this.$auth.user['https://stutor.com/id'], accessToken);
             this.allOrders = unordered.sort(CompareBySubmitted);
             this.loading = false;
         },
@@ -87,9 +86,6 @@ export default {
         allOrders(orders) {
             this.totalOrders = orders.length;
             this.currentPage = 1;
-        },
-        user(){
-            this.getOrders();
         }
     }
 }

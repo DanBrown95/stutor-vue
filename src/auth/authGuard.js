@@ -12,7 +12,7 @@ export const authGuard = (to, from, next) => {
       return next();
     }
     else if (authService.isAuthenticated && (!authService.user['https://stutor.com/email_verified'] || !authService.user['https://stutor.com/phone_verified'])){
-      return next({name: 'VerificationError'});
+      return next({name: 'unverified'});
     }
 
     // Otherwise, log in

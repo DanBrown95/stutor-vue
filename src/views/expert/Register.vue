@@ -406,8 +406,8 @@ export default {
     },
     computed: {
         isExpert(){
-            if(this.$attrs.user['https://stutor.com/roles'] != null){
-                return this.$attrs.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
+            if(this.$auth.user['https://stutor.com/roles'] != null){
+                return this.$auth.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
             }
             return false;
         },
@@ -503,7 +503,7 @@ export default {
 
             var formData = {
                 captcha: recaptchaToken,
-                userId: this.$attrs.user['https://stutor.com/id'],
+                userId: this.$auth.user['https://stutor.com/id'],
                 topicId: this.selectedTopic.id,
                 timezoneId: this.selectedTimezone,
                 selectedDays: this.selectedDays,
@@ -527,13 +527,13 @@ export default {
                 var documents = new FormData()
                 for (let index = 0; index < this.resumes.length; index++) {
                     const element = this.resumes[index];
-                    documents.append('resumes[]', element, this.$attrs.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-resume');
+                    documents.append('resumes[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-resume');
                 }
 
                 if(this.transcripts) {
                     for (let index = 0; index < this.transcripts.length; index++) {
                         const element = this.transcripts[index];
-                        documents.append('transcripts[]', element, this.$attrs.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-transcript');
+                        documents.append('transcripts[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-transcript');
                     }
                 }
 

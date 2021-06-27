@@ -86,9 +86,12 @@ Vue.use(VueRouter)
     component: () => import('../views/company/Careers.vue')
   },
   {
-    path: '/unauthorized',
-    name: 'EmailUnverified',
-    component: () => import('../views/shared/EmailUnverified.vue')
+    path: '/unverified',
+    name: 'unverified',
+    component: () => import('../views/shared/EmailUnverified.vue'),
+    meta: {
+      colorNav: true
+    },
   }
 ]
 

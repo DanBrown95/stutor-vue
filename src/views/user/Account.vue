@@ -9,16 +9,16 @@
                     <v-subheader class="float-right">Email </v-subheader>
                 </v-col>
                 <v-col cols="6">
-                    <v-text-field v-model="user.email" readonly disabled>
+                    <v-text-field v-model="$auth.user.email" readonly disabled>
                         <template v-slot:prepend>
                             <v-icon color="blue">mdi-email</v-icon>
                         </template>
                     </v-text-field>
                 </v-col>
-                <v-col v-if="!user['https://stutor.com/email_verified']">
+                <v-col v-if="!$auth.user['https://stutor.com/email_verified']">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-chip v-bind="attrs" v-on="on" v-if="!user['https://stutor.com/email_verified']"
+                            <v-chip v-bind="attrs" v-on="on" v-if="!$auth.user['https://stutor.com/email_verified']"
                                 class="ma-2"
                                 color="red"
                                 text-color="white"
@@ -57,10 +57,10 @@
                         <v-btn  @click="updatePhone">Update</v-btn>
                     </div>
                 </v-col>
-                <v-col v-if="!user['https://stutor.com/phone_verified']">
+                <v-col v-if="!$auth.user['https://stutor.com/phone_verified']">
                     <v-tooltip top>
                         <template v-slot:activator="{ on, attrs }">
-                            <v-chip v-bind="attrs" v-on="on" v-if="!user['https://stutor.com/phone_verified']"
+                            <v-chip v-bind="attrs" v-on="on" v-if="!$auth.user['https://stutor.com/phone_verified']"
                                 class="ma-2"
                                 color="red"
                                 text-color="white"
@@ -225,7 +225,6 @@ export default {
                 "iso2": "US",
                 "dialCode": "1"
             }],
-            user: {},
 
             phoneVerificationStatus: null,
             verifyLoading: false,
@@ -233,13 +232,13 @@ export default {
         }
     },
     created(){
-        this.user = this.$auth.user;
         this.phoneField = this.$auth.user['https://stutor.com/phone'];
+        this.populateData();
     },
     computed: {
         isExpert: function(){
-            if(this.user['https://stutor.com/roles'] != null){
-                return this.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
+            if(this.$auth.user['https://stutor.com/roles'] != null){
+                return this.$auth.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
             }
             return false;
         },
@@ -247,7 +246,7 @@ export default {
             return this.isActive ? "Temporarily Deactivate" : "Re-enable your availability";
         },
         displayNewPhoneUpdateButton(){
-            return (this.newPhoneValid && this.newPhoneNumber != this.user["https://stutor.com/phone"]);
+            return (this.newPhoneValid && this.newPhoneNumber != this.$auth.user["https://stutor.com/phone"]);
         }
     },
     filters: {
@@ -256,12 +255,9 @@ export default {
         }
     },
     watch: {
-        user() {
-            this.populateData();
-        },
         async selectedTimezoneId(newValue, oldValue) {
             if(oldValue != null && oldValue !== newValue){
-                var success = await _expertRepo_UpdateTimezone(this.user['https://stutor.com/id'], newValue);
+                var success = await _expertRepo_UpdateTimezone(this.$auth.user['https://stutor.com/id'], newValue);
                 this.showSuccess = (success);
             }
         }
@@ -274,19 +270,19 @@ export default {
                 this.timezones = await _timezoneRepo_GetAll();
 
                 // Get the experts timezone
-                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.user['https://stutor.com/id']);
+                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.$auth.user['https://stutor.com/id']);
 
                 // Get the experts expertTopics
-                this.expertTopics = await _expertRepo_ExpertTopics(this.user['https://stutor.com/id']);
+                this.expertTopics = await _expertRepo_ExpertTopics(this.$auth.user['https://stutor.com/id']);
 
                 // Get the experts Active status
-                this.isActive = await _expertRepo_GetActiveStatus(this.user['https://stutor.com/id']);
+                this.isActive = await _expertRepo_GetActiveStatus(this.$auth.user['https://stutor.com/id']);
             }
 
         },
         async toggleIsActive() {
             // toggle the active status
-            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.user['https://stutor.com/id']);
+            this.isActive = await _expertRepo_ToggleIsActive(this.isActive, this.$auth.user['https://stutor.com/id']);
         },
         validatePhone(phone){
             if(phone.valid === true){
@@ -294,7 +290,7 @@ export default {
                 this.newPhoneNumber = phone.number;
             }else{
                 this.newPhoneValid = true;
-                this.newPhoneNumber = this.user["https://stutor.com/phone"];
+                this.newPhoneNumber = this.$auth.user["https://stutor.com/phone"];
             }
         },
         deactivateExpert() {
@@ -347,17 +343,17 @@ export default {
         },
         async resendEmailVerification(){
             const accessToken = await this.$auth.getTokenSilently();
-            await _accountRepo_ResendEmail(this.user.sub, accessToken);
+            await _accountRepo_ResendEmail(this.$auth.user.sub, accessToken);
         },
         async resendPhoneVerification(){
             const accessToken = await this.$auth.getTokenSilently();
-            const res = await _accountRepo_ResendPhone(this.user["https://stutor.com/id"], accessToken);
+            const res = await _accountRepo_ResendPhone(this.$auth.user["https://stutor.com/id"], accessToken);
             this.phoneVerificationStatus = res.status;
         },
         async onPhoneVerifyComplete(pin) {
             this.verifyLoading = true;
             const accessToken = await this.$auth.getTokenSilently();
-            const res = await _accountRepo_verifyPhonePin(this.user["https://stutor.com/id"], pin, accessToken);
+            const res = await _accountRepo_verifyPhonePin(this.$auth.user["https://stutor.com/id"], pin, accessToken);
             if(res.success == true){
                 window.location.reload()
             }else{
@@ -380,8 +376,8 @@ export default {
             const accessToken = await this.$auth.getTokenSilently();
 
             var formData = {
-                userId: this.user['https://stutor.com/id'],
-                customerId: this.user['https://stutor.com/customer_id']
+                userId: this.$auth.user['https://stutor.com/id'],
+                customerId: this.$auth.user['https://stutor.com/customer_id']
             };
 
             fetch("https://localhost:44343/api/PaymentPortal/RedirectToCustomerPortal", {
@@ -399,9 +395,9 @@ export default {
         },
         async updatePhone(){
             const accessToken = await this.$auth.getTokenSilently();
-            const oldPhone = this.user['https://stutor.com/phone'];
+            const oldPhone = this.$auth.user['https://stutor.com/phone'];
             const newPhone = this.newPhoneNumber;
-            const res = await _accountRepo_UpdatePhone(accessToken, this.user["https://stutor.com/id"], oldPhone, newPhone);
+            const res = await _accountRepo_UpdatePhone(accessToken, this.$auth.user["https://stutor.com/id"], oldPhone, newPhone);
             if(res.success == true){
                 window.location.reload()
             }else{
