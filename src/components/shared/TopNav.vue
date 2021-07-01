@@ -2,9 +2,9 @@
     <div id="nav">
         <nav class="navbar navbar-dark bg-dark">
             <div class="inline-block logo">
-                <a href="/">
+                <router-link to="/">
                     STUTOR
-                </a>
+                </router-link>
             </div>
 
             <!-- Login/Logout buttons -->

@@ -29,14 +29,17 @@
                 </div>
             </div>
         </div>
+        <ButtonBack/>
     </div>
 </template>
 <script>
+import ButtonBack from "@/components/utils/ButtonBack.vue";
 import AvailableJob from "@/components/company/AvailableJob.vue";
 import { GetAllAvailableJobs as _careerRepo_GetAllAvailableJobs } from '@/store/career/repository.js';
 
 export default {
     components: {
+        ButtonBack,
         AvailableJob
     },
     data() {
