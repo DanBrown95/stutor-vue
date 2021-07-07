@@ -1,12 +1,10 @@
 <template>
 <div>
     <h2 class="header">Browse by Category</h2>
-    <v-row>
-        <v-layout row justify-center class="categories">
-            <v-col md="2" v-for="c in categories" :key="c.Id">
-                <Category :id="c.category.id" :name="c.category.name" :imageUrl="c.imageUrl" class="category"></Category>
-            </v-col>
-        </v-layout>
+    <v-row justify="center">
+        <v-col md="2" v-for="c in categories" :key="c.Id" style="align-content: center;">
+            <Category :id="c.category.id" :name="c.category.name" :imageUrl="c.imageUrl" class="category"></Category>
+        </v-col>
     </v-row>
     <div class="wrapper"><v-btn class="inst-btn" :to="{name: 'BrowseCategory'}" rounded outlined>More Categories</v-btn></div>
 </div>
@@ -64,6 +62,8 @@ export default {
     .category {
         width: 10em;
         height: 10em;
+        margin-left: auto;
+        margin-right: auto;
     }
 
     /* Styling for the browse categories button */
