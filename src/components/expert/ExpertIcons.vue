@@ -1,28 +1,28 @@
 <template>
     <div v-if="!searching">
         <div class="center" v-if="hasExperts">
-            <template v-if="(this.experts.localExperts && this.experts.localExperts.length)">
+            <template v-if="(this.localExperts && this.localExperts.length)">
                 <v-card class="mx-auto">
                     <v-card-title>
                     <span class="title font-weight-light">Local Experts</span>
                     </v-card-title>
 
                     <v-card-text>
-                        <div v-for="x in experts.localExperts" :key="x.id" class="inline-block">
+                        <div v-for="x in localExperts" :key="x.id" class="inline-block">
                             <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
                         </div>
                     </v-card-text>
                 </v-card>
             </template>
             <br />
-            <template v-if="(this.experts.distantExperts && this.experts.distantExperts.length)">
+            <template v-if="(this.distantExperts && this.distantExperts.length)">
                 <v-card class="mx-auto">
                     <v-card-title>
                     <span class="title font-weight-light">Distant Experts</span>
                     </v-card-title>
 
                     <v-card-text>
-                        <div v-for="x in experts.distantExperts" :key="x.id" class="inline-block">
+                        <div v-for="x in distantExperts" :key="x.id" class="inline-block">
                             <ExpertIcon :expert="x" @clicked="expertSelected"></ExpertIcon>
                         </div>
                     </v-card-text>
@@ -38,6 +38,7 @@
 <script>
 import ExpertIcon from '@/components/expert/ExpertIcon.vue'
 import { TopicExpertsByTopicId as _expertRepo_TopicExpertsByTopicId } from "@/store/expert/repository.js";
+import { CompareExpertsByRating } from '@/helpers/Compare.js';
 
 export default {
     name: 'ExpertIcons',
@@ -54,6 +55,18 @@ export default {
     computed: {
         hasExperts() {
             return (this.experts.localExperts && this.experts.localExperts.length) || (this.experts.distantExperts && this.experts.distantExperts.length);
+        },
+        localExperts() {
+            if(this.experts.localExperts && this.experts.localExperts.length){
+                return this.experts.localExperts.slice().sort(CompareExpertsByRating);
+            }
+            return []
+        },
+        distantExperts(){
+            if(this.experts.distantExperts && this.experts.distantExperts.length){
+                return this.experts.distantExperts.slice().sort(CompareExpertsByRating);
+            }
+            return []
         }
     },
     mounted() {

@@ -1,8 +1,11 @@
 <template>
     <div class="main">
-        <a @click.stop="iconPressed(this)">
-            <img class="image">
-        </a>
+        
+            <a @click.stop="iconPressed(this)">
+                <skills-tool-tip :skills="this.expert.skills">
+                    <img class="image" />
+                </skills-tool-tip>
+            </a>
         <div class="overlay">
             <div class="text" style="color: green;">${{ this.expert.price.toFixed(2) }}</div>
             <div class="text">{{ this.expert.rating | RatingAsTitle }}</div>
@@ -11,11 +14,15 @@
 </template>
 
 <script>
+import SkillsToolTip from '@/components/expert/SkillsToolTip.vue';
 import { RatingAsTitle } from '@/helpers/Rating.js'
 
 export default {
     name: 'ExpertIcon',
     props: ['expert'],
+    components: {
+        SkillsToolTip
+    },
     data: function () {
         return {}
     },
