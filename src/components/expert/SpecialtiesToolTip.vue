@@ -1,10 +1,10 @@
 <template>
     <div class="tooltip-box">
     <slot />
-    <div class="tooltip" v-if="skillsArray.length">
+    <div class="tooltip" v-if="specialties.length">
         <ul>
-            <li class="text" v-for="skill in skillsArray" :key="skill">
-                {{ skill }}
+            <li class="text" v-for="specialty in specialties" :key="specialty.id">
+                {{ specialty.name }}
             </li>
         </ul>
     </div>
@@ -13,22 +13,8 @@
 
 <script>
 export default {
-    name: "SkillsToolTip",
-    props: ['skills'],
-    data() {
-        return {
-
-        }
-    },
-    computed: {
-        skillsArray(){
-            if(this.skills != null){
-                return this.skills.split(",");
-            }else{
-                return [];
-            }
-        }
-    }
+    name: "SpecialtiesToolTip",
+    props: ['specialties']
 }
 </script>
 

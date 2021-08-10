@@ -11,7 +11,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Desired Topic: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="6">
                                 <v-autocomplete v-model="selectedTopic" 
                                                 :items="topics" item-text="name" 
                                                 label="Available Topics" 
@@ -26,6 +26,42 @@
                                                 required
                                 >
                                 </v-autocomplete>
+                            </v-col>
+                            <v-col style="align-self: center;">
+                                <span v-if="selectedTopic != null" style="float: left;">Selected: {{selectedTopic.name}}</span>
+                            </v-col>
+                        </v-row>
+
+                        <v-row v-if="selectedTopic">
+                            <v-col cols="3">
+                                <v-subheader>* Specialties: </v-subheader>
+                            </v-col>
+                            <v-col cols="9">
+                                <template>
+                                    <v-combobox
+                                        v-model="selectedSpecialties"
+                                        :items="availableSpecialties"
+                                        item-text="name"
+                                        chips
+                                        clearable
+                                        label="Select up to 5 specialties"
+                                        multiple
+                                        prepend-icon="mdi-filter-variant"
+                                        solo
+                                    >
+                                        <template v-slot:selection="{ attrs, item, select, selected }">
+                                        <v-chip
+                                            v-bind="attrs"
+                                            :input-value="selected"
+                                            close
+                                            @click="select"
+                                            @click:close="removeSpecialty(item)"
+                                        >
+                                            <strong>{{ item.name }}</strong>&nbsp;
+                                        </v-chip>
+                                        </template>
+                                    </v-combobox>
+                                </template>
                             </v-col>
                         </v-row>
 
@@ -326,7 +362,7 @@ import { required, maxLength, requiredIf } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import ButtonBack from "@/components/utils/ButtonBack.vue";
-import { GetBySubstring as _topicRepo_GetBySubstring } from "@/store/topic/repository.js";
+import { GetBySubstring as _topicRepo_GetBySubstring, GetAllSpecialties as _topicRepo_GetAllSpecialties } from "@/store/topic/repository.js";
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { Register as _expertRepo_Register, UploadDocuments as _expertRepo_UploadDocuments } from '@/store/expert/repository.js';
 
@@ -367,7 +403,10 @@ export default {
             topics: [],
             topicSearch: "",
 
-            selectedTopic: {},
+            availableSpecialties: [],
+            selectedSpecialties: [],
+
+            selectedTopic: null,
             selectedDays: [],
             
             wdshMenu: false,
@@ -402,6 +441,9 @@ export default {
     watch: {
         topicSearch(val){ 
             this.getTopics(val);
+        },
+        selectedTopic(val){
+            this.getSpecialties(val.id);
         }
     },
     computed: {
@@ -482,6 +524,14 @@ export default {
                 this.topics = [];
             }
         },
+        async getSpecialties(topicId){
+            this.availableSpecialties = await _topicRepo_GetAllSpecialties(topicId);
+            this.selectedSpecialties = [];
+        },
+        removeSpecialty (item) {
+            this.selectedSpecialties.splice(this.selectedSpecialties.indexOf(item), 1);
+            this.selectedSpecialties = [...this.selectedSpecialties];
+        },
         async getTimezones(){
             this.tz_timezones = await _timezoneRepo_GetAll();
         },
@@ -500,7 +550,7 @@ export default {
             this.$refs.invisibleRecaptcha.reset()
         },
         async submit(recaptchaToken) {
-
+            var specialtyCSV = this.selectedSpecialties.map(x => x.id).join();
             var formData = {
                 captcha: recaptchaToken,
                 userId: this.$auth.user['https://stutor.com/id'],
@@ -513,7 +563,8 @@ export default {
                 linkedinUrl: this.linkedinUrl,
                 certifications: this.certifications,
                 yearsOfExperience: this.yearsOfExperience,
-                notes: this.notes
+                notes: this.notes,
+                specialties: specialtyCSV
             }            
             
             const accessToken = await this.$auth.getTokenSilently();
@@ -539,7 +590,7 @@ export default {
 
                 var docUploadResponse = await _expertRepo_UploadDocuments(documents, accessToken);
 
-                this.submitResponse = (docUploadResponse.ok) ? "Your application has been submitted. We will contact you shortly." : "There was an issue submitting your application. Please try again shortly.";
+                this.submitResponse = (docUploadResponse.status == 200) ? "Your application has been submitted. We will contact you shortly." : "There was an issue submitting your application. Please try again shortly.";
                 this.submitted = true;
             }
             
