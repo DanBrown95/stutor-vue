@@ -44,7 +44,7 @@ export default {
         border-radius: 2px;
         background-color: white;
         width: 250px;
-        min-height: 120px;
+        /* min-height: 120px; */
         bottom: 100%;
         left: 50%;
         margin-left: -125px;
