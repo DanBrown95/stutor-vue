@@ -263,3 +263,20 @@ export function UpdateTimezone(userId, timezoneId) {
     // });
     // return result;
 }
+
+export function RevokeTopicExpert(topicExpertId, expertId, accessToken){
+    return axios({
+        url: 'https://localhost:44343/api/expert/RevokeTopicExpert',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+        },
+        data: {
+            topicExpertId: topicExpertId,
+            expertId: expertId
+        }
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}

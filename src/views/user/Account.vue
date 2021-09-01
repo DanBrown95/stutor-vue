@@ -170,13 +170,13 @@
                     <span>When deactivated you will no longer be recommended to users.</span>
                 </v-tooltip>
 
-                <v-tooltip top>
+                <!-- <v-tooltip top>
                     <template v-slot:activator="{ on, attrs }">
                         <v-btn color="error" v-bind="attrs" v-on="on" 
                                 @click="deactivateExpert">Remove Expert Status</v-btn>
                     </template>
                     <span>This will revert you to a normal user.</span>
-                </v-tooltip>
+                </v-tooltip> -->
                 
             </v-row>
         </div>
@@ -195,7 +195,8 @@ import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId,
          ExpertTopics as _expertRepo_ExpertTopics,
          GetActiveStatus as _expertRepo_GetActiveStatus,
          ToggleIsActive as _expertRepo_ToggleIsActive, 
-         UpdateTimezone as _expertRepo_UpdateTimezone } from '@/store/expert/repository.js';
+         UpdateTimezone as _expertRepo_UpdateTimezone,
+         RevokeTopicExpert as _expertRepo_RevokeTopicExpert } from '@/store/expert/repository.js';
 
 import CodeInput from "vue-verification-code-input";
 import SlideUpDown from 'vue-slide-up-down';
@@ -293,30 +294,30 @@ export default {
                 this.newPhoneNumber = this.$auth.user["https://stutor.com/phone"];
             }
         },
-        deactivateExpert() {
-            let message = "Are you sure you want to remove your expert status?";
+        // deactivateExpert() {
+        //     let message = "Are you sure you want to remove your expert status?";
 
-            let options = {
-                html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
-                loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
-                reverse: false, // switch the button positions (left to right, and vise versa)
-                okText: 'Yes',
-                cancelText: 'Close',
-                animation: 'bounce', // Available: "zoom", "bounce", "fade"
-                type: 'hard', // coming soon: 'soft', 'hard'
-                verification: 'remove', // for hard confirm, user will be prompted to type this to enable the proceed button
-                verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
-                backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
-                customClass: '' // Custom class to be injected into the parent node for the current dialog instance
-            };
-            this.$dialog.confirm(message, options)
-            .then(function () {
-                // remove the users expert status
-            })
-            .catch(function () {
-                // This will be triggered when user clicks on cancel. Do nothing.
-            });
-        },
+        //     let options = {
+        //         html: false, // set to true if your message contains HTML tags. eg: "Delete <b>Foo</b> ?"
+        //         loader: false, // set to true if you want the dailog to show a loader after click on "proceed"
+        //         reverse: false, // switch the button positions (left to right, and vise versa)
+        //         okText: 'Yes',
+        //         cancelText: 'Close',
+        //         animation: 'bounce', // Available: "zoom", "bounce", "fade"
+        //         type: 'hard', // coming soon: 'soft', 'hard'
+        //         verification: 'remove', // for hard confirm, user will be prompted to type this to enable the proceed button
+        //         verificationHelp: 'Type "[+:verification]" below to confirm', // Verification help text. [+:verification] will be matched with 'options.verification' (i.e 'Type "continue" below to confirm')
+        //         backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
+        //         customClass: '' // Custom class to be injected into the parent node for the current dialog instance
+        //     };
+        //     this.$dialog.confirm(message, options)
+        //     .then(function () {
+        //         // remove the users expert status
+        //     })
+        //     .catch(function () {
+        //         // This will be triggered when user clicks on cancel. Do nothing.
+        //     });
+        // },
         unassignTopic(expertTopic) {
             let message = "Are you sure you no longer want to be an expert on " + expertTopic.name + "?";
 
@@ -333,13 +334,19 @@ export default {
                 backdropClose: true, // set to true to close the dialog when clicking outside of the dialog window, i.e. click landing on the mask
                 customClass: '' // Custom class to be injected into the parent node for the current dialog instance
             };
+            var ref = this;
             this.$dialog.confirm(message, options)
             .then(function () {
-                // remove the users expert status
+                // remove the users expert status for this topic
+                ref.revokeTopicExpert(expertTopic);
             })
             .catch(function () {
                 // This will be triggered when user clicks on cancel. Do nothing.
             });
+        },
+        async revokeTopicExpert(expertTopic) {
+            const accessToken = await this.$auth.getTokenSilently();
+            return await _expertRepo_RevokeTopicExpert(expertTopic.topicExpert.id, expertTopic.topicExpert.expertId, accessToken);
         },
         async resendEmailVerification(){
             const accessToken = await this.$auth.getTokenSilently();
