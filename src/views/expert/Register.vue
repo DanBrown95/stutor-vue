@@ -358,13 +358,17 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, maxLength, requiredIf } from "vuelidate/lib/validators";
+import { required, maxLength, requiredIf, helpers } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import ButtonBack from "@/components/utils/ButtonBack.vue";
 import { GetBySubstring as _topicRepo_GetBySubstring, GetAllSpecialties as _topicRepo_GetAllSpecialties } from "@/store/topic/repository.js";
 import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { Register as _expertRepo_Register, UploadDocuments as _expertRepo_UploadDocuments } from '@/store/expert/repository.js';
+
+function maxFilesize(value){
+    return !helpers.req(value) || (value && !value.some(x => x.size > 2096128));
+}
 
 export default {
     name: 'expertRegistration',
@@ -383,7 +387,10 @@ export default {
                 return !this.isExpert;
             })
         },
-        resumes: { required },
+        resumes: { 
+            required,
+            maxFilesize
+        },
         certifications: {
             maxLength: maxLength(500)
         },
@@ -466,8 +473,6 @@ export default {
             return errors
         },
         formValid () {
-            var topicValid = (this.selectedTopic != null && this.selectedTopic != {})
-            var timezoneValid = this.isExpert || (this.selectedTimezone != null && this.selectedTimezone != '')
             var daysValid = (this.selectedDays != [] && this.selectedDays.length > 0)
             var weekdayTimesValid = true;
             if (this.weekdaysSelected){
@@ -477,11 +482,8 @@ export default {
             if (this.weekendsSelected){
                 weekendTimesValid = !(this.weekendStartHours == null || this.weekendEndHours == null)
             }
-            var resumeValid = (this.resumes != null && this.resumes.length > 0)
-            var notesValid = (this.notes.length < 500)
-            var certificationsValid = (this.certifications.length < 500)
-            var checkboxValid = this.agreeToTerms
-            return (topicValid && timezoneValid && daysValid && weekdayTimesValid && weekendTimesValid && resumeValid && certificationsValid && notesValid && checkboxValid);
+            
+            return (!this.$v.$invalid && daysValid && weekdayTimesValid && weekendTimesValid);
         },
         weekdaysSelected: function() {
             var weekdays = ["mon","tue","wed","thu","fri"]
@@ -513,6 +515,7 @@ export default {
             const errors = []
             if(!this.$v.resumes.$dirty) return errors
             !this.$v.resumes.required && errors.push("Resume is required")
+            !this.$v.resumes.maxFilesize && errors.push("Max file size is 2MB")
             return errors
         }
     },
@@ -578,13 +581,13 @@ export default {
                 var documents = new FormData()
                 for (let index = 0; index < this.resumes.length; index++) {
                     const element = this.resumes[index];
-                    documents.append('resumes[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-resume');
+                    documents.append('resumes[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index);
                 }
 
                 if(this.transcripts) {
                     for (let index = 0; index < this.transcripts.length; index++) {
                         const element = this.transcripts[index];
-                        documents.append('transcripts[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index+'-transcript');
+                        documents.append('transcripts[]', element, this.$auth.user['https://stutor.com/id']+'-'+applicationId+'-'+index);
                     }
                 }
 
