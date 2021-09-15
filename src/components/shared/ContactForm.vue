@@ -1,7 +1,7 @@
 <template>
     <div class="main">
         <div v-if="!messageSent">
-            <h1 class="heading">Contact Us</h1>
+            <h2 class="heading">Contact Us</h2>
             <v-form @submit.prevent="onSubmit">
                 <v-container>
                     <v-row justify="center">
@@ -61,7 +61,7 @@
             <v-container style="position: relative; top: 45%;">
                 <v-row class="text-center">
                     <v-col>
-                        <h2>{{responseHeader}}</h2>
+                        <h2 id="response-header">{{responseHeader}}</h2>
                         <p>{{responseParagraph}}</p>
                     </v-col>
                 </v-row>
@@ -197,7 +197,7 @@ export default {
         text-align: center;
     }
 
-    h2 {
+    #response-header {
         font-size: 2em;
         color: #DEA800;
     }

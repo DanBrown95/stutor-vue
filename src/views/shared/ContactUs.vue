@@ -1,53 +1,53 @@
 <template>
     <div>
         <div class="top">
-            <div style="padding-top: 12%; padding-bottom: 4em;">
-                <h1>Need Assistance?</h1>
-                <p>We're sorry you are having issues. Feel free to drop us a line.<br> Or use our online chat feature <a class="purechat-button-expand">here</a></p>
+            <div style="padding-top: 12%;">
+                <h2>Need Assistance?</h2>
+                <p>We're sorry you're having issues. Feel free to use the resources below.</p>
             </div>
-            <div>
-                <div class="col-md-3 inline-block">
-                    <div class="contact-img">
-                        <v-icon x-large class="icon">{{emailSvgPath}}</v-icon>
-                    </div>
-                    <div class="contact-info">
-                        <p>Support</p><br>
-                        <p>support@stutor.com</p>
-                        <br/><br/>
-                    </div>
-                </div>
-                <div class="col-md-3 inline-block">
-                    <div class="contact-img">
-                        <v-icon x-large class="icon">{{phoneSvgPath}}</v-icon>
-                    </div>
-                    <div class="contact-info">
-                        <p>Support</p><br>
-                        <p>Ph: 319-540-5044</p>
-                        <br/>
-                        <br/>
-                    </div>
-                </div>
-                <div class="col-md-3 inline-block">
-                    <div class="contact-img">
-                        <v-icon x-large class="icon">{{locationSvgPath}}</v-icon>
-                    </div>
-                    <div class="contact-info">
-                        <p>Mailing Address</p> <br>
-                        <p>Stutor Inc.</p>
-                        <p>1150 F Ave</p>
-                        <p>Marion, IA, 52302</p>
-                    </div>
-                </div>
-            </div>
+            <v-container id="faq-section">
+                <v-row justify="center">
+                    <v-col cols="7">
+                        <VueFaqAccordion borderColor="#DEA800" activeColor="#D0021B" :items="faqs"/>
+                    </v-col>
+                </v-row>
+            </v-container>
         </div> <!-- End of top -->
-        <v-container id="faq-section">
-            <h3>FAQ's</h3>
-            <v-row justify="center">
-                <v-col cols="7">
-                    <VueFaqAccordion borderColor="#DEA800" activeColor="#D0021B" :items="faqs"/>
-                </v-col>
-            </v-row>
-        </v-container>
+        <div class="middle">
+            <h2>More useful resources</h2>
+            <div class="col-md-3 inline-block">
+                <div class="contact-img">
+                    <v-icon x-large class="icon">{{emailSvgPath}}</v-icon>
+                </div>
+                <div class="contact-info">
+                    <p>Support</p><br>
+                    <p>support@stutor.com</p>
+                    <br/><br/>
+                </div>
+            </div>
+            <div class="col-md-3 inline-block">
+                <div class="contact-img">
+                    <v-icon x-large class="icon">{{webchatSvgPath}}</v-icon>
+                </div>
+                <div class="contact-info">
+                    <p>Web Support</p><br>
+                    <li class="purechat-activator-li"><a class="purechat-button-expand"> Online chat help </a></li>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+            <div class="col-md-3 inline-block">
+                <div class="contact-img">
+                    <v-icon x-large class="icon">{{phoneSvgPath}}</v-icon>
+                </div>
+                <div class="contact-info">
+                    <p>Support</p><br>
+                    <p>Ph: 319-540-5044</p>
+                    <br/>
+                    <br/>
+                </div>
+            </div>
+        </div>
         <div id="contact-section" style="padding-top: 2em;">
             <ContactForm></ContactForm>
         </div>
@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import { mdiEmailMarkAsUnread, mdiCellphoneAndroid, mdiMapMarker } from '@mdi/js';
+import { mdiEmailMarkAsUnread, mdiCellphoneAndroid, mdiWechat } from '@mdi/js';
 import ContactForm from "@/components/shared/ContactForm.vue";
 import VueFaqAccordion from 'vue-faq-accordion';
 import faqs from '@/store/faq/repository.js';
@@ -72,7 +72,7 @@ export default {
         return { 
             emailSvgPath: mdiEmailMarkAsUnread,
             phoneSvgPath: mdiCellphoneAndroid,
-            locationSvgPath: mdiMapMarker,
+            webchatSvgPath: mdiWechat,
 
             faqs: faqs.faqs,
         }
@@ -84,7 +84,16 @@ export default {
     .top {
         background-color: #E9ECEE;
         text-align: center;
-        padding-bottom: 5em;
+    }
+
+    .middle {
+        padding-top: 3em;
+        text-align: center;
+    }
+
+    .middle h2 {
+        width: 100%;
+        margin-bottom: 2em;
     }
 
     #faq-section {
@@ -122,6 +131,10 @@ export default {
 
     .icon {
         color: #DEA800;
+    }
+
+    .purechat-activator-li {
+        list-style: none;
     }
 </style>
 
