@@ -127,8 +127,11 @@
                         <div v-for="expertTopic in expertTopics" :key="expertTopic.id">
                             <v-row align="center">
                                 <v-col cols="1">
-                                    <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red">
+                                    <v-icon small class="mr-2" @click="unassignTopic(expertTopic)" color="red" title="Revoke Topic">
                                         mdi-delete
+                                    </v-icon>
+                                    <v-icon small class="mr-2" @click="displaySpecialtiesModal(expertTopic)" color="red" title="Modify Specialties">
+                                        mdi-clipboard-text-outline
                                     </v-icon>
                                 </v-col>
                                 <v-col cols="3">
@@ -179,6 +182,56 @@
                 </v-tooltip> -->
                 
             </v-row>
+
+            <!-- The edit specialties modal -->
+            <v-dialog v-model="specialtiesDialog" @click:outside="outside" max-width="500px">
+                <v-card>
+                    <v-card-title class="justify-center">
+                        <span class="headline">Edit Specialties</span>
+                    </v-card-title>
+
+                    <v-card-text>
+                        <v-container>
+                            <v-row justify="center">
+                                <v-col cols="12" sm="12" md="12">
+                                    <template>
+                                        <v-combobox
+                                            v-model="selectedSpecialties"
+                                            :items="availableSpecialties"
+                                            item-text="name"
+                                            chips
+                                            clearable
+                                            label="Select up to 5 specialties"
+                                            multiple
+                                            prepend-icon="mdi-filter-variant"
+                                            solo
+                                        >
+                                            <template v-slot:selection="{ attrs, item, select, selected }">
+                                            <v-chip
+                                                v-bind="attrs"
+                                                :input-value="selected"
+                                                close
+                                                @click="select"
+                                                @click:close="removeSpecialty(item)"
+                                            >
+                                                <strong>{{ item.name }}</strong>&nbsp;
+                                            </v-chip>
+                                            </template>
+                                        </v-combobox>
+                                    </template>
+                                </v-col>
+                            </v-row>
+                        </v-container>
+                    </v-card-text>
+
+                    <v-card-actions>
+                        <v-spacer></v-spacer>
+                        <v-btn color="blue darken-1" text @click="closeSpecialtyModal">Cancel</v-btn>
+                        <v-btn color="blue darken-1" text @click="saveSpecialtyModal">Save</v-btn>
+                    </v-card-actions>
+                </v-card>
+            </v-dialog>
+
         </div>
     </div>
 </template>
@@ -196,7 +249,11 @@ import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId,
          GetActiveStatus as _expertRepo_GetActiveStatus,
          ToggleIsActive as _expertRepo_ToggleIsActive, 
          UpdateTimezone as _expertRepo_UpdateTimezone,
-         RevokeTopicExpert as _expertRepo_RevokeTopicExpert } from '@/store/expert/repository.js';
+         RevokeTopicExpert as _expertRepo_RevokeTopicExpert,
+         GetSpecialties as _expertRepo_GetSpecialties,
+         UpdateSpecialties as _expertRepo_UpdateSpecialties } from '@/store/expert/repository.js';
+import { GetAllSpecialties as _topicRepo_GetAllSpecialties} from "@/store/topic/repository.js";
+
 
 import CodeInput from "vue-verification-code-input";
 import SlideUpDown from 'vue-slide-up-down';
@@ -230,6 +287,11 @@ export default {
             phoneVerificationStatus: null,
             verifyLoading: false,
             pinMessage: null,
+
+            specialtiesDialog: false,
+            selectedExpertTopic: {},
+            availableSpecialties: [],
+            selectedSpecialties: []
         }
     },
     created(){
@@ -410,8 +472,45 @@ export default {
             }else{
                 this.$dialog.alert("There was an error saving the new number. Please try again later.", {okText: "OK"});
             }
-        }
+        },
+        async displaySpecialtiesModal(expertTopic){
+            this.selectedExpertTopic = expertTopic;
+            this.selectedSpecialties = await _expertRepo_GetSpecialties(expertTopic.topicExpert.id);
+            this.availableSpecialties = await _topicRepo_GetAllSpecialties(expertTopic.topicExpert.topicId);
+            this.specialtiesDialog = true;
+        },
+        outside () {
+            this.closeSpecialtyModal();
+        },
+        async saveSpecialtyModal(){
+            var specialtyIds = this.selectedSpecialties.map(x => x.id);
 
+            var payload = {
+                topicExpertId: this.selectedExpertTopic.topicExpert.id,
+                specialtyIds: specialtyIds
+            }
+
+            const accessToken = await this.$auth.getTokenSilently();
+            var res = await _expertRepo_UpdateSpecialties(accessToken, payload);
+            if(res.success == true){
+                var self = this;
+                this.$dialog.alert("Your specialties have been updated.", {okText: "OK"}).then(function() {
+                    self.closeSpecialtyModal();
+                });
+            }else{
+                this.$dialog.alert("There was an error updating your specialties. Please refresh and try again later.", {okText: "OK"});
+            }
+        },
+        closeSpecialtyModal(){
+            this.specialtiesDialog = false;
+            this.selectedSpecialties = [];
+            this.availableSpecialties = [];
+            this.selectedExpertTopic = {};
+        },
+        removeSpecialty (item) {
+            this.selectedSpecialties.splice(this.selectedSpecialties.indexOf(item), 1);
+            this.selectedSpecialties = [...this.selectedSpecialties];
+        }
     }
 }
 </script>

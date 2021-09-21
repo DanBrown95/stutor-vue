@@ -280,3 +280,31 @@ export function RevokeTopicExpert(topicExpertId, expertId, accessToken){
     .then(response => { return response.data; })
     .catch(error => console.log(JSON.stringify(error.response.data.errors)));
 }
+
+export function GetSpecialties(topicExpertId, accessToken){
+    return axios({
+        url: 'https://localhost:44343/api/expert/GetSpecialties',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+        },
+        data: JSON.stringify(topicExpertId)
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}
+
+export function UpdateSpecialties(accessToken, payload) {
+    return axios({
+        url: 'https://localhost:44343/api/expert/UpdateTopicExpertSpecialties',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+        },
+        data: payload
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}
