@@ -1,7 +1,7 @@
 <template>
   <v-app>
-    <TopNav :class="{ 'color-nav': colorNav }"/>
     <v-content>
+      <TopNav :class="{ 'color-nav': colorNav }"/>
       <router-view></router-view>
     </v-content>
     <Footer />
