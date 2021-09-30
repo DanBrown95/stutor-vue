@@ -378,7 +378,7 @@ export default {
         position: relative;
         text-align: center;
         top: 40%;
-        color: #DEA800;
+        color: #f3ba09;
     }
 
     .banner {

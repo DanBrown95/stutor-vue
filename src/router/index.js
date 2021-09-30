@@ -60,6 +60,9 @@ Vue.use(VueRouter)
     path: '/user/order-history',
     name: 'OrderHistory',
     component: () => import('../views/user/OrderHistory.vue'),
+    meta: {
+      colorNav: true
+    },
     beforeEnter: authGuard
   },{
     path: '/resources/topic-request',
@@ -70,11 +73,17 @@ Vue.use(VueRouter)
     path: '/expert/acknowledge',
     name: 'Acknowledge',
     component: () => import('../views/expert/Acknowledgement.vue'),
+    meta: {
+      colorNav: true
+    },
     beforeEnter: authGuard
   },{
     path: '/user/account',
     name: 'UserAccount',
     component: () => import('../views/user/Account.vue'),
+    meta: {
+      colorNav: true
+    },
     beforeEnter: authGuard
   },{
     path: '/shared/verification-error',

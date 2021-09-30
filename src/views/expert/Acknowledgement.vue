@@ -242,7 +242,7 @@ export default {
 <style scoped>
     .header {
         height: 62px;
-        background-color: #DEA800;
+        /* background-color: #f3ba09; */
     }
 
     .main {

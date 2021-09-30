@@ -5,7 +5,7 @@
         </div>
         <div>
             <v-row>
-                <v-col cols="2">
+                <v-col cols="3">
                     <v-subheader class="float-right">Email </v-subheader>
                 </v-col>
                 <v-col cols="6">
@@ -46,7 +46,7 @@
                 
             </v-row>
             <v-row>
-                <v-col cols="2">
+                <v-col cols="3">
                     <v-subheader class="float-right">Phone</v-subheader>
                 </v-col>
                 <v-col cols="6">
@@ -95,7 +95,7 @@
         <div v-if="isExpert">
             <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Timezone Changed!</v-snackbar>
             <v-row>
-                <v-col cols="2">
+                <v-col cols="3">
                     <v-subheader class="float-right">Timezone </v-subheader>
                 </v-col>
                 <v-col cols="6">
@@ -520,7 +520,7 @@ export default {
         display:flex;
         align-items: center;
         height: 62px;
-        background-color: #DEA800;
+        /* background-color: #DEA800; */
     }
 
     .float-right {

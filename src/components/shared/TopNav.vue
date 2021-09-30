@@ -15,14 +15,15 @@
                   v-if="$auth.loading"
                   indeterminate
                   color="primary"
+                  class="float-right"
                 ></v-progress-circular>
 
-                <v-btn class="ma-2 btn-login" v-if="!$auth.isAuthenticated && !$auth.loading" rounded color="white" @click="login">Log in</v-btn>
+                <v-btn class="ma-2 btn-login float-right" v-if="!$auth.isAuthenticated && !$auth.loading" rounded color="white" @click="login">Log in</v-btn>
                 <div v-if="$auth.isAuthenticated && !$auth.loading">
                     <div class="user-dropdown">
-                      <span id="txtUser" class="text-muted font-weight-medium px-2">
-                        {{$auth.user['https://stutor.com/firstname'] + ' ' + $auth.user['https://stutor.com/lastname']}} 
-                      </span>
+                      <p id="txtUser" class="text-muted font-weight-medium px-2">
+                        {{$auth.user['https://stutor.com/firstname'] + ' ' + $auth.user['https://stutor.com/lastname']}} <v-icon color="white">mdi-menu-down</v-icon>
+                      </p>
                       <div class="user-dropdown-content">
                         <div class="top-row">
                           <v-tooltip bottom>
@@ -35,11 +36,12 @@
                         </div>
                         <router-link :to="{name: 'OrderHistory'}">Order History</router-link>
                         <router-link v-if="isExpert" :to="{name: 'Acknowledge'}">Acknowledge</router-link>
+                        <a class="btn-logout" @click="logout"><v-icon>mdi-exit-to-app</v-icon><span> Log out</span></a>
                       </div>
                     </div>
-                    <v-btn id="btnLogout" class="ma-2" tile outlined small @click="logout">Log out</v-btn>
+                    <!-- <v-btn id="btnLogout" class="ma-2" tile outlined small @click="logout">Log out</v-btn> -->
                 </div>
-            </div>
+          </div>
         </div>
       </v-app-bar>
 
@@ -82,7 +84,7 @@
                 <v-list-item-title><router-link :to="{name: 'OrderHistory'}">Order History</router-link></v-list-item-title>
               </v-list-item>
 
-              <v-list-item style="background-color: #f91212d6;" @click="logout">
+              <v-list-item @click="logout">
                 <v-list-item-icon>
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-icon>
@@ -136,16 +138,17 @@ export default {
 
   #static-nav {
     float: right;
+    width: 200px;
   }
 
   /* colored variant */
 
   .color-nav #txtUser {
-    color: #DEA800;
+    color: #f3ba09;
   }
 
   .color-nav #btnLogout {
-    color: #DEA800;
+    color: #f3ba09;
   }
 
   .color-nav .user-dropdown:hover #txtUser {color: rgb(199, 174, 36);} 
@@ -157,8 +160,11 @@ export default {
   }
 
   #txtUser {
+    text-align: right;
     color: white;
-    padding-bottom: 13px;
+    margin: 0;
+    padding: 0;
+    padding: 0;
   }
 
   @font-face {
@@ -175,6 +181,7 @@ export default {
   }
 
   .user-dropdown {
+    width: 100%;
     position: relative;
     display: inline-block;
   }
@@ -192,7 +199,6 @@ export default {
 
   .user-dropdown-content {
     display: none;
-    margin-top: 10px;
     position: absolute;
     background-color: #f1f1f1;
     min-width: 200px;
@@ -220,6 +226,8 @@ export default {
   .user-dropdown:hover .user-dropdown-content {display: block;}
 
   .user-dropdown:hover #txtUser {color: bisque;}
+
+  .btn-logout:hover > i {color: red;}
 
   @media screen and (max-width: 700px) {
     #nav-menu-expander {

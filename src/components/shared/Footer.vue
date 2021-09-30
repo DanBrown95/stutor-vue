@@ -65,7 +65,7 @@ export default {
     width: 100%;
     /* position: relative; */
     height: auto;
-    background-color: #DEA800;
+    background-color: #f3ba09;
   }
 
 .footer .col {

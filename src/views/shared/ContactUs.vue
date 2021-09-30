@@ -2,13 +2,13 @@
     <div>
         <div class="top">
             <div style="padding-top: 12%;">
-                <h2>Need Assistance?</h2>
-                <p>We're sorry you're having issues. Feel free to use the resources below.</p>
+                <h2 style="font-size: 2.5em; color: white;">Need Assistance?</h2>
+                <p style="font-size: 2em; color: white;">We're here to help</p>
             </div>
             <v-container id="faq-section">
                 <v-row justify="center">
                     <v-col cols="7">
-                        <VueFaqAccordion borderColor="#DEA800" activeColor="#D0021B" :items="faqs"/>
+                        <VueFaqAccordion borderColor="white" fontColor="white" activeColor="#f3ba09" :items="faqs"/>
                     </v-col>
                 </v-row>
             </v-container>
@@ -82,7 +82,7 @@ export default {
 
 <style scoped>
     .top {
-        background-color: #E9ECEE;
+        background-color: #63AFBF;
         text-align: center;
     }
 
@@ -130,7 +130,7 @@ export default {
     }
 
     .icon {
-        color: #DEA800;
+        color: #f3ba09;
     }
 
     .purechat-activator-li {

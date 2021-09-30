@@ -5,8 +5,10 @@
                 <v-row justify="center">
                     <v-col cols="12" v-if="!$auth.user['https://stutor.com/email_verified'] || !$auth.user['https://stutor.com/phone_verified']">
                         <h2 style="color: grey;">Verification Pending</h2>
-                        <h4 v-if="!$auth.user['https://stutor.com/email_verified']">Please verify your email using the link that was sent to the email on file.</h4>
-                        <h4 v-if="!$auth.user['https://stutor.com/phone_verified']">Please verify your phone number on your account page.</h4>
+                        <ul>
+                        <li v-if="!$auth.user['https://stutor.com/email_verified']">Please verify your email using the link that was sent to the email on file.</li>
+                        <li v-if="!$auth.user['https://stutor.com/phone_verified']">Please verify your phone number on your account page.</li>
+                        </ul>
                         <hr />
                     </v-col>
                     <v-col cols="12" v-else>
@@ -54,7 +56,7 @@ export default {
         top: 20%;
     }
 
-    h2, h4 {
+    h2, h4, li {
         padding-bottom: 1em;
     }
 

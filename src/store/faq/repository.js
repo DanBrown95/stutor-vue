@@ -2,7 +2,7 @@ export default {
     faqs: [
         {
           title: 'When do I provide the expert with my passkey?',
-          value: 'Provide our expert with the passkey sent to you once he/she has finished answering your question.',
+          value: 'Provide our expert with the passkey sent to you once they have finished answering your question.',
           category: 'General Questions'
         },
         {

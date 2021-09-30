@@ -24,7 +24,7 @@ export default {
         display:flex;
         align-items: center;
         height: 62px;
-        background-color: #DEA800;
+        background-color: #f3ba09;
     }
 
     #no-orders-row {

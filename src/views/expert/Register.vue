@@ -604,7 +604,7 @@ export default {
 
 <style scoped>
     .banner {
-        background-color: #DEA800;
+        background-color: #f3ba09;
         height: 62px;
     }
 
@@ -614,6 +614,6 @@ export default {
     }
 
     .v-subheader {
-        color: #DEA800;
+        color: #f3ba09;
     }
 </style>

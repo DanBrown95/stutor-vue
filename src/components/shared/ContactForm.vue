@@ -199,6 +199,6 @@ export default {
 
     #response-header {
         font-size: 2em;
-        color: #DEA800;
+        color: #f3ba09;
     }
 </style>
