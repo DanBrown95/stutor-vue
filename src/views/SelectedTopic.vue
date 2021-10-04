@@ -129,8 +129,7 @@
                             <br />
                             <br />
                             <div>
-                                <p style="color: red;">There was an error saving your order but your card has been charged. <br/> Please contact support and provide them with this Id!</p>
-                                <p style="color: red;">{{paymentVerification}}</p>
+                                <p style="color: red;">There was an error completing your order. Your purchase will be refunded.<br/> We apologize for any inconvenience.</p>
                             </div>
                         </v-card>
                     </v-col>
@@ -315,7 +314,7 @@ export default {
             })
             .then(response => response.json())
             .then(jsonData => {
-                if(jsonData > 0){
+                if(jsonData == 200){
                     this.loading(false);
                     document.getElementById("submit").disabled = false;
                     this.showSuccess = true;
