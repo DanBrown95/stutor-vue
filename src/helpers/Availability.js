@@ -20,3 +20,14 @@ export function AvailabilityParser(availability){
     // });
     // return dictionary;
 }
+
+export function MapAndSortDaysOfTheWeek(days){
+    const dotw = [{id: 0, name: 'mon'},{id: 1, name: 'tue'},{id: 2, name: 'wed'},{id: 3, name: 'thu'},{id: 4, name: 'fri'},{id: 5, name: 'sat'},{id: 6, name: 'sun'}];
+    try{
+        const lowered = days.map(name => name.toLowerCase());
+        const filtered = dotw.filter(a => lowered.some(b => a.name === b));
+        return filtered;
+    }catch(e){
+        console.log("e",e);
+    }
+}

@@ -2,8 +2,8 @@
     <div>
         <v-row>
             <v-col cols="6">
-                <div class="day-container column" v-for="day in parsedAvailability.days" :key="day">
-                    <DisplayDayCircle :day="day" :color='day | dayAsColor'></DisplayDayCircle>
+                <div class="day-container column" v-for="day in sortedDays" :key="day.Id">
+                    <DisplayDayCircle :day="day.name" :color='day.name | dayAsColor'></DisplayDayCircle>
                 </div>
             </v-col>
             <v-col v-if="parsedAvailability.weekdayHours" v-bind:style="{color: '#11DC6F'}">
@@ -29,7 +29,7 @@
 <script>
 import DisplayDayCircle from '@/components/utils/DisplayDayCircle.vue'
 import { militaryToFriendlyTime } from '@/helpers/Time.js'
-import { AvailabilityParser } from '@/helpers/Availability.js'
+import { AvailabilityParser, MapAndSortDaysOfTheWeek } from '@/helpers/Availability.js'
 
 export default {
     name: 'AvailabilityDisplay',
@@ -44,6 +44,11 @@ export default {
     },
     created() {
         this.parsedAvailability = AvailabilityParser(this.availability);
+    },
+    computed: {
+        sortedDays(){
+            return MapAndSortDaysOfTheWeek(this.parsedAvailability.days);
+        }
     },
     filters: {
         dayAsColor(day) {
