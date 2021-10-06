@@ -48,6 +48,9 @@
                                         multiple
                                         prepend-icon="mdi-filter-variant"
                                         solo
+                                        @input="$v.selectedSpecialties.$touch()" 
+                                        @blur="$v.selectedSpecialties.$touch()" 
+                                        :error-messages="specialtiesErrors"
                                     >
                                         <template v-slot:selection="{ attrs, item, select, selected }">
                                         <v-chip
@@ -370,6 +373,10 @@ function maxFilesize(value){
     return !helpers.req(value) || (value && !value.some(x => x.size > 2096128));
 }
 
+function maxSpecialties(specialties){
+    return specialties != null && specialties.length <= 5;
+}
+
 export default {
     name: 'expertRegistration',
     components: {
@@ -401,6 +408,9 @@ export default {
             checked (val) {
                 return val
             }
+        },
+        selectedSpecialties: {
+            maxSpecialties
         }
     },
 
@@ -516,6 +526,12 @@ export default {
             if(!this.$v.resumes.$dirty) return errors
             !this.$v.resumes.required && errors.push("Resume is required")
             !this.$v.resumes.maxFilesize && errors.push("Max file size is 2MB")
+            return errors
+        },
+        specialtiesErrors () {
+            const errors = []
+            if(!this.$v.selectedSpecialties.$dirty) return errors
+            !this.$v.selectedSpecialties.maxSpecialties && errors.push("Select no more than 5 specialties")
             return errors
         }
     },

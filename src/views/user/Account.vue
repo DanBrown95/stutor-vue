@@ -205,6 +205,9 @@
                                             multiple
                                             prepend-icon="mdi-filter-variant"
                                             solo
+                                            @input="$v.selectedSpecialties.$touch()" 
+                                            @blur="$v.selectedSpecialties.$touch()" 
+                                            :error-messages="specialtiesErrors"
                                         >
                                             <template v-slot:selection="{ attrs, item, select, selected }">
                                             <v-chip
@@ -227,7 +230,7 @@
                     <v-card-actions>
                         <v-spacer></v-spacer>
                         <v-btn color="blue darken-1" text @click="closeSpecialtyModal">Cancel</v-btn>
-                        <v-btn color="blue darken-1" text @click="saveSpecialtyModal">Save</v-btn>
+                        <v-btn color="blue darken-1" text @click="saveSpecialtyModal" :disabled="!specialtiesModalValid">Save</v-btn>
                     </v-card-actions>
                 </v-card>
             </v-dialog>
@@ -237,6 +240,8 @@
 </template>
 
 <script>
+import { validationMixin } from "vuelidate";
+
 import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
 import { RatingAsTitle } from '@/helpers/Rating.js';
 import { EmailConfirmation as _accountRepo_ResendEmail,
@@ -258,6 +263,11 @@ import { GetAllSpecialties as _topicRepo_GetAllSpecialties} from "@/store/topic/
 import CodeInput from "vue-verification-code-input";
 import SlideUpDown from 'vue-slide-up-down';
 
+
+function maxSpecialties(specialties){
+    return specialties != null && specialties.length <= 5;
+}
+
 export default {
     name: 'Account',
     components: {
@@ -265,6 +275,15 @@ export default {
         CodeInput,
         SlideUpDown
     },
+
+    mixins: [validationMixin],
+
+    validations: {
+        selectedSpecialties: {
+            maxSpecialties
+        }
+    },
+
     data() {
         return {
             timezones: [],
@@ -310,6 +329,15 @@ export default {
         },
         displayNewPhoneUpdateButton(){
             return (this.newPhoneValid && this.newPhoneNumber != this.$auth.user["https://stutor.com/phone"]);
+        },
+        specialtiesErrors() {
+            const errors = []
+            if(!this.$v.selectedSpecialties.$dirty) return errors
+            !this.$v.selectedSpecialties.maxSpecialties && errors.push("Select no more than 5 specialties")
+            return errors
+        },
+        specialtiesModalValid() {            
+            return (!this.$v.$invalid);
         }
     },
     filters: {
