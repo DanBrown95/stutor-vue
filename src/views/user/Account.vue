@@ -192,6 +192,7 @@
 
                     <v-card-text>
                         <v-container>
+                            <div id="loading-spinner" v-show="specialtiesLoading"></div>
                             <v-row justify="center">
                                 <v-col cols="12" sm="12" md="12">
                                     <template>
@@ -310,7 +311,9 @@ export default {
             specialtiesDialog: false,
             selectedExpertTopic: {},
             availableSpecialties: [],
-            selectedSpecialties: []
+            selectedSpecialties: [],
+
+            specialtiesLoading: false
         }
     },
     created(){
@@ -511,6 +514,7 @@ export default {
             this.closeSpecialtyModal();
         },
         async saveSpecialtyModal(){
+            this.specialtiesLoading = true;
             var specialtyIds = this.selectedSpecialties.map(x => x.id);
 
             var payload = {
@@ -528,12 +532,14 @@ export default {
             }else{
                 this.$dialog.alert("There was an error updating your specialties. Please refresh and try again later.", {okText: "OK"});
             }
+            this.specialtiesLoading = false;
         },
         closeSpecialtyModal(){
             this.specialtiesDialog = false;
             this.selectedSpecialties = [];
             this.availableSpecialties = [];
             this.selectedExpertTopic = {};
+            this.specialtiesLoading = false;
         },
         removeSpecialty (item) {
             this.selectedSpecialties.splice(this.selectedSpecialties.indexOf(item), 1);
@@ -583,5 +589,38 @@ export default {
         margin: 0 10px;
         background-color: lightgray;
         display:inline-block;
+    }
+
+    #loading-spinner {
+        position:absolute;
+        z-index: 999;
+        width:100%;
+        left:0;right:0;top:0;bottom:0;
+        background-color: rgba(255,255,255,0.7);
+    }
+
+    @-webkit-keyframes spin {
+        from {-webkit-transform:rotate(0deg);}
+        to {-webkit-transform:rotate(360deg);}
+    }
+
+    @keyframes spin {
+        from {transform:rotate(0deg);}
+        to {transform:rotate(360deg);}
+    }
+
+    #loading-spinner::after {
+        content:'';
+        display:block;
+        position:absolute;
+        left:48%;top:40%;
+        width:40px;height:40px;
+        border-style:solid;
+        border-color:black;
+        border-top-color:transparent;
+        border-width: 4px;
+        border-radius:50%;
+        -webkit-animation: spin .8s linear infinite;
+        animation: spin .8s linear infinite;
     }
 </style>

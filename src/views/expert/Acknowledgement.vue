@@ -23,9 +23,9 @@
                             <span>{{item.topic.name}}</span>
                         </template>
 
-                        <template v-slot:[`item.callLength`]="{ item }">
+                        <!-- <template v-slot:[`item.callLength`]="{ item }">
                             <span>{{item.callLength | secondsAsReadableString}}</span>
-                        </template>
+                        </template> -->
 
                         <template v-slot:[`item.price`]="{ item }">
                             <span>${{item.price.toFixed(2)}}</span>
@@ -111,7 +111,7 @@ export default {
             orders: [],
             headers: [
                 {
-                    text: 'Id',
+                    text: 'Order#',
                     value: 'id',
                 },{
                     text: 'Requested',
@@ -124,10 +124,12 @@ export default {
                 },{
                     text: 'Topic',
                     value: 'topicName',
-                },{
-                    text: 'Call Time',
-                    value: 'callLength',
-                },{
+                },
+                // {
+                //     text: 'Call Time',
+                //     value: 'callLength',
+                // },
+                {
                     text: 'Payment',
                     value: 'price',
                 },{ 
