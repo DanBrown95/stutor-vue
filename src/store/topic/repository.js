@@ -119,3 +119,16 @@ export function GetAllSpecialties(id) {
     .then(response => { return response.data; })
     .catch(error => console.log(JSON.stringify(error.response.data.errors)));
 }
+
+export function GetRelatedTopics(id) {
+    return axios({
+        url: 'https://localhost:44343/api/topic/GetRelatedTopics',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        data: id
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}

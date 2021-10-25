@@ -31,6 +31,19 @@
         </div>
         <div class="center" v-else>
             <h2>There are no experts available for this topic at this time &#9785;</h2>
+            <br />
+            <div>
+                <h2>Similar topics you could try: </h2>
+                <v-container grid-list-sm class="similar-topics-container">
+                    <v-layout row justify-center>
+                        <v-col sm="4" v-for="topic in relatedTopics" :key="topic.id">
+                            <router-link :to="{name: 'Topic', params: { id: topic.id } }">
+                                <v-chip style="width: 100%; cursor: pointer; justify-content: center; background-color: white;" text-color="red" class="ma-2" large> {{ topic.name }} </v-chip>
+                            </router-link>
+                        </v-col>
+                    </v-layout>
+                </v-container>
+            </div>
         </div>
     </div>
 </template>
@@ -39,6 +52,7 @@
 import ExpertIcon from '@/components/expert/ExpertIcon.vue'
 import { TopicExpertsByTopicId as _expertRepo_TopicExpertsByTopicId } from "@/store/expert/repository.js";
 import { CompareExpertsByRating } from '@/helpers/Compare.js';
+import { GetRelatedTopics as _topicRepo_GetRelatedTopics } from '@/store/topic/repository.js'; 
 
 export default {
     name: 'ExpertIcons',
@@ -49,7 +63,8 @@ export default {
     data() {
         return {
             experts: [],
-            searching: false
+            searching: false,
+            relatedTopics: []
         }
     },
     computed: {
@@ -71,6 +86,7 @@ export default {
     },
     mounted() {
         this.getTopicExperts();
+        this.getRelatedTopics();
     },
     methods: {
         expertSelected: function(e) {
@@ -82,6 +98,9 @@ export default {
             const accessToken = await this.$auth.getTokenSilently();
             this.experts = await _expertRepo_TopicExpertsByTopicId(accessToken, this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone, userId);
             this.searching = false;
+        },
+        async getRelatedTopics() {
+            this.relatedTopics = await _topicRepo_GetRelatedTopics(this.TopicId);
         }
     },
     watch: {
@@ -100,5 +119,9 @@ export default {
 
     .center {
         text-align: center;
+    }
+
+    .similar-topics-container a {
+        text-decoration: none;
     }
 </style>

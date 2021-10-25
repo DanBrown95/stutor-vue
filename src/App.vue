@@ -2,7 +2,7 @@
   <v-app>
     <v-content>
       <TopNav :class="{ 'color-nav': colorNav }"/>
-      <router-view></router-view>
+      <router-view :key="$route.fullPath"></router-view>
     </v-content>
     <Footer />
   </v-app>
