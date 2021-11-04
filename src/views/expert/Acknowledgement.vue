@@ -31,6 +31,10 @@
                             <span>${{item.price.toFixed(2)}}</span>
                         </template>
 
+                        <template v-slot:[`item.phone`]="{ item }">
+                            <span v-if="item.status.toLowerCase() === 'unanswered'"><a v-bind:href="'tel:'+item.user.phone">{{item.user.phone}}</a></span>
+                        </template>
+
                         <template v-slot:[`item.actions`]="{ item }">
                             <v-icon v-if="item.status.toLowerCase() === 'unanswered'"
                                 small
@@ -132,6 +136,9 @@ export default {
                 {
                     text: 'Payment',
                     value: 'price',
+                },{
+                    text: 'Customer Phone',
+                    value: 'phone',
                 },{ 
                     text: 'Verify Call', 
                     value: 'actions', 
@@ -149,7 +156,7 @@ export default {
     },
     created() {
         this.user = this.$auth.user;
-        this.getOrders();
+        //this.getOrders();
     },
     methods: {
         async getOrders(){

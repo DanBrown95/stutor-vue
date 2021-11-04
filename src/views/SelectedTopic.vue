@@ -26,7 +26,7 @@
                 <v-row dense>
                     <v-col cols="12">
                     <v-card color="#385F73" dark flat>
-                        <v-card-subtitle class="text-center">Confirm your purchase and we will conect you with an expert!</v-card-subtitle>
+                        <v-card-subtitle class="text-center">Confirm your purchase and we will connect you with an expert!</v-card-subtitle>
 
                         <v-card-title class="justify-center">
                             Description: {{topic.name}} Service by Stutor
