@@ -11,15 +11,10 @@
                     <h5>Charge: ${{order.charge.toFixed(2)}}</h5>
                     <h5>Submitted: {{formattedSubmitDate}}</h5>
                     <!-- <h5>Passkey: {{order.orderPasskey.clientPasskey}}</h5> -->
-                    <v-dialog v-model="dialog" max-width="600px">
-                        <template v-slot:activator="{ on, attrs }">
-                            <v-btn small style="margin-top: 5px;"
-                                v-bind="attrs" 
-                                v-on="on">Submit feedback
-                            </v-btn>
-                            <FeedbackModal @onSave="refresh" v-model="dialog" :orderId="order.id" :expertId="order.expertId" :additionalInfo="order.additionalInfo" :rating="order.rating"></FeedbackModal>
-                        </template>
-                    </v-dialog>
+                    <v-btn small style="margin-top: 5px;"
+                        @click="dialog = true">Submit feedback
+                    </v-btn>
+                    <FeedbackModal @onSave="refresh" v-model="dialog" :orderId="order.id" :expertId="order.expertId" :additionalInfo="order.additionalInfo" :rating="order.rating"></FeedbackModal>
                 </v-col>
                 <hr>
             </v-row>

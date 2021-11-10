@@ -1,5 +1,5 @@
 <template>
-    <v-dialog :value="value" @input="$emit('input')" max-width="600px">
+    <v-dialog persistent :value="value" @input="$emit('input')" max-width="600px">
       <v-card>
         <v-card-title>
           <span class="headline">Feedback</span>
@@ -19,7 +19,7 @@
         </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
-          <v-btn color="blue darken-1" text @click="clear">Close</v-btn>
+          <v-btn color="blue darken-1" text @click="close">Close</v-btn>
           <v-btn :disabled="disabled" color="blue darken-1" text @click="save">Save</v-btn>
         </v-card-actions>
       </v-card>
@@ -48,9 +48,6 @@ export default {
         }
     },
     methods: {
-        close() {
-            this.$emit('input');
-        },
         async save(){
             const accessToken = await this.$auth.getTokenSilently();
             
@@ -62,7 +59,7 @@ export default {
                 alert(response.error)
             }
         },
-        clear() {
+        close() {
             this.$emit('input');
             this.updatedRating = this.rating;
             this.updatedInfo = this.additionalInfo;
