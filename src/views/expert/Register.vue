@@ -36,7 +36,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Specialties: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <template>
                                     <v-combobox
                                         v-model="selectedSpecialties"
@@ -72,7 +72,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Available Days: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-btn-toggle color="primary" v-model="selectedDays" multiple>
                                     <v-btn rounded value="mon">Monday</v-btn>
                                     <v-btn rounded value="tue">Tuesday</v-btn>
@@ -89,7 +89,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Available Weekday Hours: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-row>
                                     <v-col cols="6" sm="5">
                                         <v-menu
@@ -163,7 +163,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Available Weekend Hours: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-row>
                                     <v-col cols="6" sm="5">
                                         <v-menu
@@ -237,7 +237,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Timezone</v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-select
                                     v-model="selectedTimezone"
                                     :items="tz_timezones"
@@ -257,7 +257,7 @@
                             <v-col cols="3">
                                 <v-subheader>Linkedin Url: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-text-field v-model="linkedinUrl"></v-text-field>
                             </v-col>
                         </v-row>
@@ -266,7 +266,7 @@
                             <v-col cols="3">
                                 <v-subheader>Website Url: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-text-field v-model="websiteUrl"></v-text-field>
                             </v-col>
                         </v-row>
@@ -275,7 +275,7 @@
                             <v-col cols="3">
                                 <v-subheader>* Resume: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-file-input v-model="resumes" accept=".doc,.docx,.pdf" multiple chips required
                                                 @input="$v.resumes.$touch()" 
                                                 @blur="$v.resumes.$touch()" 
@@ -288,7 +288,7 @@
                             <v-col cols="3">
                                 <v-subheader>College Transcript: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-file-input v-model="transcripts" accept=".doc,.docx,.pdf" multiple chips></v-file-input>
                             </v-col>
                         </v-row>
@@ -297,7 +297,7 @@
                             <v-col cols="3">
                                 <v-subheader>Certifications/Degrees: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-text-field v-model="certifications" 
                                             @input="$v.certifications.$touch()" 
                                             @blur="$v.certifications.$touch()" 
@@ -310,7 +310,7 @@
                             <v-col cols="3">
                                 <v-subheader>Years of Experience: </v-subheader>
                             </v-col>
-                            <v-col cols="9" style="text-align: left;">
+                            <v-col cols="8" style="text-align: left;">
                                     <VueNumberInput v-model="yearsOfExperience" :min="0" inline center controls ></VueNumberInput>
                             </v-col>
                         </v-row>
@@ -319,7 +319,7 @@
                             <v-col cols="3">
                                 <v-subheader>Additional Notes: </v-subheader>
                             </v-col>
-                            <v-col cols="9">
+                            <v-col cols="8">
                                 <v-textarea v-model="notes" 
                                             placeholder="Add any additional qualifications or useful notes for us to consider here."
                                             @input="$v.notes.$touch()" 
@@ -630,6 +630,7 @@ export default {
     }
 
     .v-subheader {
-        color: #f3ba09;
+        float: left;
+        font-weight: bold;
     }
 </style>
