@@ -308,3 +308,17 @@ export function UpdateSpecialties(accessToken, payload) {
     .then(response => { return response.data; })
     .catch(error => console.log(JSON.stringify(error.response.data.errors)));
 }
+
+export function HasIncompleteOrders(userId, accessToken){
+    return axios({
+        url: 'https://localhost:44343/api/expert/HasIncompleteOrders',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${accessToken}`
+        },
+        data: JSON.stringify(userId)
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}

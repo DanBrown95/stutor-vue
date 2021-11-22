@@ -350,7 +350,5 @@ export default new Vuex.Store({
     getClientPasskey: (state) => (_orderId) => {
       return state.orderPasskeys.find(order => order.orderId == _orderId).clientPasskey;
     }
-  },
-  modules: {
   }
 })
