@@ -12,7 +12,7 @@ Vue.use(VueRouter)
   {
     path: '/topic/:id',
     name: 'Topic',
-    component: () => import('../views/SelectedTopic.vue'),
+    component: () => import('../views/topic/SelectedTopic.vue'),
     beforeEnter: authGuard,
     meta: {
       colorNav: true

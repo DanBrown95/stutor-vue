@@ -32,7 +32,7 @@
         <div class="center" v-else>
             <h2>There are no experts available for this topic at this time &#9785;</h2>
             <br />
-            <div>
+            <div v-if="relatedTopics.length">
                 <h2>Similar topics you could try: </h2>
                 <v-container grid-list-sm class="similar-topics-container">
                     <v-layout row justify-center>

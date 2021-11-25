@@ -369,7 +369,7 @@ export default {
 <style scoped>
     .main {
         min-height: 100vh;
-        background-image: url('../assets/selected-topic-background.jpg');
+        background-image: url('../../assets/selected-topic-background.jpg');
         background-size: cover;
     }
 
