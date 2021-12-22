@@ -1,9 +1,14 @@
 <template>
 <div>
     <h2 class="header">Browse by Category</h2>
-    <v-row justify="center">
+    <v-row justify="center" v-if="categories && categoriesLoaded">
         <v-col md="2" v-for="c in categories" :key="c.Id" style="align-content: center;">
             <Category :id="c.category.id" :name="c.category.name" :imageUrl="c.imageUrl" class="category"></Category>
+        </v-col>
+    </v-row>
+    <v-row justify="center" v-else-if="(categories == [] || categories.length < 1) && !categoriesLoaded">
+        <v-col md="2" v-for="i in 8" :key="i" style="align-content: center;">
+            <SkeletonImage class="category"></SkeletonImage>
         </v-col>
     </v-row>
     <div class="wrapper"><v-btn class="inst-btn" :to="{name: 'BrowseCategory'}" rounded outlined>More Categories</v-btn></div>
@@ -13,15 +18,18 @@
 <script>
 import Category from '@/components/home/Category.vue'
 import { GetAllPopular as _categoryRepo_GetAllPopular } from '@/store/category/repository.js';
+import SkeletonImage from '@/components/utils/SkeletonImage.vue'
 
 export default {
     name: 'Categories',
     components: {
-        Category
+        Category,
+        SkeletonImage
     },
     data() {
         return {
-            categories: []
+            categories: [],
+            categoriesLoaded: false
         }
     },
     created() {
@@ -33,6 +41,7 @@ export default {
     methods: {
         async getAllPopularCategories() {
             this.categories = await _categoryRepo_GetAllPopular();
+            this.categoriesLoaded = true;
         },
         applyOverlay() { // automatically show/hide overlay on a timer
             setTimeout(function tick() {
