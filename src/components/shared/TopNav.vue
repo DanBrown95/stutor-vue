@@ -63,28 +63,28 @@
             </div>
             
             <div v-if="$auth.isAuthenticated && !$auth.loading">
-              <v-list-item>
+              <v-list-item :class="{'active-nav-link' : currentRouteName === 'UserAccount' }">
                 <v-list-item-icon>
                   <v-icon>mdi-account-circle-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title><router-link :to="{name: 'UserAccount'}">Account</router-link></v-list-item-title>
               </v-list-item>
 
-              <v-list-item v-if="isExpert">
+              <v-list-item v-if="isExpert" :class="{'active-nav-link' : currentRouteName === 'Acknowledge' }">
                 <v-list-item-icon>
                   <v-icon>mdi-check-all</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title><router-link :to="{name: 'Acknowledge'}">Acknowledge</router-link></v-list-item-title>
               </v-list-item>
 
-              <v-list-item>
+              <v-list-item :class="{'active-nav-link' : currentRouteName === 'OrderHistory' }">
                 <v-list-item-icon>
                   <v-icon>mdi-clipboard-text-search-outline</v-icon>
                 </v-list-item-icon>
                 <v-list-item-title><router-link :to="{name: 'OrderHistory'}">Order History</router-link></v-list-item-title>
               </v-list-item>
 
-              <v-list-item @click="logout">
+              <v-list-item @click="logout" class="modal-btn-logout">
                 <v-list-item-icon>
                   <v-icon>mdi-logout</v-icon>
                 </v-list-item-icon>
@@ -122,12 +122,21 @@ export default {
         return this.$auth.user['https://stutor.com/roles'].map((a) => { return a.toLowerCase() }).includes('expert');
       }
       return false;
+    },
+    currentRouteName() {
+        return this.$route.name;
     }
   }
 };
 </script>
 
 <style scoped>
+
+  /* Style for active nav link */
+
+  .active-nav-link {
+    background-color: #f3ba09;
+  }
 
   /* New nav styles */
 
@@ -228,6 +237,8 @@ export default {
   .user-dropdown:hover #txtUser {color: bisque;}
 
   .btn-logout:hover > i {color: red;}
+
+  .modal-btn-logout:hover > div > i {color: red;}
 
   @media screen and (max-width: 700px) {
     #nav-menu-expander {
