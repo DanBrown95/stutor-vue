@@ -22,7 +22,7 @@
                 <div v-if="$auth.isAuthenticated && !$auth.loading">
                     <div class="user-dropdown">
                       <p id="txtUser" class="text-muted font-weight-medium px-2">
-                        {{$auth.user['https://stutor.com/firstname'] + ' ' + $auth.user['https://stutor.com/lastname']}} <v-icon color="white">mdi-menu-down</v-icon>
+                        {{$auth.user['https://stutor.com/firstname'] + ' ' + $auth.user['https://stutor.com/lastname']}} <v-icon id="dropdownArrow" color="white">mdi-menu-down</v-icon>
                       </p>
                       <div class="user-dropdown-content">
                         <div class="top-row">
@@ -152,8 +152,8 @@ export default {
 
   /* colored variant */
 
-  .color-nav #txtUser {
-    color: #f3ba09;
+  .color-nav #txtUser, .color-nav #dropdownArrow {
+    color: #f3ba09 !important;
   }
 
   .color-nav #btnLogout {

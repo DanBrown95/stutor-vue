@@ -59,14 +59,14 @@
                                     </model-list-select>
                                     <p style="color: #ff5252; font-size: 12px;">{{selectedCategoryIdErrors[0]}}</p>
                                 </v-row>
-                                <v-row dense style="margin-bottom: 1em;">
+                                <v-row dense style="margin-bottom: 1em; background-color: white; border-radius: 5px; padding: 10px">
                                     <v-text-field id="topicName" v-model="newTopicName" label="New topic name"
                                                 @input="$v.newTopicName.$touch()" @blur="$v.newTopicName.$touch()" 
                                                 :error-messages="newTopicNameErrors" required>
                                     </v-text-field>
                                 </v-row>
-                                <v-row dense>
-                                    <v-textarea v-model="description" rows="6" label="Provide a description of this topic and features you would cover" 
+                                <v-row dense style="background-color: white; border-radius: 5px; padding: 10px">
+                                    <v-textarea v-model="description" rows="6" label="Provide a description of this topic and features you would like covered" 
                                                 @input="$v.description.$touch()" @blur="$v.description.$touch()"
                                                 :error-messages="descriptionErrors" required>
                                     </v-textarea>
@@ -80,7 +80,7 @@
                                             size="invisible"
                                             :sitekey="recaptchaSitekey">
                                         </vue-recaptcha>
-                                        <v-btn color="primary" @click="verify">Submit Topic Request</v-btn>
+                                        <v-btn color="primary" @click="verify" :disabled="!formValid()">Submit Topic Request</v-btn>
                                     </v-col>
                                 </v-row>
                             </v-form>
@@ -178,6 +178,9 @@ export default {
             this.allCategories = await _categoryRepo_GetAll();
             this.displayForm = true;
         },
+        formValid(){
+            return !this.$v.$invalid;
+        },
         verify () {
             this.$v.$touch();
             if (this.$v.$invalid) {
@@ -210,12 +213,6 @@ export default {
         }
     },
     computed: {
-        formValid () {
-            var newTopicNameValid = (this.newTopicName != null && this.newTopicName != "");
-            var descriptionValid = (this.description != null && this.description != "");
-            var categoryValid = (this.selectedCategoryId != null);
-            return (newTopicNameValid && descriptionValid && categoryValid);
-        },
         selectedCategoryIdErrors () {
             const errors = []
             if(!this.$v.selectedCategoryId.$dirty) return errors
@@ -233,7 +230,7 @@ export default {
             const errors = []
             if(!this.$v.description.$dirty) return errors
             !this.$v.description.required && errors.push("Summary is required")
-            !this.$v.description.minLength && errors.push("Sumamry must be greater than 15 characters")
+            !this.$v.description.minLength && errors.push("Summary must be greater than 15 characters")
             !this.$v.description.maxLength && errors.push("Description must be less than 500 characters")
             return errors
         }
