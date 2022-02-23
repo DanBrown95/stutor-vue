@@ -1,5 +1,5 @@
 <template>
-    <div v-if="!searching">
+    <div v-if="!searching && locationEnabled">
         <div class="center" v-if="hasExperts">
             <template v-if="(this.localExperts && this.localExperts.length)">
                 <v-card class="mx-auto">
@@ -46,6 +46,12 @@
             </div>
         </div>
     </div>
+    <div v-else-if="!locationEnabled">
+        <div class="center">
+            <h2>Location services must be enabled on this site. Enable location services and try again.</h2>
+            <br />
+        </div>
+    </div>
 </template>
 
 <script>
@@ -64,7 +70,8 @@ export default {
         return {
             experts: [],
             searching: false,
-            relatedTopics: []
+            relatedTopics: [],
+            locationEnabled: false
         }
     },
     computed: {
@@ -85,18 +92,34 @@ export default {
         }
     },
     mounted() {
-        this.getTopicExperts();
+        this.getUserLocation();
         this.getRelatedTopics();
     },
     methods: {
         expertSelected: function(e) {
             this.$emit("expertSelected", e);
         },
-        async getTopicExperts() {
+        async getUserLocation(){
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(this.getTopicExperts);
+            } else {
+                this.experts = []
+                this.locationEnabled = false;
+                this.showLocationError = true;
+            }
+        },
+        async getTopicExperts(position) {
             this.searching = true;
+            this.locationEnabled = true;
             var userId = this.$auth.user['https://stutor.com/id'];
             const accessToken = await this.$auth.getTokenSilently();
-            this.experts = await _expertRepo_TopicExpertsByTopicId(accessToken, this.TopicId, Intl.DateTimeFormat().resolvedOptions().timeZone, userId);
+
+            const userCoordinates = {
+                lat: position.coords.latitude,
+                lng: position.coords.longitude
+            };
+
+            this.experts = await _expertRepo_TopicExpertsByTopicId(accessToken, this.TopicId, userCoordinates, userId);
             this.searching = false;
         },
         async getRelatedTopics() {

@@ -93,25 +93,16 @@
             </v-row>
         </div>
         <div v-if="isExpert">
-            <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Timezone Changed!</v-snackbar>
+            <v-snackbar v-model="showSuccess" color="success" :timeout="1500">Location successfully changed</v-snackbar>
             <v-row>
                 <v-col cols="3">
-                    <v-subheader class="float-right">Timezone </v-subheader>
+                    <v-subheader class="float-right">Location </v-subheader>
                 </v-col>
-                <v-col cols="6">
-                    <v-select
-                        v-model="selectedTimezoneId"
-                        :items="timezones"
-                        menu-props="auto"
-                        label="Select your local timezone"
-                        item-value="id"
-                        item-text="friendlyName"
-                        single-line
-                    >
-                        <template v-slot:prepend>
-                            <v-icon color="blue">mdi-earth</v-icon>
-                        </template>
-                    </v-select>
+                <v-col cols="9">
+                    <GoogleLocation @saveLocation="saveLocation" :existing-location="expertLocation" :auto-locate="false"></GoogleLocation>
+                    <div v-for="error in locationErrors" :key="error">
+                        <span style="color: red">{{error}}</span>
+                    </div>
                 </v-col>
             </v-row>
 
@@ -244,17 +235,19 @@
 import { validationMixin } from "vuelidate";
 
 import AvailabilityDisplay from '@/components/utils/AvailabilityDisplay.vue';
+import GoogleLocation from '@/components/utils/GoogleLocation.vue';
+
 import { RatingAsTitle } from '@/helpers/Rating.js';
 import { EmailConfirmation as _accountRepo_ResendEmail,
          PhoneConfirmation as _accountRepo_ResendPhone,
          UpdatePhone as _accountRepo_UpdatePhone,
-         VerifyPhonePin as _accountRepo_verifyPhonePin } from '@/store/account/repository.js'; 
-import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
-import { ExpertTimezoneId as _expertRepo_ExpertTimezoneId, 
+         VerifyPhonePin as _accountRepo_verifyPhonePin } from '@/store/account/repository.js';
+import { 
+         ExpertLocationById as _expertRepo_ExpertLocationById,
+         UpdateLocation as _expertRepo_UpdateLocation,
          ExpertTopics as _expertRepo_ExpertTopics,
          GetActiveStatus as _expertRepo_GetActiveStatus,
-         ToggleIsActive as _expertRepo_ToggleIsActive, 
-         UpdateTimezone as _expertRepo_UpdateTimezone,
+         ToggleIsActive as _expertRepo_ToggleIsActive,
          RevokeTopicExpert as _expertRepo_RevokeTopicExpert,
          GetSpecialties as _expertRepo_GetSpecialties,
          UpdateSpecialties as _expertRepo_UpdateSpecialties } from '@/store/expert/repository.js';
@@ -274,7 +267,8 @@ export default {
     components: {
         AvailabilityDisplay,
         CodeInput,
-        SlideUpDown
+        SlideUpDown,
+        GoogleLocation
     },
 
     mixins: [validationMixin],
@@ -287,8 +281,9 @@ export default {
 
     data() {
         return {
-            timezones: [],
-            selectedTimezoneId: null,
+            expertLocation: {},
+            newLocation: null,
+            locationErrors: [],
             showExpertTopics: false,
             showPaymentInfo: false,
             expertTopics: [],
@@ -348,23 +343,12 @@ export default {
             return RatingAsTitle(rating);
         }
     },
-    watch: {
-        async selectedTimezoneId(newValue, oldValue) {
-            if(oldValue != null && oldValue !== newValue){
-                var success = await _expertRepo_UpdateTimezone(this.$auth.user['https://stutor.com/id'], newValue);
-                this.showSuccess = (success);
-            }
-        }
-    },
     methods: {
         async populateData() {
 
             if(this.isExpert){
-                // Populate the timezones
-                this.timezones = await _timezoneRepo_GetAll();
-
-                // Get the experts timezone
-                this. selectedTimezoneId = await _expertRepo_ExpertTimezoneId(this.$auth.user['https://stutor.com/id']);
+                // Get the experts location
+                this.expertLocation = await _expertRepo_ExpertLocationById(this.$auth.user['https://stutor.com/id']);
 
                 // Get the experts expertTopics
                 this.expertTopics = await _expertRepo_ExpertTopics(this.$auth.user['https://stutor.com/id']);
@@ -373,6 +357,11 @@ export default {
                 this.isActive = await _expertRepo_GetActiveStatus(this.$auth.user['https://stutor.com/id']);
             }
 
+        },
+        async saveLocation(data){
+            var success = await _expertRepo_UpdateLocation(this.$auth.user['https://stutor.com/id'], data);
+            this.showSuccess = (success);
+            window.setTimeout(function(){window.location.reload()}, 4000);
         },
         async toggleIsActive() {
             // toggle the active status

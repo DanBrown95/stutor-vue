@@ -235,21 +235,13 @@
 
                         <v-row v-if="!isExpert">
                             <v-col cols="3">
-                                <v-subheader>* Timezone</v-subheader>
+                                <v-subheader>* Location</v-subheader>
                             </v-col>
                             <v-col cols="8">
-                                <v-select
-                                    v-model="selectedTimezone"
-                                    :items="tz_timezones"
-                                    menu-props="auto"
-                                    label="Select your local timezone"
-                                    item-value="id"
-                                    item-text="friendlyName"
-                                    prepend-icon="mdi-earth"
-                                    single-line
-                                    :error-messages="timezoneErrors" 
-                                    @change="$v.selectedTimezone.$touch()" @blur="$v.selectedTimezone.$touch()" required
-                                ></v-select>
+                                <GoogleLocation @locationChange="locationChanged" :auto-locate="true"></GoogleLocation>
+                                <div v-for="error in locationErrors" :key="error">
+                                    <span style="color: red">{{error}}</span>
+                                </div>
                             </v-col>
                         </v-row>
 
@@ -361,13 +353,13 @@
 
 <script>
 import { validationMixin } from "vuelidate";
-import { required, maxLength, requiredIf, helpers } from "vuelidate/lib/validators";
+import { required, maxLength, helpers } from "vuelidate/lib/validators";
 import VueRecaptcha from 'vue-recaptcha';
 import VueNumberInput from '@chenfengyuan/vue-number-input';
 import ButtonBack from "@/components/utils/ButtonBack.vue";
 import { GetBySubstring as _topicRepo_GetBySubstring, GetAllSpecialties as _topicRepo_GetAllSpecialties } from "@/store/topic/repository.js";
-import { GetAll as _timezoneRepo_GetAll } from '@/store/timezone/repository.js';
 import { Register as _expertRepo_Register, UploadDocuments as _expertRepo_UploadDocuments } from '@/store/expert/repository.js';
+import GoogleLocation from '@/components/utils/GoogleLocation.vue';
 
 function maxFilesize(value){
     return !helpers.req(value) || (value && !value.some(x => x.size > 2096128));
@@ -382,18 +374,14 @@ export default {
     components: {
         VueRecaptcha,
         VueNumberInput,
-        ButtonBack
+        ButtonBack,
+        GoogleLocation
     },
 
     mixins: [validationMixin],
 
     validations: {
         selectedTopic: { required },
-        selectedTimezone: { // Timezone not required if already an expert. Will save as null and use their existing db timezone setting
-            required: requiredIf(function(){
-                return !this.isExpert;
-            })
-        },
         resumes: { 
             required,
             maxFilesize
@@ -435,8 +423,12 @@ export default {
             weehMenu: null,
             weekendEndHours: null,
 
-            tz_timezones: [],
-            selectedTimezone: null,
+            locationData: {
+                address: "",
+                coords: {lat: 0.0, lng: 0.0},
+                isValid: false,
+                grantedPermissions: false
+            }, 
 
             certifications: "",
             linkedinUrl: null,
@@ -450,10 +442,6 @@ export default {
             submitted: false,
             submitResponse: ""
         }
-    },
-    mounted() {
-        // Get all available timezones
-        this.getTimezones();
     },
     watch: {
         topicSearch(val){ 
@@ -493,7 +481,7 @@ export default {
                 weekendTimesValid = !(this.weekendStartHours == null || this.weekendEndHours == null)
             }
             
-            return (!this.$v.$invalid && daysValid && weekdayTimesValid && weekendTimesValid);
+            return (!this.$v.$invalid && daysValid && weekdayTimesValid && weekendTimesValid && (this.isExpert || (!this.isExpert && this.locationData.isValid)) );
         },
         weekdaysSelected: function() {
             var weekdays = ["mon","tue","wed","thu","fri"]
@@ -515,10 +503,10 @@ export default {
             !this.$v.selectedTopic.required && errors.push("Topic is required")
             return errors
         },
-        timezoneErrors () {
+        locationErrors () {
             const errors = []
-            if(!this.$v.selectedTimezone.$dirty) return errors
-            !this.$v.selectedTimezone.required && errors.push("Timezone is required")
+            !this.locationData.grantedPermissions && errors.push("Location Permissions Required. Allow this site access to your location.")
+            !this.locationData.isValid && errors.push("Location is required. Use the locator button to get your position.")
             return errors
         },
         resumeErrors () {
@@ -543,6 +531,9 @@ export default {
                 this.topics = [];
             }
         },
+        locationChanged(data){
+            this.locationData = data;
+        },
         async getSpecialties(topicId){
             this.availableSpecialties = await _topicRepo_GetAllSpecialties(topicId);
             this.selectedSpecialties = [];
@@ -550,9 +541,6 @@ export default {
         removeSpecialty (item) {
             this.selectedSpecialties.splice(this.selectedSpecialties.indexOf(item), 1);
             this.selectedSpecialties = [...this.selectedSpecialties];
-        },
-        async getTimezones(){
-            this.tz_timezones = await _timezoneRepo_GetAll();
         },
         verify () {
             this.$v.$touch();
@@ -574,7 +562,7 @@ export default {
                 captcha: recaptchaToken,
                 userId: this.$auth.user['https://stutor.com/id'],
                 topicId: this.selectedTopic.id,
-                timezoneId: this.selectedTimezone,
+                location: !this.isExpert ? this.locationData : null,
                 selectedDays: this.selectedDays,
                 weekdayHours: this.weekdayStartHours + "-" + this.weekdayEndHours,
                 weekendHours: this.weekendStartHours + "-" + this.weekendEndHours,

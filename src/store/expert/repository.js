@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export function TopicExpertsByTopicId(accessToken, topicId, userTimezone, userId) {
+export function TopicExpertsByTopicId(accessToken, topicId, userCoordinates, userId) {
     return axios({
         url: 'https://localhost:44343/api/expert/TopicExpertsByTopicId',
         method: 'POST',
@@ -10,7 +10,7 @@ export function TopicExpertsByTopicId(accessToken, topicId, userTimezone, userId
         },
         data: {
             topicId: topicId,
-            userTimezone: userTimezone,
+            userCoordinates: userCoordinates,
             requestingUserId: userId
         }
     })
@@ -142,6 +142,35 @@ export function ExpertTimezoneId(userId) {
     //     return jsonData.id;
     // });
     // return result;
+}
+
+export function ExpertLocationById(userId) {
+    return axios({
+        url: 'https://localhost:44343/api/Expert/expertLocation',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        data: JSON.stringify(userId)
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
+}
+
+export function UpdateLocation(userId, location) {
+    return axios({
+        url: 'https://localhost:44343/api/Expert/UpdateLocation',
+        method: 'POST',
+        headers: {
+            "Content-Type": "application/json"
+        },
+        data: {
+            userId: userId,
+            location: location
+        }
+    })
+    .then(response => { return response.data; })
+    .catch(error => console.log(JSON.stringify(error.response.data.errors)));
 }
 
 export function ExpertTopics(userId) {
