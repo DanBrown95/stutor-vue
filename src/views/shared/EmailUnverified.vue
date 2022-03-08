@@ -22,7 +22,10 @@
                         <h4 style="color: grey;">To resend the email verification link click the following button</h4>
                     </v-col>
                     <v-col>
-                        <v-btn color="success">Resend</v-btn>
+                        <v-btn color="success" @click="resendEmailVerification">Resend</v-btn>
+                    </v-col>
+                    <v-col>
+                        <p style="color: red;">{{EmailResentMessage}}</p>
                     </v-col>
                 </v-row>
             </v-card>
@@ -31,10 +34,26 @@
 </template>
 
 <script>
+//import { EmailConfirmation as _accountRepo_ResendEmail} from '@/store/account/repository.js';
 export default {
     name: 'Unverified',
     data() {
         return {
+            EmailResent: false,
+            EmailResentMessage: ""
+        }
+    },
+    methods: {
+        async resendEmailVerification() {
+            //const accessToken = await this.$auth.getTokenSilently();
+            //var res = await _accountRepo_ResendEmail(this.$auth.user.sub, accessToken);
+            var res = {success: false};
+            if(res.success == false){
+                this.EmailResentMessage = "Failed to send";
+            }else if(res.success == true){
+                this.EmailResentMessage = "Email confirmation sent";
+            }
+            this.EmailResent = true;
         }
     }
 }

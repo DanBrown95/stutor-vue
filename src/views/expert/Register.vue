@@ -32,16 +32,17 @@
                             </v-col>
                         </v-row>
 
-                        <v-row v-if="selectedTopic">
+                        <v-row v-if="selectedTopic && availableSpecialties.length > 0">
                             <v-col cols="3">
-                                <v-subheader>* Specialties: </v-subheader>
+                                <v-subheader>Specialties: </v-subheader>
                             </v-col>
                             <v-col cols="8">
                                 <template>
-                                    <v-combobox
+                                    <v-select
                                         v-model="selectedSpecialties"
                                         :items="availableSpecialties"
                                         item-text="name"
+                                        item-value="id"
                                         chips
                                         clearable
                                         label="Select up to 5 specialties"
@@ -63,7 +64,7 @@
                                             <strong>{{ item.name }}</strong>&nbsp;
                                         </v-chip>
                                         </template>
-                                    </v-combobox>
+                                    </v-select>
                                 </template>
                             </v-col>
                         </v-row>
@@ -557,7 +558,7 @@ export default {
             this.$refs.invisibleRecaptcha.reset()
         },
         async submit(recaptchaToken) {
-            var specialtyCSV = this.selectedSpecialties.map(x => x.id).join();
+            var specialtyCSV = this.selectedSpecialties.join();
             var formData = {
                 captcha: recaptchaToken,
                 userId: this.$auth.user['https://stutor.com/id'],
