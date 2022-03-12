@@ -100,7 +100,12 @@ Vue.use(VueRouter)
     component: () => import('../views/shared/EmailUnverified.vue'),
     meta: {
       colorNav: true
-    },
+    }
+  },
+  { 
+    path: '*', 
+    name: 'NotFound',
+    component: () => import('../views/shared/NotFound.vue') 
   }
 ]
 

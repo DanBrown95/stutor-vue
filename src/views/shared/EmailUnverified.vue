@@ -34,7 +34,7 @@
 </template>
 
 <script>
-//import { EmailConfirmation as _accountRepo_ResendEmail} from '@/store/account/repository.js';
+import { EmailConfirmation as _accountRepo_ResendEmail} from '@/store/account/repository.js';
 export default {
     name: 'Unverified',
     data() {
@@ -45,9 +45,8 @@ export default {
     },
     methods: {
         async resendEmailVerification() {
-            //const accessToken = await this.$auth.getTokenSilently();
-            //var res = await _accountRepo_ResendEmail(this.$auth.user.sub, accessToken);
-            var res = {success: false};
+            const accessToken = await this.$auth.getTokenSilently();
+            var res = await _accountRepo_ResendEmail(this.$auth.user.sub, accessToken);
             if(res.success == false){
                 this.EmailResentMessage = "Failed to send";
             }else if(res.success == true){
