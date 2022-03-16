@@ -105,7 +105,10 @@ Vue.use(VueRouter)
   { 
     path: '*', 
     name: 'NotFound',
-    component: () => import('../views/shared/NotFound.vue') 
+    component: () => import('../views/shared/NotFound.vue'),
+    meta: {
+      colorNav: true
+    }
   }
 ]
 

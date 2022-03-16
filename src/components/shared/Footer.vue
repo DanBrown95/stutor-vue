@@ -38,9 +38,9 @@
             <div class="col social">
                 <h1>Social</h1>
                 <ul>
-                    <li><a href="https://twitter.com/Stutor9"><img src="../../assets/social-media/twitter.png" class="social-img" ></a></li>
-                    <li><a href="https://facebook.com/Stutor-107227027650859"><img src="../../assets/social-media/facebook.png" class="social-img" ></a></li>
-                    <li><a href="https://instagram.com"><img src="../../assets/social-media/instagram.png" class="social-img" ></a></li>
+                    <li><a href="https://twitter.com/Stutor9"><img src="../../assets/social-media/twtt.png" class="social-img" ></a></li>
+                    <li><a href="https://facebook.com/Stutor-107227027650859"><img src="../../assets/social-media/fbook.png" class="social-img" ></a></li>
+                    <li><a href="https://instagram.com"><img src="../../assets/social-media/ig.png" class="social-img" ></a></li>
                 </ul>
             </div>
             <div class="clearfix"></div>

@@ -94,7 +94,8 @@ export const useAuth0 = ({
         domain: options.domain,
         client_id: options.clientId,
         audience: options.audience,
-        redirect_uri: redirectUri
+        redirect_uri: redirectUri,
+        useRefreshTokens: true
       });
 
       try {
